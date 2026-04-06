@@ -17,6 +17,9 @@ body::before{content:'';position:fixed;top:-30%;left:-10%;width:60vw;height:60vw
 
 /* BRAND */
 .brand{display:flex;flex-direction:column;align-items:center;gap:0}
+.brand-logo{display:block;object-fit:contain}
+.brand-lg .brand-logo{width:230px;max-width:100%;height:auto}
+.brand-sm .brand-logo{width:130px;max-width:100%;height:auto}
 .brand-name{font-family:'Outfit',sans-serif;font-weight:900;letter-spacing:6px;color:#fff;text-transform:uppercase;line-height:1}
 .brand-bars{display:flex;gap:3px;margin-top:5px;transform:skewX(-12deg)}
 .brand-bars span{display:block;border-radius:1px}
@@ -224,6 +227,8 @@ select.fi{cursor:pointer}
 .av-up img{width:100%;height:100%;object-fit:cover}
 .av-ov{position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s}
 .av-up:hover .av-ov{opacity:1}
+.dash-list{display:flex;flex-direction:column;gap:6px;padding:12px}
+.dash-item{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 10px;font-size:10px}
 </style>
 </head>
 <body>
@@ -240,8 +245,7 @@ select.fi{cursor:pointer}
       <div class="login-logo">
         <div class="brand-box">
           <div class="brand brand-lg">
-            <div class="brand-name">INFRAMINA</div>
-            <div class="brand-bars"><span></span><span></span><span></span></div>
+            <img class="brand-logo" src="assets/logo-inframina.jpg" alt="InfraMina">
             <div class="brand-sub">SISTEMA DE CONTROLE</div>
           </div>
         </div>
@@ -258,8 +262,7 @@ select.fi{cursor:pointer}
       <div class="login-logo">
         <div class="brand-box" style="padding:14px 20px">
           <div class="brand brand-sm">
-            <div class="brand-name">INFRAMINA</div>
-            <div class="brand-bars"><span></span><span></span><span></span></div>
+            <img class="brand-logo" src="assets/logo-inframina.jpg" alt="InfraMina">
             <div class="brand-sub">SISTEMA DE CONTROLE</div>
           </div>
         </div>
@@ -291,28 +294,12 @@ select.fi{cursor:pointer}
   <div class="sidebar" id="sidebar">
     <div class="sl">
       <div class="brand brand-sm">
-        <div class="brand-name">INFRAMINA</div>
-        <div class="brand-bars"><span></span><span></span><span></span></div>
+        <img class="brand-logo" src="assets/logo-inframina.jpg" alt="InfraMina">
         <div class="brand-sub">SISTEMA DE CONTROLE</div>
       </div>
     </div>
     <div class="sn">
-      <div class="ni act" onclick="nav('dashboard')" id="ni-dashboard"><i class="fas fa-chart-line"></i>Dashboard</div>
-      <div class="nd"></div>
-      <div style="font-size:8px;color:var(--muted);padding:4px 10px;text-transform:uppercase;letter-spacing:.5px">Operação</div>
-      <div class="ni" onclick="nav('comboios')" id="ni-comboios"><i class="fas fa-train"></i>Comboios</div>
-      <div class="ni" onclick="nav('diesel')" id="ni-diesel"><i class="fas fa-gas-pump"></i>Diesel</div>
-      <div class="nd"></div>
-      <div style="font-size:8px;color:var(--muted);padding:4px 10px;text-transform:uppercase;letter-spacing:.5px">Gestão</div>
-      <div class="ni" onclick="nav('turmas')" id="ni-turmas"><i class="fas fa-hard-hat"></i>Turmas</div>
-      <div class="ni" onclick="nav('fiscais')" id="ni-fiscais"><i class="fas fa-id-badge"></i>Fiscais</div>
-      <div class="ni" onclick="nav('escalas')" id="ni-escalas"><i class="fas fa-users-between-lines"></i>Escalas Subsolo</div>
-      <div class="ni" onclick="nav('correias')" id="ni-correias"><i class="fas fa-link"></i>Prolong. Correia</div>
-      <div class="nd"></div>
-      <div style="font-size:8px;color:var(--muted);padding:4px 10px;text-transform:uppercase;letter-spacing:.5px">Sistema</div>
-      <div class="ni" onclick="nav('relatorios')" id="ni-relatorios"><i class="fas fa-file-alt"></i>Relatórios</div>
-      <div class="ni" onclick="nav('importar')" id="ni-importar"><i class="fas fa-file-excel"></i>Importar</div>
-      <div class="ni" onclick="nav('auditoria')" id="ni-auditoria"><i class="fas fa-history"></i>Auditoria</div>
+      <div class="ni act" onclick="nav('comboios')" id="ni-comboios"><i class="fas fa-train"></i>Comboios Subsolo</div>
     </div>
     <button class="su" onclick="openProf()">
       <div class="su-av" id="sbAv"><i class="fas fa-user"></i></div>
@@ -329,44 +316,49 @@ select.fi{cursor:pointer}
     <div class="tb">
       <div style="display:flex;align-items:center;gap:10px">
         <button class="mt" onclick="toggleSb()"><i class="fas fa-bars"></i></button>
-        <div class="tb-t" id="tbTitle">Dashboard</div>
+        <div class="tb-t" id="tbTitle">Comboios Subsolo</div>
       </div>
       <div class="ta">
         <span style="font-size:10px;color:var(--muted)" id="topDate"></span>
         <span id="tpUsr" style="font-size:11px;color:var(--fg2)"></span>
-        <button class="btn btn-o btn-sm" onclick="openUsrMo()"><i class="fas fa-users"></i></button>
+        <button class="btn btn-o btn-sm" id="manageUsersBtn" onclick="openUsrMo()"><i class="fas fa-users"></i></button>
         <button class="btn btn-d btn-sm" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i></button>
       </div>
     </div>
 
     <div class="ct">
       <!-- DASHBOARD -->
-      <div class="page act" id="pg-dashboard">
+      <div class="page" id="pg-dashboard" style="display:none!important">
         <div class="kg" id="kpiGrid"></div>
         <div class="cg">
           <div class="pn cc"><div class="ph"><div class="pt"><i class="fas fa-train"></i>Comboios por Turma</div></div><canvas id="chCb" height="200"></canvas></div>
-          <div class="pn cc"><div class="ph"><div class="pt"><i class="fas fa-gas-pump"></i>Diesel por Setor</div></div><canvas id="chDi" height="200"></canvas></div>
+          <div class="pn">
+            <div class="ph"><div class="pt"><i class="fas fa-users"></i>Equipe do Turno</div></div>
+            <div class="dash-list" id="dashEquipe"></div>
+          </div>
         </div>
         <div class="pn">
-          <div class="ph"><div class="pt"><i class="fas fa-clock"></i>Atividade Recente</div></div>
+          <div class="ph"><div class="pt"><i class="fas fa-clock"></i>Últimos Comboios</div></div>
           <div id="dashAct" style="padding:14px;font-size:10px;color:var(--fg2)">Carregando...</div>
         </div>
       </div>
 
       <!-- COMBOIOS -->
-      <div class="page" id="pg-comboios">
+      <div class="page act" id="pg-comboios">
         <div class="pn">
           <div class="ph">
             <div class="pt"><i class="fas fa-train"></i>Comboios</div>
             <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
               <input class="fi" id="fCbDt" type="date" onchange="rCb()" style="padding:5px 8px">
               <select class="fi" id="fCbSt" onchange="rCb()"><option value="">Todos</option><option value="CHEIO">Cheio</option><option value="VAZIO">Vazio</option></select>
+              <input type="file" id="fIn" accept=".xlsx,.xls" style="display:none" onchange="hFile(this.files[0])">
+              <button class="btn btn-o btn-sm" onclick="document.getElementById('fIn').click()"><i class="fas fa-file-excel"></i>Importar Excel</button>
               <button class="btn btn-p btn-sm" onclick="openEc()"><i class="fas fa-plus"></i>Novo</button>
             </div>
           </div>
           <div class="pb tw">
             <table>
-              <thead><tr><th>#</th><th>Status</th><th>Qtd</th><th>Data</th><th>Fiscal</th><th>Turma</th><th>Por</th><th>Ações</th></tr></thead>
+              <thead><tr><th>#</th><th>Status</th><th>Qtd</th><th>Litros</th><th>Data</th><th>Quem Pediu</th><th>Turma</th><th>Por</th><th>Ações</th></tr></thead>
               <tbody id="cbBd"></tbody>
             </table>
           </div>
@@ -495,8 +487,6 @@ select.fi{cursor:pointer}
             <div class="lf"><label>Tipo</label>
               <select id="rlTipo" class="fi" style="width:100%;padding:8px 12px" onchange="updRel()">
                 <option value="comboios">Comboios</option>
-                <option value="diesel-equip">Diesel por Equipamento</option>
-                <option value="diesel-setor">Diesel por Setor</option>
                 <option value="turmas">Turmas</option>
                 <option value="fiscais">Fiscais</option>
                 <option value="correias">Prolong. Correia</option>
@@ -643,7 +633,7 @@ select.fi{cursor:pointer}
     <div class="lf"><label>Status</label><select id="ecSt" class="fi" style="width:100%;padding:8px 12px"><option value="CHEIO">CHEIO</option><option value="VAZIO">VAZIO</option></select></div>
     <div class="lf"><label>Qtd</label><input type="number" id="ecQtd" class="fi" style="width:100%;padding:8px 12px" min="0"></div>
     <div class="lf"><label>Data</label><input type="date" id="ecDt" class="fi" style="width:100%;padding:8px 12px"></div>
-    <div class="lf"><label>Fiscal</label><input type="text" id="ecFis" class="fi" style="width:100%;padding:8px 12px"></div>
+    <div class="lf"><label>Quem pediu / Fiscal</label><input type="text" id="ecFis" class="fi" style="width:100%;padding:8px 12px"></div>
     <div class="lf"><label>Turma</label><select id="ecTur" class="fi" style="width:100%;padding:8px 12px"><option value="">Nenhuma</option></select></div>
     <div style="display:flex;gap:7px;justify-content:flex-end;margin-top:14px">
       <button class="btn btn-o" onclick="clMo('ecMo')">Cancelar</button>
@@ -748,255 +738,175 @@ select.fi{cursor:pointer}
 
 <!-- ===== JAVASCRIPT ===== -->
 <script>
-// ===== STORAGE KEYS =====
-const UK='inframina_users', SK='inframina_session', DK='inframina_data',
-      TK='inframina_turmas', FK='inframina_fiscais', AK='inframina_audit',
-      EK='inframina_escalas', CK='inframina_correias';
+const UK='inframina_users', SK='inframina_session', DK='inframina_data';
+const LITROS_POR_COMBOIO=1900;
+let D={comboios:[]}, CU=null, tRP='', tPP='';
 
-// ===== STATE =====
-let D={comboios:[],diesel:[],consumoTotal:[]}, T=[], F=[], A=[], E=[], C=[];
-let CU=null, tRP='', tPP='';
-let calMonth=null, calYear=null;
-let charts={};
-
-// ===== STORAGE HELPERS =====
 function ld(k,d){try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}}
 function sv(k,v){localStorage.setItem(k,JSON.stringify(v))}
 function gU(){return ld(UK,[])}
 function sU(u){sv(UK,u)}
 function un(){return CU?CU.username:'?'}
-function ldAll(){
-  D=ld(DK,{comboios:[],diesel:[],consumoTotal:[]});
-  T=ld(TK,[]); F=ld(FK,[]); A=ld(AK,[]); E=ld(EK,[]); C=ld(CK,[]);
-}
-function svAll(){sv(DK,D);sv(TK,T);sv(FK,F);sv(AK,A);sv(EK,E);sv(CK,C);}
+function hasPerm(k){return !!(CU&&CU.permissions&&CU.permissions[k]);}
+function isAdmin(){return !!(CU&&CU.role==='admin');}
+function defaultPerms(){return {comboios:true,edit:true,delete:false,import:false,manageUsers:false};}
+function adminPerms(){return {comboios:true,edit:true,delete:true,import:true,manageUsers:true};}
 
-// ===== SAMPLE DATA =====
-function sCb(){return[
-  {status:'CHEIO',qtd:2,data:'2026-01-06',fiscal:'MÁCIO - 116770',turma:'',_by:'SISTEMA'},
-  {status:'CHEIO',qtd:2,data:'2026-01-08',fiscal:'MÁCIO - 116770',turma:'',_by:'SISTEMA'},
-  {status:'CHEIO',qtd:7,data:'2026-01-08',fiscal:'ELIZANO/JAILTON - 116790',turma:'TURMA E',_by:'SISTEMA'},
-  {status:'CHEIO',qtd:1,data:'2026-01-08',fiscal:'ARIONALDO - 116772',turma:'TURMA B',_by:'SISTEMA'},
-  {status:'CHEIO',qtd:1,data:'2026-01-12',fiscal:'LUCIANO - 116784',turma:'TURMA D',_by:'SISTEMA'},
-  {status:'CHEIO',qtd:6,data:'2026-01-16',fiscal:'LUCIANO - 116784',turma:'TURMA D',_by:'SISTEMA'},
-  {status:'CHEIO',qtd:9,data:'2026-01-14',fiscal:'MARCOS - 118787',turma:'TURMA C',_by:'SISTEMA'},
-  {status:'CHEIO',qtd:2,data:'2026-01-14',fiscal:'LUCIANO - 116784',turma:'TURMA D',_by:'SISTEMA'},
-  {status:'CHEIO',qtd:1,data:'2026-01-15',fiscal:'MÁCIO - 116770',turma:'',_by:'SISTEMA'},
-  {status:'CHEIO',qtd:1,data:'2026-01-16',fiscal:'MÁCIO - 116770',turma:'',_by:'SISTEMA'},
-  {status:'CHEIO',qtd:3,data:'2026-01-26',fiscal:'MÁCIO - 116770',turma:'',_by:'SISTEMA'},
-  {status:'CHEIO',qtd:2,data:'2026-01-27',fiscal:'LUCIANO - 116784',turma:'TURMA D',_by:'SISTEMA'},
-  {status:'CHEIO',qtd:2,data:'2026-01-27',fiscal:'ARIONALDO - 116772',turma:'TURMA B',_by:'SISTEMA'},
-  {status:'CHEIO',qtd:2,data:'2026-01-29',fiscal:'MÁCIO - 116770',turma:'',_by:'SISTEMA'},
-  {status:'CHEIO',qtd:2,data:'2026-01-29',fiscal:'MARCOS - 116787',turma:'TURMA C',_by:'SISTEMA'},
-  {status:'CHEIO',qtd:1,data:'2026-01-30',fiscal:'MÁCIO - 116770',turma:'',_by:'SISTEMA'},
-  {status:'VAZIO',qtd:3,data:'2026-01-20',fiscal:'ARIONALDO - 116772',turma:'TURMA B',_by:'SISTEMA'},
-  {status:'VAZIO',qtd:5,data:'2026-01-22',fiscal:'LUCIANO - 116784',turma:'TURMA D',_by:'SISTEMA'}
-];}
-function sDi(){
-  const d=[
-    ['BC08','MINI CARREGADEIRA 226B3','2026-01-05',41,'GER. MANUT. MINA'],
-    ['BC08','MINI CARREGADEIRA 226B3','2026-01-07',40,'GER. MANUT. MINA'],
-    ['BC09','MINI CARREGADEIRA 226B3','2026-01-09',44,'GER. MANUT. MINA'],
-    ['BC09','MINI CARREGADEIRA 226B3','2026-01-31',38,'GER. MANUT. MINA'],
-    ['CR10','TORO 151D (3,5T)','2026-01-14',135,'GER. MANUT. MINA'],
-    ['CR12','EJC130 SANDVIK (5T)','2026-01-02',120,'MONTAGEM ELETROMEC.'],
-    ['CR12','EJC130 SANDVIK (5T)','2026-01-27',168,'MONTAGEM ELETROMEC.'],
-    ['CR14','TORO 007 (10T)','2026-01-31',209,'LAVRA'],
-    ['CR16','ST1030 ATLAS (10T)','2026-01-10',212,'LAVRA'],
-    ['CR18','ST1030 ATLAS (10T)','2026-01-23',200,'LAVRA'],
-    ['CR20','JOY LT-1051 (10T)','2026-01-31',245,'LAVRA'],
-    ['CR21','JOY LT-1051 (10T)','2026-01-23',249,'LAVRA'],
-    ['CR24','JOY LT-1051 (10T)','2026-01-18',277,'LAVRA'],
-    ['CR24','JOY LT-1051 (10T)','2026-01-15',266,'LAVRA'],
-    ['CP V20','COMPRESSOR V20','2026-01-11',202,'OPERAÇÃO'],
-    ['DIQUE','DIQUE','2026-01-29',76,'MANUTENÇÃO'],
-    ['JP003CE','L200 TRITON','2026-01-05',57,'CE ENGENHARIA'],
-    ['JP149','AMBULÂNCIA S-10','2026-01-20',45,'SEGURANÇA'],
-    ['JP162','L200 TRITON','2026-01-24',24,'ENGENHARIA'],
-    ['JP168','L200 TRITON','2026-01-08',55,'GEOMECÂNICA'],
-    ['NPE02','APOIO 4X4','2026-01-06',44,'NPE'],
-    ['NPE03','APOIO 4X4','2026-01-29',53,'NPE'],
-    ['PT01','PLATAFORMA A-64 GETMAN','2026-01-13',100,'VENTILAÇÃO'],
-    ['PT05','PLATAFORMA A-647M GETMAN','2026-01-16',66,'MONTAGEM ELETROMEC.'],
-    ['PT06','DOUBLE LIFT SCISSOR - DUX','2026-01-22',120,'MONTAGEM ELETROMEC.'],
-    ['PT06','DOUBLE LIFT SCISSOR - DUX','2026-01-25',160,'MONTAGEM ELETROMEC.'],
-    ['JP188','L200 TRITON','2026-01-08',55,'GER. MANUTENÇÃO'],
-    ['JP190','L200 TRITON','2026-01-08',55,'GER. MANUTENÇÃO'],
-    ['JP191','L200 TRITON','2026-01-12',60,'GER. MANUTENÇÃO'],
-    ['JP192','L200 TRITON','2026-01-12',160,'GER. MANUTENÇÃO'],
-    ['JP200','L200 TRITON','2026-01-24',30,'GER. MANUTENÇÃO'],
-    ['JP202','L200 TRITON','2026-01-31',238,'GER. MANUTENÇÃO']
-  ];
-  return d.map(x=>({tag:x[0],equipamento:x[1],data:x[2],qtd:x[3],setor:x[4],_by:'SISTEMA'}));
+function ensureAdmin(){
+  const us=gU();
+  let a=us.find(x=>x.username==='admin');
+  if(!a){
+    us.push({name:'Administrador',username:'admin',password:'admin',role:'admin',permissions:adminPerms(),photo:'',createdAt:new Date().toISOString()});
+  }else{
+    a.role='admin'; a.password='admin'; a.permissions=adminPerms();
+  }
+  sU(us);
 }
-function sCs(){return[{mes:'JANEIRO',qtd:45587.1},{mes:'FEVEREIRO',qtd:42040.5}];}
-
-function ldSample(){
-  D.comboios=sCb(); D.diesel=sDi(); D.consumoTotal=sCs();
-  sv(DK,D);
-  au('importar','dados','Dados de exemplo carregados');
-  rAll(); toast('Dados de exemplo carregados','success');
+function normalizeUsers(){
+  const us=gU().map(u=>{
+    if(u.role!=='admin'&&u.role!=='usuario')u.role='usuario';
+    if(!u.permissions)u.permissions=u.role==='admin'?adminPerms():defaultPerms();
+    return u;
+  });
+  sU(us); return us;
 }
-
-// ===== AUDIT =====
-function au(a,e,d){
-  if(!CU)return;
-  A.unshift({ts:new Date().toISOString(),user:CU.username,uc:CU.name.toUpperCase(),action:a,entity:e,details:d});
-  if(A.length>500)A.length=500;
-  sv(AK,A);
-}
-
-// ===== TOAST =====
+function ldAll(){D=ld(DK,{comboios:[]});}
+function svAll(){sv(DK,D);}
 function toast(msg,type='success'){
-  const c=document.getElementById('toastC');
-  const t=document.createElement('div');
+  const c=document.getElementById('toastC'); const t=document.createElement('div');
   const ic=type==='success'?'fa-check-circle':type==='error'?'fa-exclamation-circle':'fa-info-circle';
   const cl=type==='success'?'toast-s':type==='error'?'toast-e':'toast-i';
-  t.className='toast '+cl;
-  t.innerHTML='<i class="fas '+ic+'"></i>'+msg;
-  c.appendChild(t);
-  setTimeout(()=>t.remove(),3500);
+  t.className='toast '+cl; t.innerHTML='<i class="fas '+ic+'"></i>'+msg; c.appendChild(t); setTimeout(()=>t.remove(),3000);
 }
-
-// ===== INIT =====
-document.addEventListener('DOMContentLoaded',()=>{
-  document.getElementById('topDate').textContent=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
-  ldAll();
-  if(!D.comboios.length&&!D.diesel.length) ldSample();
-  const s=localStorage.getItem(SK);
-  if(s){const u=gU().find(x=>x.username===s);if(u){CU=u;enterApp();return;}}
-  showLS();
-  // Drag/drop upload
-  const uz=document.getElementById('upZ');
-  if(uz){
-    uz.addEventListener('dragover',e=>{e.preventDefault();uz.classList.add('dov');});
-    uz.addEventListener('dragleave',()=>uz.classList.remove('dov'));
-    uz.addEventListener('drop',e=>{e.preventDefault();uz.classList.remove('dov');if(e.dataTransfer.files[0])hFile(e.dataTransfer.files[0]);});
-  }
-  // Close modals on backdrop click
-  document.querySelectorAll('.mo').forEach(m=>{
-    m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('show');});
-  });
-});
-
-// ===== AUTH =====
 function showLS(){document.getElementById('loginScr').classList.remove('hidden');document.getElementById('mainC').style.display='none';showLF();}
-function showLF(){document.getElementById('loginForm').style.display='block';document.getElementById('regForm').style.display='none';document.getElementById('lErr').classList.remove('show');document.getElementById('lUser').value='';document.getElementById('lPass').value='';document.getElementById('lUser').focus();}
-function showReg(){document.getElementById('loginForm').style.display='none';document.getElementById('regForm').style.display='block';document.getElementById('rErr').classList.remove('show');['rName','rUser','rPass','rPass2'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});tRP='';}
+function showLF(){document.getElementById('loginForm').style.display='block';document.getElementById('regForm').style.display='none';document.getElementById('lErr').classList.remove('show');}
+function showReg(){document.getElementById('loginForm').style.display='none';document.getElementById('regForm').style.display='block';document.getElementById('rErr').classList.remove('show');}
 function showLog(){showLF();}
-
 function doLogin(){
   const u=document.getElementById('lUser').value.trim().toLowerCase();
   const p=document.getElementById('lPass').value;
   const e=document.getElementById('lErr'),m=document.getElementById('lErrMsg');
-  if(!u||!p){e.classList.add('show');m.textContent='Preencha usuário e senha';return;}
-  const user=gU().find(x=>x.username===u);
-  if(!user){e.classList.add('show');m.textContent='Usuário não encontrado';return;}
-  if(user.password!==p){e.classList.add('show');m.textContent='Senha incorreta';return;}
+  const us=normalizeUsers(); const user=us.find(x=>x.username===u);
+  if(!user||user.password!==p){e.classList.add('show');m.textContent='Usuário ou senha inválidos';return;}
   CU=user; localStorage.setItem(SK,user.username); enterApp();
 }
-
 function doReg(){
   const n=document.getElementById('rName').value.trim();
   const u=document.getElementById('rUser').value.trim().toLowerCase();
   const p=document.getElementById('rPass').value;
   const p2=document.getElementById('rPass2').value;
   const e=document.getElementById('rErr'),m=document.getElementById('rErrMsg');
-  if(!n||!u||!p){e.classList.add('show');m.textContent='Preencha todos os campos';return;}
-  if(p.length<4){e.classList.add('show');m.textContent='Senha: mínimo 4 caracteres';return;}
-  if(p!==p2){e.classList.add('show');m.textContent='Senhas não conferem';return;}
-  if(!/^[a-z0-9_.]+$/.test(u)){e.classList.add('show');m.textContent='Usuário: apenas minúsculas, números, _ ou .';return;}
-  const us=gU();
-  if(us.find(x=>x.username===u)){e.classList.add('show');m.textContent='Usuário já existe';return;}
-  const nu={name:n,username:u,password:p,photo:tRP,createdAt:new Date().toISOString()};
+  if(!n||!u||!p||p!==p2){e.classList.add('show');m.textContent='Confira os campos';return;}
+  const us=normalizeUsers(); if(us.find(x=>x.username===u)){e.classList.add('show');m.textContent='Usuário já existe';return;}
+  const nu={name:n,username:u,password:p,photo:tRP,role:'usuario',permissions:defaultPerms(),createdAt:new Date().toISOString()};
   us.push(nu); sU(us); CU=nu; localStorage.setItem(SK,u); enterApp();
-  toast('Bem-vindo, '+n.toUpperCase()+'!','success');
 }
-
-function doLogout(){CU=null;localStorage.removeItem(SK);showLS();toast('Você saiu','info');}
-
-function enterApp(){
-  document.getElementById('loginScr').classList.add('hidden');
-  document.getElementById('mainC').style.display='';
-  updUI(); rAll();
-  setTimeout(()=>toast('Bem-vindo, '+CU.name.toUpperCase()+'!','success'),300);
-}
-
+function doLogout(){CU=null;localStorage.removeItem(SK);showLS();}
+function enterApp(){document.getElementById('loginScr').classList.add('hidden');document.getElementById('mainC').style.display='';updUI();rCb();}
 function updUI(){
-  if(!CU)return;
-  const nc=CU.name.toUpperCase();
-  document.getElementById('sbNm').textContent=nc;
-  document.getElementById('tpUsr').innerHTML='<i class="fas fa-user" style="margin-right:3px;color:var(--accent)"></i>'+nc;
-  const a=document.getElementById('sbAv');
-  a.innerHTML=CU.photo?'<img src="'+CU.photo+'" style="width:100%;height:100%;object-fit:cover">':'<i class="fas fa-user"></i>';
+  document.getElementById('sbNm').textContent=(CU.name||'').toUpperCase();
+  document.querySelector('.su-rl').textContent=(CU.role||'usuario').toUpperCase();
+  document.getElementById('tpUsr').textContent=CU.name.toUpperCase();
+  document.getElementById('manageUsersBtn').style.display=isAdmin()?'':'none';
+  document.getElementById('ni-comboios').style.display=hasPerm('comboios')?'':'none';
 }
-
-// ===== NAVIGATION =====
-function nav(pg){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('act'));
-  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('act'));
-  const page=document.getElementById('pg-'+pg);
-  if(page)page.classList.add('act');
-  const ni=document.getElementById('ni-'+pg);
-  if(ni)ni.classList.add('act');
-  const titles={dashboard:'Dashboard',comboios:'Comboios',diesel:'Diesel',turmas:'Turmas',fiscais:'Fiscais',escalas:'Escalas Subsolo',correias:'Prolongamento de Correia',relatorios:'Relatórios',importar:'Importar Dados',auditoria:'Auditoria'};
-  document.getElementById('tbTitle').textContent=titles[pg]||pg;
-  if(pg==='correias')renderCal();
-  // Close sidebar on mobile
-  if(window.innerWidth<=900)document.getElementById('sidebar').classList.remove('open');
-}
-
+function nav(pg){if(pg==='comboios'&&hasPerm('comboios')){document.getElementById('pg-comboios').classList.add('act');}}
 function toggleSb(){document.getElementById('sidebar').classList.toggle('open');}
 
-// ===== RENDER ALL =====
-function rAll(){rDash();rCb();rDi();rTu();rFi();rEs();rCo();rAu();popFilt();}
-
-// ===== DASHBOARD =====
-function rDash(){
-  const totalCheio=D.comboios.filter(c=>c.status==='CHEIO').reduce((s,c)=>s+c.qtd,0);
-  const totalDiesel=D.diesel.reduce((s,d)=>s+d.qtd,0);
-  const totalTurmas=T.filter(t=>t.status==='ativa').length;
-  const totalFiscais=F.filter(f=>f.status==='ativo').length;
-  const totalCorreias=C.length;
-  const atrasadas=C.filter(c=>c.status==='atrasada').length;
-
-  document.getElementById('kpiGrid').innerHTML=`
-    <div class="kc amber"><div class="ki"><i class="fas fa-train"></i></div><div class="kl">Comboios Cheios</div><div class="kv" style="color:var(--accent)">${totalCheio}</div><div class="ks">${D.comboios.length} registros total</div></div>
-    <div class="kc blue"><div class="ki"><i class="fas fa-gas-pump"></i></div><div class="kl">Diesel Total (L)</div><div class="kv" style="color:var(--info)">${totalDiesel.toLocaleString('pt-BR')}</div><div class="ks">${D.diesel.length} abastecimentos</div></div>
-    <div class="kc green"><div class="ki"><i class="fas fa-hard-hat"></i></div><div class="kl">Turmas Ativas</div><div class="kv" style="color:var(--ok)">${totalTurmas}</div><div class="ks">${F.length} fiscais cadastrados</div></div>
-    <div class="kc purple"><div class="ki"><i class="fas fa-link"></i></div><div class="kl">Serv. Correia</div><div class="kv" style="color:#8b5cf6">${totalCorreias}</div><div class="ks">${atrasadas} atrasados</div></div>
-  `;
-
-  // Chart: Comboios por turma
-  const byTurma={};
-  D.comboios.forEach(c=>{const k=c.turma||'SEM TURMA';byTurma[k]=(byTurma[k]||0)+c.qtd;});
-  const cbLabels=Object.keys(byTurma), cbData=Object.values(byTurma);
-  if(charts.cb){charts.cb.destroy();}
-  const cbCtx=document.getElementById('chCb');
-  if(cbCtx){
-    charts.cb=new Chart(cbCtx,{type:'bar',data:{labels:cbLabels,datasets:[{label:'Qtd',data:cbData,backgroundColor:'rgba(245,158,11,.7)',borderColor:'rgba(245,158,11,1)',borderWidth:1}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#9ba3b8',font:{size:9}}},y:{ticks:{color:'#9ba3b8',font:{size:9}}}}}});
-  }
-
-  // Chart: Diesel por setor
-  const bySetor={};
-  D.diesel.forEach(d=>{const k=d.setor||'SEM SETOR';bySetor[k]=(bySetor[k]||0)+d.qtd;});
-  const diLabels=Object.keys(bySetor), diData=Object.values(bySetor);
-  const colors=['#f59e0b','#3b82f6','#10b981','#ef4444','#8b5cf6','#ec4899','#14b8a6','#f97316'];
-  if(charts.di){charts.di.destroy();}
-  const diCtx=document.getElementById('chDi');
-  if(diCtx){
-    charts.di=new Chart(diCtx,{type:'doughnut',data:{labels:diLabels,datasets:[{data:diData,backgroundColor:colors,borderWidth:0}]},options:{responsive:true,plugins:{legend:{position:'right',labels:{color:'#9ba3b8',font:{size:9},boxWidth:10}}}}});
-  }
-
-  // Recent activity
-  const recent=A.slice(0,8);
-  document.getElementById('dashAct').innerHTML=recent.length?recent.map(l=>`
-    <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(42,47,69,.4)">
-      <span class="badge b-${l.action}">${l.action}</span>
-      <span style="flex:1;color:var(--fg)">${l.details}</span>
-      <span style="font-size:9px;color:var(--muted)">${new Date(l.ts).toLocaleString('pt-BR')}</span>
-    </div>`).join(''):'<p style="color:var(--muted);text-align:center;padding:20px">Nenhuma atividade</p>';
+function rCb(){
+  const fd=(document.getElementById('fCbDt')||{}).value||'';
+  const fs=(document.getElementById('fCbSt')||{}).value||'';
+  let d=D.comboios.filter(c=>(!fd||c.data===fd)&&(!fs||c.status===fs));
+  document.getElementById('cbBd').innerHTML=d.length?d.map((c,i)=>`<tr>
+    <td>${i+1}</td><td><span class="badge b-${(c.status||'vazio').toLowerCase()}">${c.status||'-'}</span></td>
+    <td>${c.qtd||0}</td><td>${((c.qtd||0)*LITROS_POR_COMBOIO).toLocaleString('pt-BR')} L</td>
+    <td>${c.data||'-'}</td><td>${c.fiscal||'-'}</td><td>${c.turma||'-'}</td><td>${c._by||'-'}</td>
+    <td><button class="btn btn-o btn-xs" onclick="openEcEd(${D.comboios.indexOf(c)})"><i class="fas fa-edit"></i></button> <button class="btn btn-d btn-xs" onclick="delCb(${D.comboios.indexOf(c)})"><i class="fas fa-trash"></i></button></td>
+  </tr>`).join(''):'<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:20px">Nenhum registro</td></tr>';
 }
+function openEc(){if(!hasPerm('edit')){toast('Sem permissão','error');return;}document.getElementById('ecIdx').value='';document.getElementById('ecSt').value='CHEIO';document.getElementById('ecQtd').value='';document.getElementById('ecDt').value=new Date().toISOString().split('T')[0];document.getElementById('ecFis').value='';document.getElementById('ecTur').value='';document.getElementById('ecMo').classList.add('show');}
+function openEcEd(i){if(!hasPerm('edit'))return;const c=D.comboios[i];document.getElementById('ecIdx').value=i;document.getElementById('ecSt').value=c.status||'CHEIO';document.getElementById('ecQtd').value=c.qtd||0;document.getElementById('ecDt').value=c.data||'';document.getElementById('ecFis').value=c.fiscal||'';document.getElementById('ecTur').value=c.turma||'';document.getElementById('ecMo').classList.add('show');}
+function svEc(){
+  if(!hasPerm('edit')){toast('Sem permissão','error');return;}
+  const i=document.getElementById('ecIdx').value;
+  const o={status:document.getElementById('ecSt').value,qtd:parseInt(document.getElementById('ecQtd').value)||0,data:document.getElementById('ecDt').value,fiscal:document.getElementById('ecFis').value.trim(),turma:document.getElementById('ecTur').value.trim(),_by:un()};
+  if(i==='')D.comboios.push(o); else D.comboios[parseInt(i,10)]=o;
+  svAll(); clMo('ecMo'); rCb(); toast('Salvo!','success');
+}
+function delCb(i){if(!hasPerm('delete')){toast('Sem permissão para excluir','error');return;}D.comboios.splice(i,1);svAll();rCb();}
+
+function openUsrMo(){
+  if(!isAdmin()){toast('Somente admin','error');return;}
+  const us=normalizeUsers();
+  document.getElementById('usrList').innerHTML=us.map(u=>`<div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:6px">
+    <div style="font-size:11px;font-weight:700">${u.name.toUpperCase()} (@${u.username})</div>
+    <div style="font-size:9px;color:var(--fg2);margin:6px 0">${u.role.toUpperCase()}</div>
+    ${u.username==='admin'?'':`<label style="font-size:9px;margin-right:8px"><input type="checkbox" ${u.permissions.comboios?'checked':''} onchange="setPerm('${u.username}','comboios',this.checked)"> Ver comboio</label>
+    <label style="font-size:9px;margin-right:8px"><input type="checkbox" ${u.permissions.edit?'checked':''} onchange="setPerm('${u.username}','edit',this.checked)"> Editar</label>
+    <label style="font-size:9px;margin-right:8px"><input type="checkbox" ${u.permissions.delete?'checked':''} onchange="setPerm('${u.username}','delete',this.checked)"> Excluir</label>
+    <label style="font-size:9px"><input type="checkbox" ${u.permissions.import?'checked':''} onchange="setPerm('${u.username}','import',this.checked)"> Importar Excel</label>`}
+  </div>`).join('');
+  document.getElementById('usrMo').classList.add('show');
+}
+function setPerm(username,key,val){
+  const us=normalizeUsers(); const i=us.findIndex(u=>u.username===username); if(i<0||username==='admin')return;
+  us[i].permissions[key]=val; sU(us);
+  if(CU.username===username){CU=us[i];updUI();rCb();}
+}
+function clMo(id){document.getElementById(id).classList.remove('show');}
+function tglPw(id,btn){const i=document.getElementById(id),ic=btn.querySelector('i');if(i.type==='password'){i.type='text';ic.className='fas fa-eye-slash';}else{i.type='password';ic.className='fas fa-eye';}}
+function openProf(){document.getElementById('profName').value=CU.name;document.getElementById('profUser').value=CU.username;document.getElementById('profMo').classList.add('show');}
+function svProf(){const us=normalizeUsers();const i=us.findIndex(x=>x.username===CU.username);if(i<0)return;us[i].name=document.getElementById('profName').value.trim()||us[i].name;sU(us);CU=us[i];updUI();clMo('profMo');}
+function delUsr(username){if(!isAdmin()||username==='admin')return;const us=normalizeUsers().filter(u=>u.username!==username);sU(us);openUsrMo();}
+
+function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();}
+function pick(row,cands){
+  const entries=Object.entries(row);
+  for(const [k,v] of entries){const nk=norm(k);if(cands.some(c=>nk.includes(c)))return v;}
+  return '';
+}
+function hFile(file){
+  if(!hasPerm('import')){toast('Sem permissão para importar','error');return;}
+  if(!file)return;
+  const fr=new FileReader();
+  fr.onload=()=>{
+    try{
+      const wb=XLSX.read(fr.result,{type:'array'});
+      let added=0;
+      wb.SheetNames.forEach(sn=>{
+        const rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{defval:''});
+        rows.forEach(r=>{
+          let qtd=parseInt(pick(r,['qtd','quantidade','comboio']))||0;
+          const litros=parseFloat(String(pick(r,['litro','volume'])).replace(',','.'))||0;
+          if(!qtd&&litros)qtd=Math.round(litros/LITROS_POR_COMBOIO);
+          const dataRaw=pick(r,['data','dia']); const data=parseDateAuto(dataRaw);
+          const fiscal=String(pick(r,['fiscal','solicitante','quem pediu','pedido por'])||'').trim();
+          const turma=String(pick(r,['turma','equipe','turno'])||'').trim();
+          const status=String(pick(r,['status'])||'CHEIO').toUpperCase();
+          if(qtd||data||fiscal||turma){D.comboios.push({status,qtd,data,fiscal,turma,_by:un()});added++;}
+        });
+      });
+      svAll(); rCb(); toast('Importado: '+added+' linhas','success');
+    }catch(e){toast('Erro ao ler Excel','error');}
+  };
+  fr.readAsArrayBuffer(file);
+}
+function parseDateAuto(v){
+  if(!v)return '';
+  if(typeof v==='number'){const d=XLSX.SSF.parse_date_code(v);if(d)return `${d.y}-${String(d.m).padStart(2,'0')}-${String(d.d).padStart(2,'0')}`;}
+  const s=String(v).trim();
+  if(/^\d{4}-\d{2}-\d{2}$/.test(s))return s;
+  const m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/); if(m)return `${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;
+  return s;
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  ensureAdmin(); normalizeUsers(); ldAll();
+  document.getElementById('topDate').textContent=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+  const s=localStorage.getItem(SK); const u=normalizeUsers().find(x=>x.username===s);
+  if(u){CU=u;enterApp();}else showLS();
+  window.addEventListener('storage',e=>{if(e.key===DK){ldAll();if(CU)rCb();}});
+});
 
 // ===== COMBOIOS =====
 function rCb(){
@@ -1042,6 +952,7 @@ function openEcEd(idx){
   document.getElementById('ecMo').classList.add('show');
 }
 function svEc(){
+  if(!hasPerm('editRecords')){toast('Sem permissão para editar','error');return;}
   const idx=document.getElementById('ecIdx').value;
   const obj={status:document.getElementById('ecSt').value,qtd:parseInt(document.getElementById('ecQtd').value)||0,data:document.getElementById('ecDt').value,fiscal:document.getElementById('ecFis').value.trim(),turma:document.getElementById('ecTur').value,_by:un()};
   if(idx===''){D.comboios.push(obj);au('criar','comboio','Novo: '+obj.qtd+'x '+obj.status+' - '+obj.fiscal);}
@@ -1049,6 +960,7 @@ function svEc(){
   sv(DK,D); clMo('ecMo'); rCb(); rDash(); toast('Salvo!','success');
 }
 function delCb(idx){
+  if(!hasPerm('deleteRecords')){toast('Sem permissão para excluir','error');return;}
   const c=D.comboios[idx];
   document.getElementById('cfmTi').textContent='Excluir Comboio';
   document.getElementById('cfmMsg').textContent='#'+(idx+1)+' — '+c.fiscal+' ('+c.data+')';
@@ -1149,6 +1061,7 @@ function openTuEd(idx){
   document.getElementById('turmaMo').classList.add('show');
 }
 function svTu(){
+  if(!hasPerm('editRecords')){toast('Sem permissão para editar','error');return;}
   const idx=document.getElementById('tuId').value;
   const obj={nome:document.getElementById('tuNm').value.trim().toUpperCase(),turno:document.getElementById('tuTn').value,setor:document.getElementById('tuSt').value.trim(),status:document.getElementById('tuStat').value,_by:un()};
   if(!obj.nome){toast('Nome obrigatório','error');return;}
@@ -1157,6 +1070,7 @@ function svTu(){
   sv(TK,T); clMo('turmaMo'); rTu(); rDash(); popFilt(); toast('Salvo!','success');
 }
 function delTu(idx){
+  if(!hasPerm('deleteRecords')){toast('Sem permissão para excluir','error');return;}
   const t=T[idx];
   document.getElementById('cfmTi').textContent='Excluir Turma';
   document.getElementById('cfmMsg').textContent='"'+t.nome+'"';
@@ -1201,6 +1115,7 @@ function openFiEd(idx){
   document.getElementById('fiscMo').classList.add('show');
 }
 function svFi(){
+  if(!hasPerm('editRecords')){toast('Sem permissão para editar','error');return;}
   const idx=document.getElementById('fiId').value;
   const obj={nome:document.getElementById('fiNm').value.trim(),matricula:document.getElementById('fiMt').value.trim(),turma:document.getElementById('fiTur').value,contato:document.getElementById('fiCt').value.trim(),status:document.getElementById('fiStat').value,_by:un()};
   if(!obj.nome){toast('Nome obrigatório','error');return;}
@@ -1209,6 +1124,7 @@ function svFi(){
   sv(FK,F); clMo('fiscMo'); rFi(); rDash(); toast('Salvo!','success');
 }
 function delFi(idx){
+  if(!hasPerm('deleteRecords')){toast('Sem permissão para excluir','error');return;}
   const f=F[idx];
   document.getElementById('cfmTi').textContent='Excluir Fiscal';
   document.getElementById('cfmMsg').textContent=f.nome.toUpperCase()+' ('+f.matricula+')';
@@ -1266,6 +1182,7 @@ function openEsEd(idx){
   document.getElementById('esMo').classList.add('show');
 }
 function svEs(){
+  if(!hasPerm('editRecords')){toast('Sem permissão para editar','error');return;}
   const idx=document.getElementById('esId').value;
   const membros=Array.from(document.querySelectorAll('#esMembros > div')).map(div=>({
     nome:div.querySelector('.es-nm')?.value.trim()||'',
@@ -1279,6 +1196,7 @@ function svEs(){
   sv(EK,E); clMo('esMo'); rEs(); rDash(); toast('Escala salva!','success');
 }
 function delEs(idx){
+  if(!hasPerm('deleteRecords')){toast('Sem permissão para excluir','error');return;}
   const e=E[idx];
   document.getElementById('cfmTi').textContent='Excluir Escala';
   document.getElementById('cfmMsg').textContent=(e.turma||'Escala')+' — '+e.data;
@@ -1346,6 +1264,7 @@ function openCoEd(idx){
   document.getElementById('correiaMo').classList.add('show');
 }
 function svCo(){
+  if(!hasPerm('editRecords')){toast('Sem permissão para editar','error');return;}
   const idx=document.getElementById('coId').value;
   const fim=document.getElementById('coFim').value;
   const obj={descricao:document.getElementById('coDesc').value.trim(),tipo:document.getElementById('coTipo').value,equipe:document.getElementById('coEqu').value,prazo:parseFloat(document.getElementById('coPrazo').value)||0,dataInicio:document.getElementById('coIni').value,dataConclusao:fim,obs:document.getElementById('coObs').value.trim(),_by:un()};
@@ -1357,6 +1276,7 @@ function svCo(){
   sv(CK,C); clMo('correiaMo'); rCo(); rDash(); toast('Salvo!','success');
 }
 function delCo(idx){
+  if(!hasPerm('deleteRecords')){toast('Sem permissão para excluir','error');return;}
   const c=C[idx];
   document.getElementById('cfmTi').textContent='Excluir Serviço';
   document.getElementById('cfmMsg').textContent='"'+c.descricao+'" ('+c.tipo+')';
@@ -1422,19 +1342,40 @@ function rAu(){
 
 // ===== USUÁRIOS =====
 function openUsrMo(){
-  const us=gU();
+  if(!hasPerm('manageUsers')){toast('Sem permissão para gerenciar usuários','error');return;}
+  const us=syncUsers();
   document.getElementById('usrList').innerHTML=us.length?us.map(u=>`
     <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--bg3);border-radius:7px;border:1px solid var(--border)${u.username===CU.username?';border-color:rgba(245,158,11,.4)':''}">
       <div style="width:32px;height:32px;border-radius:7px;overflow:hidden;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-shrink:0">${u.photo?'<img src="'+u.photo+'" style="width:100%;height:100%;object-fit:cover">':'<i class="fas fa-user" style="color:var(--muted);font-size:12px"></i>'}</div>
       <div style="flex:1;min-width:0">
         <div style="font-size:11px;font-weight:700">${u.name.toUpperCase()}${u.username===CU.username?' <span style="font-size:8px;color:var(--accent)">(você)</span>':''}</div>
-        <div style="font-size:9px;color:var(--muted);font-family:JetBrains Mono,monospace">@${u.username}</div>
+        <div style="font-size:9px;color:var(--muted);font-family:JetBrains Mono,monospace">@${u.username} | ${u.role||'operador'}</div>
+        ${u.username!==CU.username?`<div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">
+          <select class="fi" onchange="setRole('${u.username}',this.value)" style="padding:4px 8px"><option value="operador"${u.role==='operador'?' selected':''}>Operador</option><option value="admin"${u.role==='admin'?' selected':''}>Admin</option></select>
+          <label style="font-size:9px"><input type="checkbox" ${u.permissions.comboios?'checked':''} onchange="setPerm('${u.username}','comboios',this.checked)"> Comboios</label>
+          <label style="font-size:9px"><input type="checkbox" ${u.permissions.escalas?'checked':''} onchange="setPerm('${u.username}','escalas',this.checked)"> Escalas</label>
+          <label style="font-size:9px"><input type="checkbox" ${u.permissions.importar?'checked':''} onchange="setPerm('${u.username}','importar',this.checked)"> Importar</label>
+          <label style="font-size:9px"><input type="checkbox" ${u.permissions.auditoria?'checked':''} onchange="setPerm('${u.username}','auditoria',this.checked)"> Auditoria</label>
+          <label style="font-size:9px"><input type="checkbox" ${u.permissions.deleteRecords?'checked':''} onchange="setPerm('${u.username}','deleteRecords',this.checked)"> Excluir</label>
+        </div>`:''}
       </div>
       ${u.username!==CU.username?'<button class="btn btn-d btn-xs" onclick="delUsr(\''+u.username+'\')"><i class="fas fa-trash"></i></button>':''}
     </div>`).join(''):'<p style="color:var(--muted);text-align:center;padding:20px">Nenhum usuário</p>';
   document.getElementById('usrMo').classList.add('show');
 }
+function setRole(username,role){
+  const us=syncUsers();const i=us.findIndex(u=>u.username===username);if(i<0)return;
+  us[i].role=role; us[i].permissions=role==='admin'?allPerms(true):defaultPerms();
+  sU(us); if(CU.username===username)CU=us[i]; openUsrMo(); updUI(); rAll();
+}
+function setPerm(username,key,val){
+  const us=syncUsers();const i=us.findIndex(u=>u.username===username);if(i<0)return;
+  if(us[i].role==='admin')return;
+  us[i].permissions[key]=val; sU(us);
+  if(CU.username===username){CU=us[i];updUI();rAll();}
+}
 function delUsr(username){
+  if(!hasPerm('manageUsers')){toast('Sem permissão','error');return;}
   document.getElementById('cfmTi').textContent='Excluir Usuário';
   document.getElementById('cfmMsg').textContent='@'+username;
   document.getElementById('cfmMo').classList.add('show');
@@ -1534,20 +1475,36 @@ function popFilt(){
 
 // ===== IMPORTAR EXCEL =====
 function hFile(file){
+  if(!hasPerm('importar')){toast('Sem permissão para importar','error');return;}
   if(!file)return;
   const r=new FileReader();
-  r.onload=e=>{
+  r.onload=()=>{
     try{
-      const wb=XLSX.read(e.target.result,{type:'binary'});
+      const wb=XLSX.read(r.result,{type:'array'});
       let added=0;
+      const pick=(row,keys)=>{
+        for(const k of Object.keys(row)){
+          const nk=k.toString().trim().toLowerCase();
+          if(keys.includes(nk))return row[k];
+        }
+        return '';
+      };
       wb.SheetNames.forEach(sn=>{
         const ws=wb.Sheets[sn];
         const rows=XLSX.utils.sheet_to_json(ws,{defval:''});
         const nm=sn.toUpperCase();
         if(nm.includes('COMBOIO')){
           rows.forEach(row=>{
-            const obj={status:String(row.STATUS||row.status||'CHEIO').toUpperCase(),qtd:parseInt(row.QTD||row.Qtd||row.qtd||0),data:row.DATA||row.Data||row.data||'',fiscal:String(row.FISCAL||row.Fiscal||row.fiscal||''),turma:String(row.TURMA||row.Turma||row.turma||''),_by:un()};
+            const obj={status:String(pick(row,['status'])||'CHEIO').toUpperCase(),qtd:parseInt(pick(row,['qtd','quantidade'])||0),data:String(pick(row,['data'])||''),fiscal:String(pick(row,['fiscal','solicitante','quem pediu'])||''),turma:String(pick(row,['turma','equipe'])||''),_by:un()};
             D.comboios.push(obj);added++;
+          });
+        } else if(nm.includes('ESCALA')){
+          rows.forEach(row=>{
+            const turma=String(pick(row,['turma','equipe'])||'');
+            const fiscal=String(pick(row,['fiscal'])||'');
+            const data=String(pick(row,['data'])||'');
+            const membros=String(pick(row,['membros','equipe formada por'])||'').split(',').map(x=>x.trim()).filter(Boolean).map(n=>({nome:n,funcao:'',ferista:false}));
+            E.push({id:Date.now()+Math.random(),data,turma,fiscal,membros,_by:un(),createdAt:new Date().toISOString()});added++;
           });
         } else if(nm.includes('DIESEL')||nm.includes('ABAST')){
           rows.forEach(row=>{
@@ -1556,11 +1513,11 @@ function hFile(file){
           });
         }
       });
-      sv(DK,D);au('importar','dados','Excel: '+file.name+' ('+added+' registros)');rAll();
+      svAll();au('importar','dados','Excel: '+file.name+' ('+added+' registros)');rAll();
       toast('Importado: '+added+' registros','success');
     }catch(err){toast('Erro ao processar Excel','error');}
   };
-  r.readAsBinaryString(file);
+  r.readAsArrayBuffer(file);
 }
 
 // ===== IMPORTAR EMAIL =====
@@ -1591,8 +1548,9 @@ function parseDateBR(s){
 
 // ===== LIMPAR DADOS =====
 function cfmClear(){
+  if(!hasPerm('importar')){toast('Sem permissão','error');return;}
   document.getElementById('cfmTi').textContent='Limpar Todos os Dados';
-  document.getElementById('cfmMsg').textContent='Esta ação irá excluir todos os comboios, diesel, turmas, fiscais, escalas e correias. Não pode ser desfeita.';
+  document.getElementById('cfmMsg').textContent='Esta ação irá excluir todos os comboios, turmas, fiscais, escalas e correias. Não pode ser desfeita.';
   document.getElementById('cfmMo').classList.add('show');
   document.getElementById('cfmBtn').onclick=()=>{
     D={comboios:[],diesel:[],consumoTotal:[]};T=[];F=[];E=[];C=[];
