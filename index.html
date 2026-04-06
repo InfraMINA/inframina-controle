@@ -9,119 +9,165 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-:root{--bg:#111318;--bg2:#181b22;--card:#1e2128;--card2:#252830;--border:#2e3139;--border2:#3a3e48;--red:#e53e3e;--orange:#ed8936;--yellow:#ecc94b;--redg:rgba(229,62,62,.12);--orangeg:rgba(237,137,54,.12);--yellowg:rgba(236,201,75,.1);--teal:#38b2ac;--green:#48bb78;--text:#eaedf2;--muted:#6b7280;--glass:rgba(30,33,40,.92)}
+:root{--bg:#0e1015;--bg2:#151820;--card:#1a1e28;--card2:#222630;--border:#2a2f3a;--border2:#363c4a;--red:#e53e3e;--orange:#ed8936;--yellow:#ecc94b;--redg:rgba(229,62,62,.1);--orangeg:rgba(237,137,54,.1);--yellowg:rgba(236,201,75,.08);--teal:#38b2ac;--green:#48bb78;--text:#e8ebf0;--muted:#5f6577;--glass:rgba(26,30,40,.94)}
 *{margin:0;padding:0;box-sizing:border-box;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
 body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 15% 0%,rgba(229,62,62,.03) 0%,transparent 50%),radial-gradient(ellipse at 85% 100%,rgba(237,137,54,.025) 0%,transparent 50%);pointer-events:none;z-index:0}
 .mono{font-family:'JetBrains Mono',monospace}
-.sidebar{position:fixed;left:0;top:0;bottom:0;width:250px;background:var(--bg2);border-right:1px solid var(--border);z-index:50;display:flex;flex-direction:column;transition:transform .3s}
-.nav-item{display:flex;align-items:center;gap:11px;padding:10px 18px;cursor:pointer;color:var(--muted);transition:all .2s;border-left:3px solid transparent;font-size:13px;font-weight:500}
-.nav-item:hover{color:var(--text);background:rgba(237,137,54,.04)}
-.nav-item.active{color:var(--orange);background:rgba(237,137,54,.07);border-left-color:var(--orange)}
-.nav-item i{width:18px;text-align:center;font-size:14px}
-.pending-badge{margin-left:auto;background:var(--red);color:#fff;font-size:9px;font-weight:700;padding:1px 6px;border-radius:10px;min-width:18px;text-align:center;line-height:16px}
-.main-content{margin-left:250px;min-height:100vh;position:relative;z-index:1}
-.top-bar{position:sticky;top:0;z-index:40;background:var(--glass);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between}
-.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;transition:all .2s}
-.card:hover{border-color:var(--border2)}
-.stat-card{position:relative;overflow:hidden}.stat-card .stat-bar{position:absolute;bottom:0;left:0;right:0;height:3px}
-.stat-card.red .stat-bar{background:var(--red)}.stat-card.orange .stat-bar{background:var(--orange)}.stat-card.yellow .stat-bar{background:var(--yellow)}.stat-card.teal .stat-bar{background:var(--teal)}
-.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.3px;text-transform:uppercase}
-.badge-active{background:rgba(72,187,120,.12);color:var(--green)}.badge-pending{background:var(--orangeg);color:var(--orange)}.badge-off{background:var(--redg);color:var(--red)}.badge-info{background:rgba(56,178,172,.1);color:var(--teal)}.badge-rejected{background:var(--redg);color:var(--red)}
-.btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:inherit}
-.btn-primary{background:linear-gradient(135deg,var(--orange),#dd6b20);color:#fff}.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(237,137,54,.25)}
+
+/* ===== LOGIN ===== */
+.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{width:100%;max-width:340px}
+.login-logo{text-align:center;margin-bottom:28px}
+.login-logo img{height:42px;width:auto;object-fit:contain;display:inline-block;vertical-align:middle}
+.login-logo-fb{display:none}
+.login-logo img.error~.login-logo-fb{display:block}
+.login-logo img.error{display:none}
+.login-logo-fb .bars{display:inline-flex;gap:3px;height:4px;vertical-align:middle}
+.login-logo-fb .bars span{width:22px;border-radius:1.5px}
+.login-logo-fb .bars span:nth-child(1){background:var(--red)}
+.login-logo-fb .bars span:nth-child(2){background:var(--orange)}
+.login-logo-fb .bars span:nth-child(3){background:var(--yellow)}
+.login-logo-fb .wm{font-size:16px;font-weight:900;letter-spacing:4px;display:inline-block;vertical-align:middle;margin-left:10px}
+.login-title{text-align:center;margin-bottom:4px;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.login-sub{text-align:center;margin-bottom:24px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--border2)}
+.login-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px}
+.login-link{text-align:center;margin-top:16px;font-size:11px;color:var(--muted)}
+.login-link button{background:none;border:none;color:var(--orange);font-weight:600;cursor:pointer;font-family:inherit;font-size:11px}
+.login-link button:hover{text-decoration:underline}
+
+/* ===== SIDEBAR ===== */
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:230px;background:var(--bg2);border-right:1px solid var(--border);z-index:50;display:flex;flex-direction:column;transition:transform .25s}
+.sb-head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.sb-head img{height:24px;width:auto;object-fit:contain}
+.sb-head-fb{display:none;align-items:center;gap:6px}
+.sb-head-fb .mb{display:flex;gap:2px;height:3px}.sb-head-fb .mb span{width:12px;border-radius:1px}
+.sb-head-fb .mb span:nth-child(1){background:var(--red)}.sb-head-fb .mb span:nth-child(2){background:var(--orange)}.sb-head-fb .mb span:nth-child(3){background:var(--yellow)}
+.sb-head-fb .wd{font-size:12px;font-weight:800;letter-spacing:2px}
+.sb-head img.error~.sb-head-fb{display:flex}.sb-head img.error{display:none}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;color:var(--muted);transition:all .15s;border-left:3px solid transparent;font-size:12.5px;font-weight:500}
+.nav-item:hover{color:var(--text);background:rgba(237,137,54,.03)}
+.nav-item.active{color:var(--orange);background:rgba(237,137,54,.06);border-left-color:var(--orange)}
+.nav-item i{width:16px;text-align:center;font-size:13px}
+.nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:8px;font-weight:700;padding:0 5px;border-radius:8px;line-height:16px;min-width:16px;text-align:center}
+.sb-foot{padding:12px;border-top:1px solid var(--border);margin-top:auto}
+.sb-user{display:flex;align-items:center;gap:8px;margin-bottom:8px;cursor:pointer}
+.sb-user-av{width:28px;height:28px;border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--card2);font-size:10px;font-weight:700;color:var(--orange)}
+.sb-user-av img{width:100%;height:100%;object-fit:cover}
+.sb-user-info{flex:1;min-width:0}.sb-user-info div:first-child{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sb-user-info div:last-child{font-size:9px;color:var(--muted)}
+.sb-logout{width:100%;padding:6px 0;border:none;background:none;color:var(--muted);font-size:11px;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:6px;transition:all .15s}
+.sb-logout:hover{background:var(--card);color:var(--red)}
+
+/* ===== MAIN ===== */
+.main-content{margin-left:230px;min-height:100vh;position:relative;z-index:1}
+.top-bar{position:sticky;top:0;z-index:40;background:var(--glass);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:10px 22px;display:flex;align-items:center;justify-content:space-between}
+.top-bar h1{font-size:13px;font-weight:700}
+.top-right{display:flex;align-items:center;gap:12px}
+.top-clock{font-size:10px;color:var(--muted)}
+
+/* ===== COMPONENTS ===== */
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700;letter-spacing:.3px;text-transform:uppercase}
+.badge-active{background:rgba(72,187,120,.1);color:var(--green)}.badge-pending{background:var(--orangeg);color:var(--orange)}.badge-off{background:var(--redg);color:var(--red)}.badge-info{background:rgba(56,178,172,.08);color:var(--teal)}.badge-rejected{background:var(--redg);color:var(--red)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;transition:all .15s;font-family:inherit}
+.btn-primary{background:linear-gradient(135deg,var(--orange),#dd6b20);color:#fff}.btn-primary:hover{box-shadow:0 3px 10px rgba(237,137,54,.2)}
 .btn-secondary{background:var(--card2);color:var(--text);border:1px solid var(--border)}.btn-secondary:hover{border-color:var(--orange);color:var(--orange)}
-.btn-danger{background:var(--redg);color:var(--red);border:1px solid rgba(229,62,62,.2)}.btn-danger:hover{background:rgba(229,62,62,.2)}
-.btn-sm{padding:5px 10px;font-size:11px}
-.input{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:8px 12px;color:var(--text);font-size:12px;font-family:inherit;width:100%;transition:border-color .2s}.input:focus{outline:none;border-color:var(--orange)}
-select.input{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%236b7280' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
-.tw{overflow-x:auto;border-radius:8px;border:1px solid var(--border)}.tw table{width:100%;border-collapse:collapse;font-size:12px}
-.tw th{background:var(--bg2);padding:9px 12px;text-align:left;font-weight:600;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
-.tw td{padding:9px 12px;border-top:1px solid var(--border);white-space:nowrap}.tw tr:hover td{background:rgba(237,137,54,.02)}
-.toggle{position:relative;width:38px;height:20px;background:var(--border);border-radius:10px;cursor:pointer;transition:background .2s;flex-shrink:0}
-.toggle.on{background:var(--orange)}.toggle::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s}.toggle.on::after{transform:translateX(18px)}
-.toggle-ro{pointer-events:none;opacity:.8}
-.toast-container{position:fixed;top:16px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:6px}
-.toast{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:8px;background:var(--card);border:1px solid var(--border);box-shadow:0 8px 25px rgba(0,0,0,.4);transform:translateX(120%);transition:transform .3s;font-size:12px}.toast.show{transform:translateX(0)}
-.toast-success i{color:var(--green)}.toast-error i{color:var(--red)}.toast-info i{color:var(--teal)}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
-.modal-overlay.show{opacity:1;pointer-events:all}
-.modal{background:var(--card);border:1px solid var(--border);border-radius:12px;width:92%;max-width:520px;max-height:82vh;overflow-y:auto;transform:scale(.95);transition:transform .25s}.modal-overlay.show .modal{transform:scale(1)}
-.modal-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.modal-body{padding:20px}.modal-foot{padding:12px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
-.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative}
-.login-screen::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(237,137,54,.05) 0%,transparent 60%)}
-.login-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:36px;width:370px;position:relative;z-index:1}
-.logo-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:18px}
-.logo-wrap img{height:68px;width:auto;object-fit:contain}
-.logo-fallback{display:none;flex-direction:column;align-items:center;gap:6px}
-.logo-fallback .bars{display:flex;gap:4px;height:5px}.logo-fallback .bars span{width:28px;border-radius:2px}
-.logo-fallback .bars span:nth-child(1){background:var(--red)}.logo-fallback .bars span:nth-child(2){background:var(--orange)}.logo-fallback .bars span:nth-child(3){background:var(--yellow)}
-.logo-fallback .wordmark{font-size:22px;font-weight:900;letter-spacing:5px;color:var(--text)}
-.logo-wrap img.error~.logo-fallback{display:flex}.logo-wrap img.error{display:none}
-.sb-logo{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border)}
-.sb-logo img{height:26px;width:auto;object-fit:contain}
-.sb-logo-fb{display:none;align-items:center;gap:8px}
-.sb-logo-fb .mb{display:flex;gap:2px;height:4px}.sb-logo-fb .mb span{width:14px;border-radius:1px}
-.sb-logo-fb .mb span:nth-child(1){background:var(--red)}.sb-logo-fb .mb span:nth-child(2){background:var(--orange)}.sb-logo-fb .mb span:nth-child(3){background:var(--yellow)}
-.sb-logo-fb .wd{font-size:14px;font-weight:800;letter-spacing:3px}
-.sb-logo img.error~.sb-logo-fb{display:flex}.sb-logo img.error{display:none}
-.pulse-dot{width:7px;height:7px;border-radius:50%;animation:pulse 2s infinite}
+.btn-danger{background:var(--redg);color:var(--red);border:1px solid rgba(229,62,62,.15)}.btn-danger:hover{background:rgba(229,62,62,.18)}
+.btn-sm{padding:4px 9px;font-size:10px}
+.input{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 11px;color:var(--text);font-size:11.5px;font-family:inherit;width:100%;transition:border-color .15s}.input:focus{outline:none;border-color:var(--orange)}
+select.input{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' fill='%235f6577' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+.tw{overflow-x:auto;border-radius:6px;border:1px solid var(--border)}.tw table{width:100%;border-collapse:collapse;font-size:11.5px}
+.tw th{background:var(--bg2);padding:8px 10px;text-align:left;font-weight:600;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+.tw td{padding:8px 10px;border-top:1px solid var(--border);white-space:nowrap}.tw tr:hover td{background:rgba(237,137,54,.015)}
+.toggle{position:relative;width:34px;height:18px;background:var(--border);border-radius:9px;cursor:pointer;transition:background .15s;flex-shrink:0}
+.toggle.on{background:var(--orange)}.toggle::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;background:#fff;border-radius:50%;transition:transform .15s}.toggle.on::after{transform:translateX(16px)}
+.toggle-ro{pointer-events:none;opacity:.7}
+.stat-card{position:relative;overflow:hidden}.stat-card .sb{position:absolute;bottom:0;left:0;right:0;height:2px}
+.stat-card.c-red .sb{background:var(--red)}.stat-card.c-orange .sb{background:var(--orange)}.stat-card.c-yellow .sb{background:var(--yellow)}.stat-card.c-teal .sb{background:var(--teal)}
+.section{display:none;padding:20px 22px}.section.active{display:block}
+.pulse-dot{width:6px;height:6px;border-radius:50%;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.fade-up{animation:fadeUp .35s ease both}
-.section{display:none;padding:24px}.section.active{display:block}
-.train-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;position:relative;overflow:hidden}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fu .3s ease both}
+.train-card{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:12px;position:relative;overflow:hidden}
 .train-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
 .train-card.st-transit::before{background:var(--green)}.train-card.st-station::before{background:var(--teal)}.train-card.st-delayed::before{background:var(--red)}.train-card.st-maintenance::before{background:var(--orange)}
-.pbar{height:5px;background:var(--border);border-radius:3px;overflow:hidden}.pbar .fill{height:100%;border-radius:3px;transition:width .5s}
-.map-row{display:grid;grid-template-columns:1fr 30px 1fr;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid rgba(46,49,57,.6)}.map-row:last-child{border:none}
-.map-arrow{color:var(--orange);text-align:center;font-size:11px}
-.photo-circle{border-radius:50%;overflow:hidden;object-fit:cover}
-.photo-overlay{position:absolute;inset:0;border-radius:50%;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;cursor:pointer}
-.photo-overlay:hover{opacity:1}
-@media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main-content{margin-left:0}.mob-toggle{display:flex!important}}
+.pbar{height:4px;background:var(--border);border-radius:2px;overflow:hidden}.pbar .fill{height:100%;border-radius:2px}
+.map-row{display:grid;grid-template-columns:1fr 24px 1fr;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid rgba(42,47,58,.5)}.map-row:last-child{border:none}
+.photo-overlay{position:absolute;inset:0;border-radius:50%;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s;cursor:pointer}.photo-overlay:hover{opacity:1}
+.tab-bar{display:flex;gap:2px;background:var(--bg);border-radius:6px;padding:2px;margin-bottom:14px}
+.tab-btn{flex:1;padding:7px 8px;border-radius:5px;font-size:11px;font-weight:600;border:none;cursor:pointer;background:none;color:var(--muted);font-family:inherit;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:5px}
+.tab-btn.active{background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.2)}.tab-btn.active.t-red{color:var(--red)}.tab-btn.active.t-orange{color:var(--orange)}.tab-btn.active.t-yellow{color:var(--yellow)}
+.mini-count{background:var(--red);color:#fff;font-size:8px;padding:0 4px;border-radius:6px;line-height:14px}
+/* Toast & Modal */
+.toast-container{position:fixed;top:14px;right:14px;z-index:9999;display:flex;flex-direction:column;gap:5px}
+.toast{display:flex;align-items:center;gap:7px;padding:9px 14px;border-radius:7px;background:var(--card);border:1px solid var(--border);box-shadow:0 6px 20px rgba(0,0,0,.35);transform:translateX(110%);transition:transform .25s;font-size:11px}.toast.show{transform:translateX(0)}
+.toast-success i{color:var(--green)}.toast-error i{color:var(--red)}.toast-info i{color:var(--teal)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(3px);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.show{opacity:1;pointer-events:all}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:10px;width:92%;max-width:480px;max-height:80vh;overflow-y:auto;transform:scale(.96);transition:transform .2s}.modal-overlay.show .modal{transform:scale(1)}
+.modal-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}.modal-head h3{font-size:13px;font-weight:600}
+.modal-body{padding:18px}.modal-foot{padding:10px 18px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:6px}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main-content{margin-left:0}.mob-tog{display:flex!important}}
 </style>
 </head>
 <body>
 
 <div id="toastContainer" class="toast-container"></div>
 <div id="modalOverlay" class="modal-overlay" onclick="if(event.target===this)closeModal()">
-  <div class="modal"><div class="modal-head"><h3 id="modalTitle" class="font-semibold text-sm"></h3><button onclick="closeModal()" class="text-[var(--muted)] hover:text-[var(--text)]"><i class="fas fa-times"></i></button></div><div class="modal-body" id="modalBody"></div><div class="modal-foot" id="modalFoot"></div></div>
+  <div class="modal"><div class="modal-head"><h3 id="modalTitle"></h3><button onclick="closeModal()" class="text-[var(--muted)] hover:text-[var(--text)] text-sm"><i class="fas fa-times"></i></button></div><div class="modal-body" id="modalBody"></div><div class="modal-foot" id="modalFoot"></div></div>
 </div>
 
 <!-- LOGIN -->
 <div id="loginScreen" class="login-screen">
   <div class="login-box fade-up">
-    <div class="logo-wrap"><img src="assets/logo.png" alt="INFRAMINA" onerror="this.classList.add('error')"><div class="logo-fallback"><div class="bars"><span></span><span></span><span></span></div><div class="wordmark">INFRAMINA</div></div></div>
-    <p class="text-center text-xs font-semibold mb-5 tracking-wide">Sistema de Controle</p>
-    <div class="space-y-3">
-      <div><label class="text-[10px] text-[var(--muted)] mb-1 block uppercase tracking-wider">Usuário</label><input id="loginUser" class="input" placeholder="Digite seu usuário" autocomplete="off"></div>
-      <div class="relative"><label class="text-[10px] text-[var(--muted)] mb-1 block uppercase tracking-wider">Senha</label><input id="loginPass" type="password" class="input" style="padding-right:36px" placeholder="Digite sua senha"><button type="button" class="absolute right-2 top-[22px] text-[var(--muted)] hover:text-[var(--text)]" onclick="togglePw('loginPass',this)"><i class="fas fa-eye text-xs"></i></button></div>
-      <button onclick="doLogin()" class="btn btn-primary w-full justify-center mt-1"><i class="fas fa-sign-in-alt"></i>Entrar</button>
+    <div class="login-logo">
+      <img src="assets/logo.png" alt="" onerror="this.classList.add('error')">
+      <div class="login-logo-fb">
+        <div class="bars"><span></span><span></span><span></span></div>
+        <span class="wm">INFRAMINA</span>
+      </div>
     </div>
-    <p id="loginError" class="text-[var(--red)] text-[11px] text-center mt-3 hidden"></p>
-    <div class="text-center mt-5"><span class="text-xs text-[var(--muted)]">Não tem conta?</span> <button class="text-xs font-semibold border-none bg-transparent cursor-pointer hover:underline" style="color:var(--orange)" onclick="openRegister()">Criar Conta</button></div>
+    <div class="login-title">Sistema de Controle</div>
+    <div class="login-sub">Acesso ao Sistema</div>
+    <div class="login-card">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div><label class="text-[9px] text-[var(--muted)] uppercase tracking-wider block mb-1">Usuário</label><input id="loginUser" class="input" placeholder="Digite seu usuário" autocomplete="off"></div>
+        <div style="position:relative"><label class="text-[9px] text-[var(--muted)] uppercase tracking-wider block mb-1">Senha</label><input id="loginPass" type="password" class="input" style="padding-right:32px" placeholder="Digite sua senha"><button type="button" style="position:absolute;right:8px;top:18px;background:none;border:none;color:var(--muted);cursor:pointer;padding:2px" onclick="togglePw('loginPass',this)"><i class="fas fa-eye" style="font-size:10px"></i></button></div>
+        <button onclick="doLogin()" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:4px"><i class="fas fa-arrow-right-to-bracket"></i>Entrar</button>
+      </div>
+      <p id="loginError" class="text-[var(--red)] text-[10px] text-center mt-3" style="display:none"></p>
+    </div>
+    <div class="login-link">Não tem conta? <button onclick="openRegister()">Criar Conta</button></div>
   </div>
 </div>
 
 <!-- APP -->
-<div id="mainApp" class="hidden">
+<div id="mainApp" style="display:none">
   <aside class="sidebar" id="sidebar">
-    <div class="sb-logo"><img src="assets/logo.png" alt="INFRAMINA" onerror="this.classList.add('error')"><div class="sb-logo-fb"><div class="mb"><span></span><span></span><span></span></div><div class="wd">INFRAMINA</div></div></div>
-    <div class="flex-1 py-2 overflow-y-auto" id="navList"></div>
-    <div class="p-3 border-t border-[var(--border)]">
-      <div class="flex items-center gap-2.5 mb-2.5 cursor-pointer" onclick="navTo('secProfile')">
-        <div id="sbAvatar" class="w-7 h-7 rounded-full bg-[var(--card2)] flex items-center justify-center text-[10px] font-bold text-[var(--orange)] flex-shrink-0">A</div>
-        <div><div class="text-[11px] font-semibold" id="sbName">Admin</div><div class="text-[9px] text-[var(--muted)]" id="sbRole">Administrador</div></div>
+    <div class="sb-head">
+      <img src="assets/logo.png" alt="" onerror="this.classList.add('error')">
+      <div class="sb-head-fb"><div class="mb"><span></span><span></span><span></span></div><div class="wd">INFRAMINA</div></div>
+    </div>
+    <div style="flex:1;padding:6px 0;overflow-y:auto" id="navList"></div>
+    <div class="sb-foot">
+      <div class="sb-user" onclick="navTo('secProfile')">
+        <div class="sb-user-av" id="sbAv">A</div>
+        <div class="sb-user-info"><div id="sbNm">Admin</div><div id="sbRl">Administrador</div></div>
+        <i class="fas fa-chevron-right" style="font-size:8px;color:var(--muted)"></i>
       </div>
-      <button onclick="doLogout()" class="btn btn-secondary btn-sm w-full justify-center"><i class="fas fa-sign-out-alt"></i>Sair</button>
+      <button class="sb-logout" onclick="doLogout()"><i class="fas fa-right-from-bracket"></i>Sair</button>
     </div>
   </aside>
   <div class="main-content">
     <div class="top-bar">
-      <div class="flex items-center gap-3"><button onclick="document.getElementById('sidebar').classList.toggle('open')" class="mob-toggle hidden w-7 h-7 rounded bg-[var(--card)] items-center justify-center text-[var(--muted)] text-xs"><i class="fas fa-bars"></i></button><h1 id="pageTitle" class="font-bold text-sm"></h1></div>
-      <div class="flex items-center gap-3"><div class="mono text-[11px] text-[var(--muted)]" id="clock">--:--:--</div><div class="badge badge-active" id="shiftBadge">--</div></div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button onclick="document.getElementById('sidebar').classList.toggle('open')" class="mob-tog" style="display:none;width:26px;height:26px;border-radius:5px;background:var(--card);border:1px solid var(--border);color:var(--muted);align-items:center;justify-content:center;cursor:pointer;font-size:11px"><i class="fas fa-bars"></i></button>
+        <h1 id="pageTitle"></h1>
+      </div>
+      <div class="top-right">
+        <span class="top-clock mono" id="clock">--:--:--</span>
+        <span class="badge badge-active" id="shiftBadge">--</span>
+      </div>
     </div>
     <div id="secOverview" class="section active"></div>
     <div id="secProfile" class="section"></div>
@@ -132,262 +178,207 @@ select.input{cursor:pointer;appearance:none;background-image:url("data:image/svg
 </div>
 
 <script>
-const LOGO_PATH='assets/logo.png';
-document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('img[src="assets/logo.png"]').forEach(i=>i.src=LOGO_PATH)});
+const LOGO='assets/logo.png';
+document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('img[src="assets/logo.png"]').forEach(i=>i.src=LOGO)});
 const K={U:'im_users',R:'im_roles',S:'im_session',D:'im_shared'};
 const PERMS={dashboard:'Dashboard',trains:'Comboios',teams:'Controle de Equipes',excel_import:'Importar Excel',user_management:'Painel Admin',role_management:'Cargos',shift_management:'Turnos',edit_data:'Editar Dados',delete_data:'Excluir Dados'};
-const SECTIONS=[{id:'secOverview',label:'Visão Geral',icon:'fa-th-large',perms:['dashboard']},{id:'secProfile',label:'Meu Perfil',icon:'fa-user-circle',perms:[]},{id:'secAdmin',label:'Painel Admin',icon:'fa-user-shield',perms:['user_management']},{id:'secShifts',label:'Turnos',icon:'fa-clock',perms:['shift_management']},{id:'secExcel',label:'Importar Excel',icon:'fa-file-excel',perms:['excel_import']}];
+const SECS=[{id:'secOverview',label:'Visão Geral',icon:'fa-th-large',perms:['dashboard']},{id:'secProfile',label:'Meu Perfil',icon:'fa-user-circle',perms:[]},{id:'secAdmin',label:'Painel Admin',icon:'fa-user-shield',perms:['user_management']},{id:'secShifts',label:'Turnos',icon:'fa-clock',perms:['shift_management']},{id:'secExcel',label:'Importar Excel',icon:'fa-file-excel',perms:['excel_import']}];
 const FP={nome:['nome','name','funcionário','funcionario','colaborador','operador','agente'],profissao:['profissão','profissao','cargo','função','funcao','ocupação','ocupacao'],turno:['turno','shift','período','periodo'],turma:['turma','equipe','team','grupo','escala'],fiscal:['fiscal','inspetor','fiscalização','fiscalizacao'],matricula:['matrícula','matricula','id','registro','cpf','codigo'],trem:['trem','comboio','locomotiva','loco','formação','formacao'],status:['status','situação','situacao','estado','condição'],observacao:['observação','observacao','obs','nota','anotação','anotacao'],data:['data','date','dia'],hora:['hora','time','horário','horario']};
 const MID='master_0';
-
 function defShared(){return{shifts:[{id:'s1',name:'1° Turno',time:'06:00 - 14:00',turma:'A',fiscal:'Ana Souza',status:'ativo'},{id:'s2',name:'2° Turno',time:'14:00 - 22:00',turma:'B',fiscal:'Roberto Lima',status:'pendente'},{id:'s3',name:'3° Turno',time:'22:00 - 06:00',turma:'C',fiscal:'Fernanda Dias',status:'off'}],members:[{id:'m1',nome:'Carlos Silva',profissao:'Maquinista',turno:'1° Turno',turma:'A',matricula:'MT-1042',trem:'T-101',status:'ativo',observacao:'',data:'',hora:''},{id:'m2',nome:'João Santos',profissao:'Conductor',turno:'1° Turno',turma:'A',matricula:'CT-2087',trem:'T-101',status:'ativo',observacao:'',data:'',hora:''},{id:'m3',nome:'Maria Oliveira',profissao:'Conductor',turno:'1° Turno',turma:'A',matricula:'CT-3115',trem:'T-205',status:'ativo',observacao:'',data:'',hora:''},{id:'m4',nome:'Pedro Costa',profissao:'Mecânico',turno:'1° Turno',turma:'A',matricula:'MC-0523',trem:'T-101',status:'ativo',observacao:'',data:'',hora:''},{id:'m5',nome:'Lucas Ferreira',profissao:'Maquinista',turno:'2° Turno',turma:'B',matricula:'MT-1089',trem:'T-312',status:'pendente',observacao:'',data:'',hora:''},{id:'m6',nome:'Beatriz Alves',profissao:'Conductor',turno:'2° Turno',turma:'B',matricula:'CT-2156',trem:'T-312',status:'pendente',observacao:'',data:'',hora:''},{id:'m7',nome:'Ricardo Mendes',profissao:'Operador',turno:'3° Turno',turma:'C',matricula:'OP-0712',trem:'T-418',status:'off',observacao:'',data:'',hora:''},{id:'m8',nome:'Camila Rocha',profissao:'Mecânico',turno:'3° Turno',turma:'C',matricula:'MC-0534',trem:'',status:'off',observacao:'',data:'',hora:''}],trains:[{id:'t1',code:'T-101',line:'Linha Norte',route:'Terminal → Estação Central',status:'transit',progress:65,delay:''},{id:'t2',code:'T-205',line:'Linha Sul',route:'Estação Central → Porto',status:'station',progress:0,delay:''},{id:'t3',code:'T-312',line:'Linha Leste',route:'Industrial → Centro',status:'delayed',progress:40,delay:'+25 min'},{id:'t4',code:'T-418',line:'Linha Oeste',route:'Centro → Aeroporto',status:'transit',progress:82,delay:''},{id:'t5',code:'T-507',line:'Linha Norte',route:'Manutenção',status:'maintenance',progress:0,delay:''}]}}
-function allP(){return Object.fromEntries(Object.keys(PERMS).map(k=>[k,true]))}
+function aP(){return Object.fromEntries(Object.keys(PERMS).map(k=>[k,true]))}
 function defU(){return[{id:MID,nome:'Master',username:'admin',password:'admin',roleId:'r1',isMaster:true,status:'ativo',photo:'',lastLogin:'',loginCount:0,createdAt:new Date().toISOString()}]}
-function defR(){return[{id:'r1',name:'Administrador',desc:'Acesso total',permissions:allP()},{id:'r2',name:'Fiscal',desc:'Fiscalizar equipes',permissions:{dashboard:true,trains:true,teams:true,excel_import:false,user_management:false,role_management:false,shift_management:false,edit_data:true,delete_data:false}},{id:'r3',name:'Operador',desc:'Visualização básica',permissions:{dashboard:true,trains:true,teams:false,excel_import:false,user_management:false,role_management:false,shift_management:false,edit_data:false,delete_data:false}},{id:'r4',name:'Somente Leitura',desc:'Apenas dashboard',permissions:{dashboard:true,trains:false,teams:false,excel_import:false,user_management:false,role_management:false,shift_management:false,edit_data:false,delete_data:false}}]}
-function getD(){return JSON.parse(localStorage.getItem(K.D)||'null')||defShared()}
-function saveD(d){localStorage.setItem(K.D,JSON.stringify(d))}
-function getU(){return JSON.parse(localStorage.getItem(K.U)||'null')||defU()}
-function saveU(u){localStorage.setItem(K.U,JSON.stringify(u))}
-function getR(){return JSON.parse(localStorage.getItem(K.R)||'null')||defR()}
-function saveR(r){localStorage.setItem(K.R,JSON.stringify(r))}
-function getSess(){return JSON.parse(localStorage.getItem(K.S)||'null')}
-function saveSess(s){localStorage.setItem(K.S,JSON.stringify(s))}
+function defR(){return[{id:'r1',name:'Administrador',desc:'Acesso total',permissions:aP()},{id:'r2',name:'Fiscal',desc:'Fiscalizar equipes',permissions:{dashboard:true,trains:true,teams:true,excel_import:false,user_management:false,role_management:false,shift_management:false,edit_data:true,delete_data:false}},{id:'r3',name:'Operador',desc:'Visualização básica',permissions:{dashboard:true,trains:true,teams:false,excel_import:false,user_management:false,role_management:false,shift_management:false,edit_data:false,delete_data:false}},{id:'r4',name:'Somente Leitura',desc:'Apenas dashboard',permissions:{dashboard:true,trains:false,teams:false,excel_import:false,user_management:false,role_management:false,shift_management:false,edit_data:false,delete_data:false}}]}
+function getD(){return JSON.parse(localStorage.getItem(K.D)||'null')||defShared()}function saveD(d){localStorage.setItem(K.D,JSON.stringify(d))}
+function getU(){return JSON.parse(localStorage.getItem(K.U)||'null')||defU()}function saveU(u){localStorage.setItem(K.U,JSON.stringify(u))}
+function getR(){return JSON.parse(localStorage.getItem(K.R)||'null')||defR()}function saveR(r){localStorage.setItem(K.R,JSON.stringify(r))}
+function getSess(){return JSON.parse(localStorage.getItem(K.S)||'null')}function saveSess(s){localStorage.setItem(K.S,JSON.stringify(s))}
 function initData(){if(!localStorage.getItem(K.R))saveR(defR());if(!localStorage.getItem(K.U))saveU(defU());if(!localStorage.getItem(K.D))saveD(defShared())}
 
-/* ===== UTILS ===== */
-function resizePhoto(file,cb){
-  if(!file||!file.type.startsWith('image/')){cb(null);return}
-  if(file.size>5*1024*1024){toast('Imagem muito grande (máx 5MB)','error');cb(null);return}
-  const r=new FileReader();
-  r.onload=e=>{const img=new Image();img.onerror=()=>cb(null);img.onload=()=>{const c=document.createElement('canvas');let w=img.width,h=img.height,mx=200;if(w>mx||h>mx){if(w>h){h=h*mx/w;w=mx}else{w=w*mx/h;h=mx}}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);cb(c.toDataURL('image/jpeg',.6))};img.src=e.target.result};
-  r.readAsDataURL(file);
-}
-function togglePw(id,btn){const i=document.getElementById(id),s=i.type==='password';i.type=s?'text':'password';btn.innerHTML=`<i class="fas fa-eye${s?'-slash':''} text-xs"></i>`}
-function fmtDate(iso){if(!iso)return'--';return new Date(iso).toLocaleDateString('pt-BR')}
-function fmtDT(iso){if(!iso)return'--';const d=new Date(iso);return d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}
-function showErr(msg){const e=document.getElementById('loginError');e.textContent=msg;e.classList.remove('hidden')}
+function resizeImg(f,cb){if(!f||!f.type.startsWith('image/')){cb(null);return}if(f.size>5*1024*1024){toast('Imagem máx 5MB','error');cb(null);return}const r=new FileReader();r.onload=e=>{const img=new Image();img.onerror=()=>cb(null);img.onload=()=>{const c=document.createElement('canvas');let w=img.width,h=img.height,mx=160;if(w>mx||h>mx){if(w>h){h=h*mx/w;w=mx}else{w=w*mx/h;h=mx}}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);cb(c.toDataURL('image/jpeg',.55))};img.src=e.target.result};r.readAsDataURL(f)}
+function togglePw(id,btn){const i=document.getElementById(id),s=i.type==='password';i.type=s?'text':'password';btn.innerHTML=`<i class="fas fa-eye${s?'-slash':''}" style="font-size:10px"></i>`}
+function fmtD(iso){return iso?new Date(iso).toLocaleDateString('pt-BR'):'--'}
+function fmtDT(iso){return iso?new Date(iso).toLocaleDateString('pt-BR')+' '+new Date(iso).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'--'}
 
 /* ===== AUTH ===== */
 let cu=null;
 function doLogin(){
   const un=document.getElementById('loginUser').value.trim(),pw=document.getElementById('loginPass').value;
-  const users=getU(),exists=users.find(u=>u.username===un);
-  if(!exists){showErr('Usuário não encontrado');return}
-  if(exists.status==='pendente'){showErr('Conta aguardando aprovação do administrador');return}
-  if(exists.status==='rejeitado'){showErr('Conta rejeitada. Contate o administrador');return}
-  if(exists.password!==pw){showErr('Senha incorreta');return}
-  /* Atualizar tracking */
-  const all=getU(),idx=all.findIndex(u=>u.id===exists.id);
-  all[idx].lastLogin=new Date().toISOString();all[idx].loginCount=(all[idx].loginCount||0)+1;
-  saveU(all);
-  const roles=getR(),role=roles.find(r=>r.id===all[idx].roleId)||roles[0];
-  cu={...all[idx],role};saveSess({uid:cu.id});
-  document.getElementById('loginScreen').classList.add('hidden');
-  document.getElementById('mainApp').classList.remove('hidden');
+  const users=getU(),ex=users.find(u=>u.username===un);
+  const er=document.getElementById('loginError');
+  if(!ex){er.textContent='Usuário não encontrado';er.style.display='block';return}
+  if(ex.status==='pendente'){er.textContent='Conta aguardando aprovação';er.style.display='block';return}
+  if(ex.status==='rejeitado'){er.textContent='Conta rejeitada pelo admin';er.style.display='block';return}
+  if(ex.password!==pw){er.textContent='Senha incorreta';er.style.display='block';return}
+  const all=getU(),i=all.findIndex(u=>u.id===ex.id);all[i].lastLogin=new Date().toISOString();all[i].loginCount=(all[i].loginCount||0)+1;saveU(all);
+  const roles=getR(),role=roles.find(r=>r.id===all[i].roleId)||roles[0];
+  cu={...all[i],role};saveSess({uid:cu.id});
+  document.getElementById('loginScreen').style.display='none';document.getElementById('mainApp').style.display='block';
   buildNav();navTo('secOverview');startClock();
-  if(cu.loginCount>1)setTimeout(()=>toast(`Bem-vindo de volta, ${cu.nome}!`,'success'),300);
+  if(cu.loginCount>1)setTimeout(()=>toast(`Bem-vindo, ${cu.nome}`,'success'),200);
 }
-function doLogout(){cu=null;localStorage.removeItem(K.S);document.getElementById('mainApp').classList.add('hidden');document.getElementById('loginScreen').classList.remove('hidden');document.getElementById('loginUser').value='';document.getElementById('loginPass').value=''}
+function doLogout(){cu=null;localStorage.removeItem(K.S);document.getElementById('mainApp').style.display='none';document.getElementById('loginScreen').style.display='flex';document.getElementById('loginUser').value='';document.getElementById('loginPass').value='';document.getElementById('loginError').style.display='none'}
 function canDo(p){return cu&&cu.role&&!!cu.role.permissions[p]}
-function autoLogin(){
-  initData();const s=getSess();if(!s)return;
-  const u=getU().find(x=>x.id===s.uid);if(!u||u.status!=='ativo')return;
-  const r=getR().find(x=>x.id===u.roleId)||getR()[0];
-  cu={...u,role:r};document.getElementById('loginScreen').classList.add('hidden');
-  document.getElementById('mainApp').classList.remove('hidden');buildNav();navTo('secOverview');startClock();
-}
+function autoLogin(){initData();const s=getSess();if(!s)return;const u=getU().find(x=>x.id===s.uid);if(!u||u.status!=='ativo')return;const r=getR().find(x=>x.id===u.roleId)||getR()[0];cu={...u,role:r};document.getElementById('loginScreen').style.display='none';document.getElementById('mainApp').style.display='block';buildNav();navTo('secOverview');startClock()}
 
 /* ===== REGISTRO ===== */
-let regPhoto='';
+let regPh='';
 function openRegister(){
-  regPhoto='';
-  openModal('Criar Conta',`<div class="space-y-3">
-    <div class="flex flex-col items-center gap-2 mb-1">
-      <div class="relative cursor-pointer" onclick="document.getElementById('regPhotoIn').click()">
-        <div id="regPhotoPrev" class="w-20 h-20 rounded-full bg-[var(--card2)] flex items-center justify-center text-2xl text-[var(--muted)] overflow-hidden border-2 border-dashed border-[var(--border)] hover:border-[var(--orange)] transition-colors"><i class="fas fa-camera"></i></div>
-        <div class="photo-overlay" style="width:80px;height:80px"><i class="fas fa-camera text-white text-sm"></i></div>
-      </div>
-      <span class="text-[10px] text-[var(--muted)]">Foto opcional</span>
-      <input type="file" id="regPhotoIn" accept="image/*" class="hidden" onchange="onRegPhoto(this)">
-    </div>
-    <div><label class="text-[10px] text-[var(--muted)] uppercase tracking-wider mb-1 block">Nome Completo</label><input id="regN" class="input" placeholder="Seu nome"></div>
-    <div><label class="text-[10px] text-[var(--muted)] uppercase tracking-wider mb-1 block">Usuário</label><input id="regU" class="input" placeholder="Mínimo 3 caracteres"></div>
-    <div class="relative"><label class="text-[10px] text-[var(--muted)] uppercase tracking-wider mb-1 block">Senha</label><input id="regP" type="password" class="input" style="padding-right:36px" placeholder="Mínimo 4 caracteres"><button type="button" class="absolute right-2 top-[22px] text-[var(--muted)] hover:text-[var(--text)]" onclick="togglePw('regP',this)"><i class="fas fa-eye text-xs"></i></button></div>
-    <div class="relative"><label class="text-[10px] text-[var(--muted)] uppercase tracking-wider mb-1 block">Confirmar Senha</label><input id="regP2" type="password" class="input" style="padding-right:36px" placeholder="Repita a senha"><button type="button" class="absolute right-2 top-[22px] text-[var(--muted)] hover:text-[var(--text)]" onclick="togglePw('regP2',this)"><i class="fas fa-eye text-xs"></i></button></div>
-    <div class="bg-[var(--orangeg)] border border-[rgba(237,137,54,.2)] rounded p-2.5 text-[10px] text-[var(--orange)]"><i class="fas fa-info-circle mr-1"></i>Sua conta precisará ser aprovada por um administrador antes de acessar o sistema.</div>
-  </div>`,`<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="doRegister()">Criar Conta</button>`);
+  regPh='';
+  openModal('Criar Conta',`<div style="display:flex;flex-direction:column;gap:10px">
+    <div style="text-align:center;margin-bottom:4px"><div style="position:relative;display:inline-block;cursor:pointer" onclick="document.getElementById('regPhIn').click()"><div id="regPhPr" style="width:64px;height:64px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;border:2px dashed var(--border);transition:border-color .15s;overflow:hidden" onmouseover="this.style.borderColor='var(--orange)'" onmouseout="this.style.borderColor='var(--border)'"><i class="fas fa-camera" style="font-size:18px;color:var(--muted)"></i></div><div class="photo-overlay" style="width:64px;height:64px"><i class="fas fa-camera" style="color:#fff;font-size:12px"></i></div></div><div style="font-size:9px;color:var(--muted);margin-top:4px">Foto opcional</div><input type="file" id="regPhIn" accept="image/*" style="display:none" onchange="onRegPh(this)"></div>
+    <div><label class="text-[9px] text-[var(--muted)] uppercase tracking-wider block mb-1">Nome Completo</label><input id="regN" class="input" placeholder="Seu nome"></div>
+    <div><label class="text-[9px] text-[var(--muted)] uppercase tracking-wider block mb-1">Usuário</label><input id="regU" class="input" placeholder="Mín. 3 caracteres"></div>
+    <div style="position:relative"><label class="text-[9px] text-[var(--muted)] uppercase tracking-wider block mb-1">Senha</label><input id="regP" type="password" class="input" style="padding-right:32px" placeholder="Mín. 4 caracteres"><button type="button" style="position:absolute;right:8px;top:18px;background:none;border:none;color:var(--muted);cursor:pointer" onclick="togglePw('regP',this)"><i class="fas fa-eye" style="font-size:10px"></i></button></div>
+    <div style="position:relative"><label class="text-[9px] text-[var(--muted)] uppercase tracking-wider block mb-1">Confirmar Senha</label><input id="regP2" type="password" class="input" style="padding-right:32px" placeholder="Repita"><button type="button" style="position:absolute;right:8px;top:18px;background:none;border:none;color:var(--muted);cursor:pointer" onclick="togglePw('regP2',this)"><i class="fas fa-eye" style="font-size:10px"></i></button></div>
+    <div style="background:var(--orangeg);border:1px solid rgba(237,137,54,.15);border-radius:6px;padding:8px 10px;font-size:10px;color:var(--orange)"><i class="fas fa-info-circle" style="margin-right:4px"></i>Conta precisará de aprovação do admin.</div>
+  </div>`,`<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="doReg()">Criar</button>`);
 }
-function onRegPhoto(inp){
-  if(!inp.files[0])return;
-  resizePhoto(inp.files[0],b64=>{if(!b64)return;regPhoto=b64;const p=document.getElementById('regPhotoPrev');p.innerHTML=`<img src="${b64}" class="w-full h-full object-cover">`;p.classList.remove('border-dashed');p.classList.add('border-solid','border-[var(--orange)]')});
-}
-function doRegister(){
-  const nome=document.getElementById('regN').value.trim(),un=document.getElementById('regU').value.trim(),pw=document.getElementById('regP').value,pw2=document.getElementById('regP2').value;
-  if(!nome){toast('Nome obrigatório','error');return}if(!un||un.length<3){toast('Usuário: mínimo 3 caracteres','error');return}if(pw.length<4){toast('Senha: mínimo 4 caracteres','error');return}if(pw!==pw2){toast('Senhas não coincidem','error');return}
-  if(getU().find(u=>u.username===un)){toast('Usuário já existe','error');return}
-  const users=getU();users.push({id:'u'+Date.now(),nome,username:un,password:pw,roleId:null,isMaster:false,status:'pendente',photo:regPhoto,lastLogin:'',loginCount:0,createdAt:new Date().toISOString()});
-  saveU(users);closeModal();toast('Conta criada! Aguardando aprovação.','success');
-  document.getElementById('loginUser').value=un;document.getElementById('loginPass').value='';document.getElementById('loginPass').focus();
-}
+function onRegPh(inp){if(!inp.files[0])return;resizeImg(inp.files[0],b=>{if(!b)return;regPh=b;const p=document.getElementById('regPhPr');p.innerHTML=`<img src="${b}" style="width:100%;height:100%;object-fit:cover">`;p.style.borderStyle='solid';p.style.borderColor='var(--orange)'})}
+function doReg(){const n=document.getElementById('regN').value.trim(),u=document.getElementById('regU').value.trim(),p=document.getElementById('regP').value,p2=document.getElementById('regP2').value;if(!n){toast('Nome obrigatório','error');return}if(!u||u.length<3){toast('Usuário: mín. 3 caracteres','error');return}if(p.length<4){toast('Senha: mín. 4 caracteres','error');return}if(p!==p2){toast('Senhas não coincidem','error');return}if(getU().find(x=>x.username===u)){toast('Usuário já existe','error');return}const all=getU();all.push({id:'u'+Date.now(),nome:n,username:u,password:p,roleId:null,isMaster:false,status:'pendente',photo:regPh,lastLogin:'',loginCount:0,createdAt:new Date().toISOString()});saveU(all);closeModal();toast('Conta criada! Aguardando aprovação.','success');document.getElementById('loginUser').value=u;document.getElementById('loginPass').value='';document.getElementById('loginPass').focus()}
 
 /* ===== NAV ===== */
-let curSec='secOverview',adminTab='pendentes';
+let curSec='secOverview',aTab='pendentes';
 function buildNav(){
-  const vis=SECTIONS.filter(s=>s.perms.length===0||s.perms.some(p=>canDo(p)));
+  const vis=SECS.filter(s=>!s.perms.length||s.perms.some(p=>canDo(p)));
   const pend=getU().filter(u=>u.status==='pendente').length;
-  document.getElementById('navList').innerHTML=vis.map(s=>{
-    let badge='';if(s.id==='secAdmin'&&pend>0)badge=`<span class="pending-badge">${pend}</span>`;
-    return`<div class="nav-item ${s.id===curSec?'active':''}" data-sec="${s.id}" onclick="navTo('${s.id}')"><i class="fas ${s.icon}"></i><span>${s.label}</span>${badge}</div>`}).join('');
-  document.getElementById('sbName').textContent=cu.nome;document.getElementById('sbRole').textContent=cu.role.name;updateSBPhoto();
+  document.getElementById('navList').innerHTML=vis.map(s=>{let bg='';if(s.id==='secAdmin'&&pend>0)bg=`<span class="nav-badge">${pend}</span>`;return`<div class="nav-item ${s.id===curSec?'active':''}" data-sec="${s.id}" onclick="navTo('${s.id}')"><i class="fas ${s.icon}"></i><span>${s.label}</span>${bg}</div>`}).join('');
+  document.getElementById('sbNm').textContent=cu.nome;document.getElementById('sbRl').textContent=cu.role.name;updSbAv();
 }
-function updateSBPhoto(){
-  const el=document.getElementById('sbAvatar');
-  if(cu.photo){el.innerHTML=`<img src="${cu.photo}" class="w-full h-full object-cover">`;el.className='w-7 h-7 rounded-full overflow-hidden flex-shrink-0'}
-  else{el.innerHTML=cu.nome.charAt(0).toUpperCase();el.className='w-7 h-7 rounded-full bg-[var(--card2)] flex items-center justify-center text-[10px] font-bold text-[var(--orange)] flex-shrink-0'}
-}
-function navTo(id){
-  curSec=id;document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.sec===id));
-  document.getElementById('pageTitle').textContent=(SECTIONS.find(s=>s.id===id)||{}).label||'';
-  if(id==='secAdmin'){const p=getU().filter(u=>u.status==='pendente').length;if(p>0)adminTab='pendentes';else if(!adminTab||adminTab==='pendentes')adminTab='users'}
-  renderCur();document.getElementById('sidebar').classList.remove('open');
-}
-function renderCur(){switch(curSec){case'secOverview':renderOverview();break;case'secProfile':renderProfile();break;case'secAdmin':renderAdmin();break;case'secShifts':renderShifts();break;case'secExcel':renderExcel();break}}
+function updSbAv(){const el=document.getElementById('sbAv');if(cu.photo){el.innerHTML=`<img src="${cu.photo}">`}else{el.textContent=cu.nome.charAt(0).toUpperCase()}}
+function navTo(id){curSec=id;document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.sec===id));document.getElementById('pageTitle').textContent=(SECS.find(s=>s.id===id)||{}).label||'';if(id==='secAdmin'){const p=getU().filter(u=>u.status==='pendente').length;if(p>0)aTab='pendentes';else if(aTab==='pendentes')aTab='users'}renderCur();document.getElementById('sidebar').classList.remove('open')}
+function renderCur(){switch(curSec){case'secOverview':renderOV();break;case'secProfile':renderPF();break;case'secAdmin':renderAD();break;case'secShifts':renderSH();break;case'secExcel':renderEX();break}}
 function startClock(){function t(){const n=new Date();document.getElementById('clock').textContent=n.toLocaleTimeString('pt-BR');const h=n.getHours();let s='Off';if(h>=6&&h<14)s='1° Turno';else if(h>=14&&h<22)s='2° Turno';else s='3° Turno';const b=document.getElementById('shiftBadge');b.textContent=s;b.className='badge '+(h>=6&&h<22?'badge-active':'badge-off')}t();setInterval(t,1000)}
 
 /* ===== TOAST / MODAL ===== */
-function toast(msg,type='info'){const c=document.getElementById('toastContainer'),t=document.createElement('div');const ic={success:'check-circle',error:'exclamation-circle',info:'info-circle'};t.className=`toast toast-${type}`;t.innerHTML=`<i class="fas fa-${ic[type]||'info-circle'}"></i><span>${msg}</span>`;c.appendChild(t);requestAnimationFrame(()=>t.classList.add('show'));setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),300)},3000)}
+function toast(m,t='info'){const c=document.getElementById('toastContainer'),e=document.createElement('div');const ic={success:'check-circle',error:'exclamation-circle',info:'info-circle'};e.className=`toast toast-${t}`;e.innerHTML=`<i class="fas fa-${ic[t]||'info-circle'}"></i><span>${m}</span>`;c.appendChild(e);requestAnimationFrame(()=>e.classList.add('show'));setTimeout(()=>{e.classList.remove('show');setTimeout(()=>e.remove(),250)},2800)}
 function openModal(t,b,f){document.getElementById('modalTitle').textContent=t;document.getElementById('modalBody').innerHTML=b;document.getElementById('modalFoot').innerHTML=f||'';document.getElementById('modalOverlay').classList.add('show')}
 function closeModal(){document.getElementById('modalOverlay').classList.remove('show')}
 
 /* ===== OVERVIEW ===== */
-function renderOverview(){const s=document.getElementById('secOverview');s.innerHTML='';renderDash(s);renderTrains(s);renderTeams(s)}
-function renderDash(sec){
-  const d=getD(),h=new Date().getHours(),as=h>=6&&h<14?d.shifts[0]:h>=14&&h<22?d.shifts[1]:d.shifts[2],at=as?as.turma:'--',am=d.members.filter(m=>m.turma===at),profs=[...new Set(am.map(m=>m.profissao))];
-  const div=document.createElement('div');div.className='mb-7';
-  div.innerHTML=`<div class="flex items-center gap-3 mb-4"><h2 class="text-base font-bold">Dashboard Operacional</h2><div class="flex-1 h-px bg-[var(--border)]"></div></div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-5 fade-up">
-      <div class="card stat-card orange"><div class="text-[10px] text-[var(--muted)] uppercase tracking-wider mb-1">Turno Atual</div><div class="text-lg font-bold" style="color:var(--orange)">${as?as.name:'--'}</div><div class="text-[10px] text-[var(--muted)] mt-0.5 mono">${as?as.time:'--'}</div><div class="stat-bar"></div></div>
-      <div class="card stat-card teal"><div class="text-[10px] text-[var(--muted)] uppercase tracking-wider mb-1">Turma</div><div class="text-lg font-bold" style="color:var(--teal)">${at}</div><div class="text-[10px] text-[var(--muted)] mt-0.5">${am.length} membros</div><div class="stat-bar"></div></div>
-      <div class="card stat-card red"><div class="text-[10px] text-[var(--muted)] uppercase tracking-wider mb-1">Fiscal do Turno</div><div class="text-lg font-bold" style="color:var(--green)">${as?as.fiscal:'--'}</div><div class="text-[10px] text-[var(--muted)] mt-0.5">Responsável</div><div class="stat-bar"></div></div>
-      <div class="card stat-card yellow"><div class="text-[10px] text-[var(--muted)] uppercase tracking-wider mb-1">Profissões</div><div class="text-lg font-bold" style="color:var(--yellow)">${profs.length}</div><div class="text-[10px] text-[var(--muted)] mt-0.5">${profs.slice(0,2).join(', ')}${profs.length>2?'...':''}</div><div class="stat-bar"></div></div>
-    </div>
-    <div class="card fade-up" style="animation-delay:.08s">
-      <div class="flex items-center justify-between mb-3"><h3 class="font-semibold text-xs">Equipe do Turno — Turma ${at}</h3><span class="badge ${as?.status==='ativo'?'badge-active':'badge-off'}">${as?.status||'--'}</span></div>
-      <div class="tw"><table><thead><tr><th>Nome</th><th>Profissão</th><th>Matrícula</th><th>Trem</th><th>Status</th></tr></thead><tbody>${am.length?am.map(m=>`<tr><td class="font-medium">${m.nome}</td><td><span class="badge badge-info">${m.profissao}</span></td><td class="mono text-[var(--muted)]">${m.matricula||'--'}</td><td class="mono">${m.trem||'--'}</td><td><span class="badge ${m.status==='ativo'?'badge-active':m.status==='pendente'?'badge-pending':'badge-off'}">${m.status}</span></td></tr>`).join(''):'<tr><td colspan="5" class="text-center text-[var(--muted)] py-5">Nenhum membro</td></tr>'}</tbody></table></div>
-      <div class="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2">${profs.map(p=>{const c=am.filter(m=>m.profissao===p).length;return`<div class="bg-[var(--bg)] rounded-lg p-2.5 text-center"><div class="text-base font-bold" style="color:var(--orange)">${c}</div><div class="text-[9px] text-[var(--muted)] uppercase tracking-wider">${p}</div></div>`}).join('')}</div>
-    </div>`;sec.appendChild(div);
+function renderOV(){const s=document.getElementById('secOverview');s.innerHTML='';rDash(s);rTrains(s);rTeams(s)}
+function rDash(sec){
+  const d=getD(),h=new Date().getHours(),as=h>=6&&h<14?d.shifts[0]:h>=14&&h<22?d.shifts[1]:d.shifts[2],at=as?as.turma:'--',am=d.members.filter(m=>m.turma===at),pr=[...new Set(am.map(m=>m.profissao))];
+  const el=document.createElement('div');el.style.marginBottom='24px';
+  el.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><h2 style="font-size:14px;font-weight:700">Dashboard</h2><div style="flex:1;height:1px;background:var(--border)"></div></div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:16px" class="fade-up">
+    <div class="card stat-card c-orange"><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Turno</div><div style="font-size:17px;font-weight:700;color:var(--orange)">${as?as.name:'--'}</div><div style="font-size:9px;color:var(--muted);margin-top:2px" class="mono">${as?as.time:'--'}</div><div class="sb"></div></div>
+    <div class="card stat-card c-teal"><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Turma</div><div style="font-size:17px;font-weight:700;color:var(--teal)">${at}</div><div style="font-size:9px;color:var(--muted);margin-top:2px">${am.length} membros</div><div class="sb"></div></div>
+    <div class="card stat-card c-red"><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Fiscal</div><div style="font-size:17px;font-weight:700;color:var(--green)">${as?as.fiscal:'--'}</div><div style="font-size:9px;color:var(--muted);margin-top:2px">Responsável</div><div class="sb"></div></div>
+    <div class="card stat-card c-yellow"><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Profissões</div><div style="font-size:17px;font-weight:700;color:var(--yellow)">${pr.length}</div><div style="font-size:9px;color:var(--muted);margin-top:2px">${pr.slice(0,2).join(', ')}${pr.length>2?'...':''}</div><div class="sb"></div></div>
+  </div>
+  <div class="card fade-up" style="animation-delay:.06s"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><h3 style="font-size:12px;font-weight:600">Equipe — Turma ${at}</h3><span class="badge ${as?.status==='ativo'?'badge-active':'badge-off'}">${as?.status||'--'}</span></div>
+  <div class="tw"><table><thead><tr><th>Nome</th><th>Profissão</th><th>Matrícula</th><th>Trem</th><th>Status</th></tr></thead><tbody>${am.length?am.map(m=>`<tr><td style="font-weight:500">${m.nome}</td><td><span class="badge badge-info">${m.profissao}</span></td><td class="mono" style="color:var(--muted)">${m.matricula||'--'}</td><td class="mono">${m.trem||'--'}</td><td><span class="badge ${m.status==='ativo'?'badge-active':m.status==='pendente'?'badge-pending':'badge-off'}">${m.status}</span></td></tr>`).join(''):'<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px">Nenhum membro</td></tr>'}</tbody></table></div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-top:10px">${pr.map(p=>{const c=am.filter(m=>m.profissao===p).length;return`<div style="background:var(--bg);border-radius:6px;padding:8px;text-align:center"><div style="font-size:15px;font-weight:700;color:var(--orange)">${c}</div><div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">${p}</div></div>`}).join('')}</div></div>`;sec.appendChild(el);
 }
-function renderTrains(sec){
+function rTrains(sec){
   if(!canDo('trains'))return;const d=getD(),sl={transit:'Em Trânsito',station:'Na Estação',delayed:'Atrasado',maintenance:'Manutenção'},sc={transit:'var(--green)',station:'var(--teal)',delayed:'var(--red)',maintenance:'var(--orange)'};
-  const div=document.createElement('div');div.className='mb-7';div.innerHTML=`<div class="flex items-center gap-3 mb-4"><h2 class="text-base font-bold">Comboios</h2><div class="flex-1 h-px bg-[var(--border)]"></div><span class="text-[10px] text-[var(--muted)]">${d.trains.length} monitorados</span></div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 fade-up" style="animation-delay:.12s">${d.trains.map(t=>`<div class="train-card st-${t.status}"><div class="flex items-center justify-between mb-1.5"><span class="mono font-bold text-sm">${t.code}</span><div class="flex items-center gap-1.5"><div class="pulse-dot" style="background:${sc[t.status]}"></div><span class="text-[10px] font-semibold" style="color:${sc[t.status]}">${sl[t.status]}</span></div></div><div class="text-[10px] text-[var(--muted)] mb-0.5">${t.line}</div><div class="text-[11px] mb-2.5">${t.route}</div>${t.status==='transit'||t.status==='delayed'?`<div class="pbar"><div class="fill" style="width:${t.progress}%;background:${sc[t.status]}"></div></div><div class="text-[9px] text-[var(--muted)] mt-0.5 mono">${t.progress}%</div>`:''}${t.delay?`<div class="mt-1.5 text-[10px] font-semibold text-[var(--red)]"><i class="fas fa-exclamation-triangle mr-1"></i>${t.delay}</div>`:''}</div>`).join('')}</div>`;sec.appendChild(div);
+  const el=document.createElement('div');el.style.marginBottom='24px';el.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><h2 style="font-size:14px;font-weight:700">Comboios</h2><div style="flex:1;height:1px;background:var(--border)"></div><span style="font-size:9px;color:var(--muted)">${d.trains.length} monitorados</span></div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px" class="fade-up" data-delay=".1">${d.trains.map(t=>`<div class="train-card st-${t.status}"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><span class="mono" style="font-weight:700;font-size:13px">${t.code}</span><div style="display:flex;align-items:center;gap:4px"><div class="pulse-dot" style="background:${sc[t.status]}"></div><span style="font-size:9px;font-weight:600;color:${sc[t.status]}">${sl[t.status]}</span></div></div><div style="font-size:9px;color:var(--muted)">${t.line}</div><div style="font-size:10px;margin-bottom:8px">${t.route}</div>${t.status==='transit'||t.status==='delayed'?`<div class="pbar"><div class="fill" style="width:${t.progress}%;background:${sc[t.status]}"></div></div><div style="font-size:8px;color:var(--muted);margin-top:2px" class="mono">${t.progress}%</div>`:''}${t.delay?`<div style="font-size:9px;font-weight:600;color:var(--red);margin-top:4px"><i class="fas fa-exclamation-triangle" style="margin-right:3px"></i>${t.delay}</div>`:''}</div>`).join('')}</div>`;sec.appendChild(el);
 }
-function renderTeams(sec){
+function rTeams(sec){
   if(!canDo('teams')&&!canDo('dashboard'))return;const d=getD(),ro=!canDo('edit_data');
-  const div=document.createElement('div');div.innerHTML=`<div class="flex items-center gap-3 mb-4"><h2 class="text-base font-bold">Controle de Equipes</h2><div class="flex-1 h-px bg-[var(--border)]"></div>${!ro?`<button class="btn btn-primary btn-sm" onclick="openMemberModal()"><i class="fas fa-plus"></i>Adicionar</button>`:''}</div>
-    <div class="flex flex-wrap gap-1.5 mb-3"><button class="btn btn-secondary btn-sm tf active" onclick="filterTeam('all',this)">Todos</button>${d.shifts.map(s=>`<button class="btn btn-secondary btn-sm tf" onclick="filterTeam('${s.turma}',this)">Turma ${s.turma}</button>`).join('')}</div>
-    <div class="tw fade-up" style="animation-delay:.16s"><table><thead><tr><th>Nome</th><th>Profissão</th><th>Matrícula</th><th>Turno</th><th>Turma</th><th>Trem</th><th>Status</th>${!ro?'<th>Ações</th>':''}</tr></thead><tbody id="tBody">${teamRows(d.members)}</tbody></table></div>`;sec.appendChild(div);
+  const el=document.createElement('div');el.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><h2 style="font-size:14px;font-weight:700">Controle de Equipes</h2><div style="flex:1;height:1px;background:var(--border)"></div>${!ro?`<button class="btn btn-primary btn-sm" onclick="openMM()"><i class="fas fa-plus"></i>Adicionar</button>`:''}</div>
+  <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px"><button class="btn btn-secondary btn-sm tf active" onclick="fTeam('all',this)">Todos</button>${d.shifts.map(s=>`<button class="btn btn-secondary btn-sm tf" onclick="fTeam('${s.turma}',this)">Turma ${s.turma}</button>`).join('')}</div>
+  <div class="tw fade-up" data-delay=".14"><table><thead><tr><th>Nome</th><th>Profissão</th><th>Matrícula</th><th>Turno</th><th>Turma</th><th>Trem</th><th>Status</th>${!ro?'<th>Ações</th>':''}</tr></thead><tbody id="tBody">${tRows(d.members)}</tbody></table></div>`;sec.appendChild(el);
 }
-function teamRows(list){const ro=!canDo('edit_data'),cd=canDo('delete_data');if(!list.length)return'<tr><td colspan="8" class="text-center text-[var(--muted)] py-6">Nenhum membro</td></tr>';return list.map(m=>`<tr><td class="font-medium">${m.nome}</td><td>${m.profissao}</td><td class="mono text-[var(--muted)]">${m.matricula||'--'}</td><td>${m.turno}</td><td><span class="badge badge-info">${m.turma}</span></td><td class="mono">${m.trem||'--'}</td><td><span class="badge ${m.status==='ativo'?'badge-active':m.status==='pendente'?'badge-pending':'badge-off'}">${m.status}</span></td>${!ro?`<td class="flex gap-1"><button class="btn btn-secondary btn-sm" onclick="openMemberModal('${m.id}')"><i class="fas fa-pen" style="font-size:9px"></i></button>${cd?`<button class="btn btn-danger btn-sm" onclick="delMember('${m.id}')"><i class="fas fa-trash" style="font-size:9px"></i></button>`:''}</td>`:''}</tr>`).join('')}
-function filterTeam(f,btn){document.querySelectorAll('.tf').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const d=getD();document.getElementById('tBody').innerHTML=teamRows(f==='all'?d.members:d.members.filter(m=>m.turma===f))}
+function tRows(l){const ro=!canDo('edit_data'),cd=canDo('delete_data');if(!l.length)return'<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:20px">Nenhum membro</td></tr>';return l.map(m=>`<tr><td style="font-weight:500">${m.nome}</td><td>${m.profissao}</td><td class="mono" style="color:var(--muted)">${m.matricula||'--'}</td><td>${m.turno}</td><td><span class="badge badge-info">${m.turma}</span></td><td class="mono">${m.trem||'--'}</td><td><span class="badge ${m.status==='ativo'?'badge-active':m.status==='pendente'?'badge-pending':'badge-off'}">${m.status}</span></td>${!ro?`<td style="display:flex;gap:3px"><button class="btn btn-secondary btn-sm" onclick="openMM('${m.id}')"><i class="fas fa-pen" style="font-size:8px"></i></button>${cd?`<button class="btn btn-danger btn-sm" onclick="delM('${m.id}')"><i class="fas fa-trash" style="font-size:8px"></i></button>`:''}</td>`:''}</tr>`).join('')}
+function fTeam(f,btn){document.querySelectorAll('.tf').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const d=getD();document.getElementById('tBody').innerHTML=tRows(f==='all'?d.members:d.members.filter(m=>m.turma===f))}
+
+/* ===== CRUD MEMBROS ===== */
+function openMM(id){const d=getD(),m=id?d.members.find(x=>x.id===id):null;openModal(m?'Editar Membro':'Novo Membro',`<div style="display:flex;flex-direction:column;gap:8px"><div><label class="text-[9px] text-[var(--muted)] uppercase tracking-wider block mb-1">Nome</label><input id="mN" class="input" value="${m?m.nome:''}"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div><label class="text-[9px] text-[var(--muted)] uppercase tracking-wider block mb-1">Profissão</label><select id="mP" class="input"><option value="">Selecione...</option>${['Maquinista','Conductor','Mecânico','Operador','Fiscal','Sinalizador','Técnico','Auxiliar'].map(p=>`<option ${m&&m.profissao===p?'selected':''}>${p}</option>`).join('')}</select></div><div><label class="text-[9px] text-[var(--muted)] uppercase tracking-wider block mb-1">Matrícula</label><input id="mM" class="input" value="${m?m.matricula:''}"></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div><label class="text-[9px] text-[var(--muted)] uppercase tracking-wider block mb-1">Turno</label><select id="mT" class="input">${d.shifts.map(s=>`<option ${m&&m.turno===s.name?'selected':''}>${s.name}</option>`).join('')}</select></div><div><label class="text-[9px] text-[var(--muted)] uppercase tracking-wider block mb-1">Turma</label><select id="mTu" class="input">${['A','B','C','D'].map(t=>`<option ${m&&m.turma===t?'selected':''}>${t}</option>`).join('')}</select></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div><label class="text-[9px] text-[var(--muted)] uppercase tracking-wider block mb-1">Trem</label><input id="mTr" class="input" value="${m?m.trem:''}"></div><div><label class="text-[9px] text-[var(--muted)] uppercase tracking-wider block mb-1">Status</label><select id="mSt" class="input">${['ativo','pendente','off'].map(s=>`<option ${m&&m.status===s?'selected':''}>${s}</option>`).join('')}</select></div></div></div>`,`<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveM('${id||''}')">${m?'Salvar':'Adicionar'}</button>`)}
+function saveM(id){const n=document.getElementById('mN').value.trim();if(!n){toast('Nome obrigatório','error');return}const d=getD(),o={nome:n,profissao:document.getElementById('mP').value,matricula:document.getElementById('mM').value.trim(),turno:document.getElementById('mT').value,turma:document.getElementById('mTu').value,trem:document.getElementById('mTr').value.trim(),status:document.getElementById('mSt').value,observacao:'',data:'',hora:''};if(id){const i=d.members.findIndex(m=>m.id===id);if(i>=0)d.members[i]={...d.members[i],...o};toast('Atualizado','success')}else{o.id='m'+Date.now();d.members.push(o);toast('Adicionado','success')}saveD(d);closeModal();renderOV()}
+function delM(id){openModal('Confirmar','<p style="font-size:11px;color:var(--muted)">Remover permanentemente?</p>',`<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-danger" onclick="doDelM('${id}')">Excluir</button>`)}
+function doDelM(id){const d=getD();d.members=d.members.filter(m=>m.id!==id);saveD(d);closeModal();toast('Removido','success');renderOV()}
 
 /* ===== PERFIL ===== */
-function renderProfile(){
-  const perms=cu.role?cu.role.permissions:{},ph=cu.photo?`<img src="${cu.photo}" class="w-full h-full object-cover">`:cu.nome.charAt(0).toUpperCase();
-  const pg=Object.entries(PERMS).map(([k,l])=>{const on=perms[k];return`<div class="flex items-center gap-2 bg-[var(--bg)] rounded px-3 py-2"><i class="fas ${on?'fa-check-circle text-[var(--green)]':'fa-times-circle text-[var(--red)]'} text-xs"></i><span class="text-xs ${on?'text-[var(--text)]':'text-[var(--muted)]'}">${l}</span></div>`}).join('');
-  document.getElementById('secProfile').innerHTML=`<div class="flex items-center gap-3 mb-5"><h2 class="text-base font-bold">Meu Perfil</h2><div class="flex-1 h-px bg-[var(--border)]"></div></div>
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 fade-up">
-      <div class="card flex flex-col items-center py-8">
-        <div class="relative cursor-pointer mb-4" onclick="document.getElementById('profPhotoIn').click()" style="width:112px;height:112px">
-          <div id="profPhotoDisp" class="w-full h-full rounded-full ${cu.photo?'overflow-hidden':'bg-[var(--card2)] flex items-center justify-center text-4xl font-bold text-[var(--orange)]'}">${ph}</div>
-          <div class="photo-overlay"><i class="fas fa-camera text-white text-lg"></i></div>
-        </div>
-        <input type="file" id="profPhotoIn" accept="image/*" class="hidden" onchange="changeMyPhoto(this)">
-        <h3 class="font-bold text-lg">${cu.nome}</h3><span class="badge badge-info mt-1">${cu.role.name}</span><span class="badge badge-active mt-2">${cu.status}</span>
-      </div>
-      <div class="card">
-        <h3 class="font-semibold text-sm mb-3">Informações</h3>
-        <div class="space-y-2.5 text-xs">
-          <div class="flex justify-between"><span class="text-[var(--muted)]">Usuário</span><span class="mono font-medium">${cu.username}</span></div>
-          <div class="flex justify-between"><span class="text-[var(--muted)]">Cargo</span><span class="font-medium">${cu.role.name}</span></div>
-          <div class="flex justify-between"><span class="text-[var(--muted)]">Membro desde</span><span>${fmtDate(cu.createdAt)}</span></div>
-          <div class="flex justify-between"><span class="text-[var(--muted)]">Último acesso</span><span>${cu.lastLogin?fmtDT(cu.lastLogin):'Primeiro acesso'}</span></div>
-          <div class="flex justify-between"><span class="text-[var(--muted)]">Total de acessos</span><span class="font-bold" style="color:var(--orange)">${cu.loginCount||0}</span></div>
-        </div>
-        <h3 class="font-semibold text-sm mt-5 mb-3">Alterar Senha</h3>
-        <div class="space-y-2">
-          <div class="relative"><input id="oldPw" type="password" class="input" style="padding-right:36px" placeholder="Senha atual"><button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--muted)] hover:text-[var(--text)]" onclick="togglePw('oldPw',this)"><i class="fas fa-eye text-xs"></i></button></div>
-          <div class="relative"><input id="newPw" type="password" class="input" style="padding-right:36px" placeholder="Nova senha"><button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--muted)] hover:text-[var(--text)]" onclick="togglePw('newPw',this)"><i class="fas fa-eye text-xs"></i></button></div>
-          <button class="btn btn-primary btn-sm w-full justify-center" onclick="changeMyPw()">Salvar Senha</button>
-        </div>
-      </div>
-      <div class="card"><h3 class="font-semibold text-sm mb-3">Minhas Permissões</h3><div class="space-y-1.5">${pg}</div><div class="mt-3 text-[10px] text-[var(--muted)] bg-[var(--bg)] rounded p-2"><i class="fas fa-info-circle mr-1"></i>Definidas pelo administrador através do cargo atribuído.</div></div>
-    </div>`;
-}
-function changeMyPhoto(inp){if(!inp.files[0])return;resizePhoto(inp.files[0],b64=>{if(!b64)return;const all=getU(),i=all.findIndex(u=>u.id===cu.id);if(i>=0){all[i].photo=b64;saveU(all);cu.photo=b64;updateSBPhoto();renderProfile();toast('Foto atualizada','success')}})}
-function changeMyPw(){const o=document.getElementById('oldPw').value,n=document.getElementById('newPw').value;if(!o||!n){toast('Preencha os dois campos','error');return}if(n.length<4){toast('Nova senha: mínimo 4 caracteres','error');return}if(o!==cu.password){toast('Senha atual incorreta','error');return}const all=getU(),i=all.findIndex(u=>u.id===cu.id);if(i>=0){all[i].password=n;saveU(all);cu.password=n;document.getElementById('oldPw').value='';document.getElementById('newPw').value='';toast('Senha alterada','success')}}
-
-/* ===== PAINEL ADMIN ===== */
-function renderAdmin(){
-  const users=getU().filter(u=>!u.isMaster),pend=users.filter(u=>u.status==='pendente'),act=users.filter(u=>u.status==='ativo'),roles=getR();
-  document.getElementById('secAdmin').innerHTML=`<div class="flex items-center gap-3 mb-4"><h2 class="text-base font-bold">Painel Admin</h2><div class="flex-1 h-px bg-[var(--border)]"></div></div>
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5 fade-up">
-      <div class="card stat-card red"><div class="text-[10px] text-[var(--muted)] uppercase tracking-wider mb-1">Pendentes</div><div class="text-xl font-bold" style="color:var(--red)">${pend.length}</div><div class="stat-bar"></div></div>
-      <div class="card stat-card orange"><div class="text-[10px] text-[var(--muted)] uppercase tracking-wider mb-1">Ativos</div><div class="text-xl font-bold" style="color:var(--orange)">${act.length}</div><div class="stat-bar"></div></div>
-      <div class="card stat-card yellow"><div class="text-[10px] text-[var(--muted)] uppercase tracking-wider mb-1">Cargos</div><div class="text-xl font-bold" style="color:var(--yellow)">${roles.length}</div><div class="stat-bar"></div></div>
-      <div class="card stat-card teal"><div class="text-[10px] text-[var(--muted)] uppercase tracking-wider mb-1">Total</div><div class="text-xl font-bold" style="color:var(--teal)">${users.length}</div><div class="stat-bar"></div></div>
+function renderPF(){
+  const p=cu.role?cu.role.permissions:{},ph=cu.photo?`<img src="${cu.photo}" style="width:100%;height:100%;object-fit:cover">`:cu.nome.charAt(0).toUpperCase();
+  const pg=Object.entries(PERMS).map(([k,l])=>`<div style="display:flex;align-items:center;gap:6px;background:var(--bg);border-radius:5px;padding:6px 10px"><i class="fas ${p[k]?'fa-check-circle':'fa-times-circle'}" style="font-size:10px;color:${p[k]?'var(--green)':'var(--red)'}"></i><span style="font-size:11px;color:${p[k]?'var(--text)':'var(--muted)'}">${l}</span></div>`).join('');
+  document.getElementById('secProfile').innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:18px"><h2 style="font-size:14px;font-weight:700">Meu Perfil</h2><div style="flex:1;height:1px;background:var(--border)"></div></div>
+  <div style="display:grid;grid-template-columns:1fr;gap:16px;max-width:900px" class="fade-up">
+    <div class="card" style="display:flex;align-items:center;gap:16px;padding:20px">
+      <div style="position:relative;cursor:pointer;flex-shrink:0" onclick="document.getElementById('pfPhIn').click()"><div id="pfPhD" style="width:80px;height:80px;border-radius:50%;${cu.photo?'overflow-hidden':'background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:var(--orange)'}">${ph}</div><div class="photo-overlay" style="width:80px;height:80px"><i class="fas fa-camera" style="color:#fff;font-size:14px"></i></div></div>
+      <input type="file" id="pfPhIn" accept="image/*" style="display:none" onchange="chgMyPh(this)">
+      <div style="flex:1"><h3 style="font-size:16px;font-weight:700">${cu.nome}</h3><div style="display:flex;gap:6px;margin-top:4px"><span class="badge badge-info">${cu.role.name}</span><span class="badge badge-active">${cu.status}</span></div><div style="margin-top:8px;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:11px"><span style="color:var(--muted)">Usuário</span><span class="mono">${cu.username}</span><span style="color:var(--muted)">Desde</span><span>${fmtD(cu.createdAt)}</span><span style="color:var(--muted)">Último acesso</span><span>${cu.lastLogin?fmtDT(cu.lastLogin):'Primeiro acesso'}</span><span style="color:var(--muted)">Acessos</span><span style="font-weight:700;color:var(--orange)">${cu.loginCount||0}</span></div></div>
     </div>
-    <div class="flex gap-1 mb-4 bg-[var(--bg)] rounded-lg p-1">
-      <button class="atab flex-1 py-2 px-3 rounded-md text-xs font-semibold transition-all ${adminTab==='pendentes'?'bg-[var(--card)] text-[var(--red)] shadow-sm':'text-[var(--muted)] hover:text-[var(--text)]'}" data-tab="pendentes" onclick="switchATab('pendentes')"><i class="fas fa-hourglass-half mr-1"></i>Pendentes${pend.length?` <span class="ml-1 bg-[var(--red)] text-white text-[9px] px-1.5 py-0.5 rounded-full">${pend.length}</span>`:''}</button>
-      <button class="atab flex-1 py-2 px-3 rounded-md text-xs font-semibold transition-all ${adminTab==='users'?'bg-[var(--card)] text-[var(--orange)] shadow-sm':'text-[var(--muted)] hover:text-[var(--text)]'}" data-tab="users" onclick="switchATab('users')"><i class="fas fa-users mr-1"></i>Usuários</button>
-      <button class="atab flex-1 py-2 px-3 rounded-md text-xs font-semibold transition-all ${adminTab==='roles'?'bg-[var(--card)] text-[var(--yellow)] shadow-sm':'text-[var(--muted)] hover:text-[var(--text)]'}" data-tab="roles" onclick="switchATab('roles')"><i class="fas fa-shield-alt mr-1"></i>Cargos</button>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="card"><h3 style="font-size:12px;font-weight:600;margin-bottom:10px">Alterar Senha</h3><div style="display:flex;flex-direction:column;gap:8px"><div style="position:relative"><input id="oPw" type="password" class="input" style="padding-right:30px" placeholder="Senha atual"><button type="button" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer" onclick="togglePw('oPw',this)"><i class="fas fa-eye" style="font-size:9px"></i></button></div><div style="position:relative"><input id="nPw" type="password" class="input" style="padding-right:30px" placeholder="Nova senha"><button type="button" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer" onclick="togglePw('nPw',this)"><i class="fas fa-eye" style="font-size:9px"></i></button></div><button class="btn btn-primary btn-sm" style="width:100%;justify-content:center" onclick="chgMyPw()">Salvar Senha</button></div></div>
+      <div class="card"><h3 style="font-size:12px;font-weight:600;margin-bottom:10px">Minhas Permissões</h3><div style="display:flex;flex-direction:column;gap:4px">${pg}</div><div style="margin-top:8px;font-size:9px;color:var(--muted);background:var(--bg);border-radius:5px;padding:6px 8px"><i class="fas fa-info-circle" style="margin-right:3px"></i>Definidas pelo admin via cargo.</div></div>
     </div>
-    <div id="adminContent"></div>`;
-  renderAdminContent();
+  </div>`;
 }
-function switchATab(tab){
-  adminTab=tab;const colors={pendentes:'text-[var(--red)]',users:'text-[var(--orange)]',roles:'text-[var(--yellow)]'};
-  document.querySelectorAll('.atab').forEach(t=>{const a=t.dataset.tab===tab;t.className=`atab flex-1 py-2 px-3 rounded-md text-xs font-semibold transition-all ${a?'bg-[var(--card)] shadow-sm '+colors[tab]:'text-[var(--muted)] hover:text-[var(--text)]'}`});
-  renderAdminContent();
-}
-function renderAdminContent(){const el=document.getElementById('adminContent');if(!el)return;switch(adminTab){case'pendentes':renderPend(el);break;case'users':renderAUsers(el);break;case'roles':renderARoles(el);break}}
+function chgMyPh(inp){if(!inp.files[0])return;resizeImg(inp.files[0],b=>{if(!b)return;const all=getU(),i=all.findIndex(u=>u.id===cu.id);if(i>=0){all[i].photo=b;saveU(all);cu.photo=b;updSbAv();renderPF();toast('Foto atualizada','success')}})}
+function chgMyPw(){const o=document.getElementById('oPw').value,n=document.getElementById('nPw').value;if(!o||!n){toast('Preencha os campos','error');return}if(n.length<4){toast('Mín. 4 caracteres','error');return}if(o!==cu.password){toast('Senha atual incorreta','error');return}const all=getU(),i=all.findIndex(u=>u.id===cu.id);if(i>=0){all[i].password=n;saveU(all);cu.password=n;document.getElementById('oPw').value='';document.getElementById('nPw').value='';toast('Senha alterada','success')}}
 
-function renderPend(el){
-  const list=getU().filter(u=>u.status==='pendente');
-  if(!list.length){el.innerHTML=`<div class="card text-center py-10 fade-up"><i class="fas fa-check-circle text-3xl text-[var(--green)] mb-3"></i><p class="text-sm font-semibold">Nenhuma conta pendente</p><p class="text-[10px] text-[var(--muted)]">Todas foram analisadas</p></div>`;return}
-  el.innerHTML=`<div class="space-y-3 fade-up">${list.map(u=>{const ph=u.photo?`<img src="${u.photo}" class="w-full h-full object-cover">`:u.nome.charAt(0).toUpperCase();return`<div class="card flex items-center gap-4"><div class="w-12 h-12 rounded-full ${u.photo?'overflow-hidden':'bg-[var(--card2)] flex items-center justify-center text-lg font-bold text-[var(--muted)]'} flex-shrink-0">${ph}</div><div class="flex-1 min-w-0"><div class="font-semibold text-sm truncate">${u.nome}</div><div class="text-[11px] text-[var(--muted)] mono">${u.username} · ${fmtDate(u.createdAt)}</div></div><div class="flex gap-2 flex-shrink-0"><button class="btn btn-primary btn-sm" onclick="approveUser('${u.id}')"><i class="fas fa-check"></i>Aprovar</button><button class="btn btn-danger btn-sm" onclick="rejectUser('${u.id}')"><i class="fas fa-times"></i>Rejeitar</button></div></div>`}).join('')}</div>`;
+/* ===== ADMIN ===== */
+function renderAD(){
+  const us=getU().filter(u=>!u.isMaster),pn=us.filter(u=>u.status==='pendente'),ac=us.filter(u=>u.status==='ativo'),rl=getR();
+  document.getElementById('secAdmin').innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px"><h2 style="font-size:14px;font-weight:700">Painel Admin</h2><div style="flex:1;height:1px;background:var(--border)"></div></div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:14px" class="fade-up">
+    <div class="card stat-card c-red"><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Pendentes</div><div style="font-size:20px;font-weight:700;color:var(--red)">${pn.length}</div><div class="sb"></div></div>
+    <div class="card stat-card c-orange"><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Ativos</div><div style="font-size:20px;font-weight:700;color:var(--orange)">${ac.length}</div><div class="sb"></div></div>
+    <div class="card stat-card c-yellow"><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Cargos</div><div style="font-size:20px;font-weight:700;color:var(--yellow)">${rl.length}</div><div class="sb"></div></div>
+    <div class="card stat-card c-teal"><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Total</div><div style="font-size:20px;font-weight:700;color:var(--teal)">${us.length}</div><div class="sb"></div></div>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn ${aTab==='pendentes'?'active t-red':''}" onclick="sATab('pendentes')"><i class="fas fa-hourglass-half"></i>Pendentes${pn.length?` <span class="mini-count">${pn.length}</span>`:''}</button>
+    <button class="tab-btn ${aTab==='users'?'active t-orange':''}" onclick="sATab('users')"><i class="fas fa-users"></i>Usuários</button>
+    <button class="tab-btn ${aTab==='roles'?'active t-yellow':''}" onclick="sATab('roles')"><i class="fas fa-shield-alt"></i>Cargos</button>
+  </div>
+  <div id="aC"></div>`;rAC();
 }
-function approveUser(id){
-  const u=getU().find(x=>x.id===id);if(!u)return;const roles=getR();
-  const ph=u.photo?`<img src="${u.photo}" class="w-full h-full object-cover">`:u.nome.charAt(0).toUpperCase();
-  openModal('Aprovar Conta',`<div class="text-center mb-4"><div class="w-16 h-16 rounded-full ${u.photo?'overflow-hidden':'bg-[var(--card2)] flex items-center justify-center text-2xl font-bold text-[var(--muted)]'} mx-auto mb-2">${ph}</div><div class="font-semibold">${u.nome}</div><div class="text-[11px] text-[var(--muted)] mono">${u.username}</div></div>
-    <div><label class="text-[10px] text-[var(--muted)] uppercase tracking-wider mb-1 block">Selecione o cargo:</label><select id="apprRole" class="input">${roles.map(r=>`<option value="${r.id}">${r.name} — ${r.desc}</option>`).join('')}</select></div>
-    <div id="apprPermPrev" class="mt-3 bg-[var(--bg)] rounded-lg p-2.5"><div class="text-[10px] text-[var(--muted)] mb-1.5 uppercase tracking-wider">Permissões do cargo:</div><div id="appPV" class="flex flex-wrap gap-1"></div></div>`,
-    `<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="doApprove('${id}')"><i class="fas fa-check"></i>Aprovar</button>`);
-  setTimeout(()=>{const s=document.getElementById('apprRole');const up=()=>{const r=roles.find(x=>x.id===s.value),e=document.getElementById('appPV');if(!r||!e)return;e.innerHTML=Object.entries(r.permissions).map(([k,v])=>`<span class="text-[9px] px-1.5 py-0.5 rounded ${v?'bg-[rgba(237,137,54,.15)] text-[var(--orange)]':'bg-[var(--card)] text-[var(--muted)] line-through'}">${PERMS[k]||k}</span>`).join('')};s.addEventListener('change',up);up()},50);
-}
-function doApprove(id){const rid=document.getElementById('apprRole').value,all=getU(),i=all.findIndex(u=>u.id===id);if(i>=0){all[i].status='ativo';all[i].roleId=rid;saveU(all)}closeModal();toast('Conta aprovada','success');buildNav();renderAdmin()}
-function rejectUser(id){openModal('Rejeitar Conta','<p class="text-xs text-[var(--muted)]">Conta será permanentemente removida.</p>',`<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-danger" onclick="doReject('${id}')">Rejeitar</button>`)}
-function doReject(id){saveU(getU().filter(u=>u.id!==id));closeModal();toast('Conta rejeitada','success');buildNav();renderAdmin()}
+function sATab(t){aTab=t;document.querySelectorAll('.tab-btn').forEach((b,i)=>{const tabs=['pendentes','users','roles'],cls=['t-red','t-orange','t-yellow'];b.className=`tab-btn ${tabs[i]===t?'active '+cls[i]:''}`});rAC()}
+function rAC(){const el=document.getElementById('aC');if(!el)return;switch(aTab){case'pendentes':rPend(el);break;case'users':rAUs(el);break;case'roles':rARl(el);break}}
 
-function renderAUsers(el){
-  const users=getU().filter(u=>!u.isMaster&&u.status==='ativo'),roles=getR();
-  el.innerHTML=`<div class="card fade-up"><div class="tw"><table><thead><tr><th></th><th>Nome</th><th>Usuário</th><th>Cargo</th><th>Último Acesso</th><th>Acessos</th><th>Ações</th></tr></thead><tbody>${users.length?users.map(u=>{const role=roles.find(r=>r.id===u.roleId)||{name:'--'};const ph=u.photo?`<img src="${u.photo}" class="w-full h-full object-cover">`:u.nome.charAt(0).toUpperCase();return`<tr><td><div class="w-8 h-8 rounded-full ${u.photo?'overflow-hidden':'bg-[var(--card2)] flex items-center justify-center text-[10px] font-bold text-[var(--muted)]'}">${ph}</div></td><td class="font-medium">${u.nome}</td><td class="mono text-[var(--muted)]">${u.username}</td><td><span class="badge badge-info">${role.name}</span></td><td class="text-[10px] text-[var(--muted)]">${u.lastLogin?fmtDT(u.lastLogin):'--'}</td><td class="mono" style="color:var(--orange)">${u.loginCount||0}</td><td class="flex gap-1"><button class="btn btn-secondary btn-sm" onclick="changeUserRole('${u.id}')" title="Alterar cargo"><i class="fas fa-user-tag" style="font-size:9px"></i></button><button class="btn btn-danger btn-sm" onclick="delUser('${u.id}')" title="Excluir"><i class="fas fa-trash" style="font-size:9px"></i></button></td></tr>`}).join(''):'<tr><td colspan="7" class="text-center text-[var(--muted)] py-6">Nenhum usuário ativo</td></tr>'}</tbody></table></div></div>`;
+function rPend(el){
+  const l=getU().filter(u=>u.status==='pendente');
+  if(!l.length){el.innerHTML=`<div class="card fade-up" style="text-align:center;padding:32px"><i class="fas fa-check-circle" style="font-size:28px;color:var(--green);margin-bottom:8px"></i><p style="font-size:13px;font-weight:600">Nenhuma pendente</p></div>`;return}
+  el.innerHTML=`<div style="display:flex;flex-direction:column;gap:8px" class="fade-up">${l.map(u=>{const ph=u.photo?`<img src="${u.photo}" style="width:100%;height:100%;object-fit:cover">`:u.nome.charAt(0).toUpperCase();return`<div class="card" style="display:flex;align-items:center;gap:12px;padding:12px 16px"><div style="width:40px;height:40px;border-radius:50%;${u.photo?'overflow-hidden':'background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--muted)'};flex-shrink:0">${ph}</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${u.nome}</div><div style="font-size:10px;color:var(--muted)" class="mono">${u.username} · ${fmtD(u.createdAt)}</div></div><div style="display:flex;gap:6px;flex-shrink:0"><button class="btn btn-primary btn-sm" onclick="apprU('${u.id}')"><i class="fas fa-check"></i>Aprovar</button><button class="btn btn-danger btn-sm" onclick="rejU('${u.id}')"><i class="fas fa-times"></i>Rejeitar</button></div></div>`}).join('')}</div>`;
 }
-function changeUserRole(id){
-  const u=getU().find(x=>x.id===id);if(!u)return;const roles=getR();
-  openModal('Alterar Cargo',`<div class="mb-3"><span class="font-semibold">${u.nome}</span> <span class="text-[var(--muted)] mono text-xs">(${u.username})</span></div>
-    <div><label class="text-[10px] text-[var(--muted)] uppercase tracking-wider mb-1 block">Novo cargo:</label><select id="newRole" class="input">${roles.map(r=>`<option value="${r.id}" ${u.roleId===r.id?'selected':''}>${r.name} — ${r.desc}</option>`).join('')}</select></div>
-    <div class="mt-3 bg-[var(--bg)] rounded-lg p-2.5"><div class="text-[10px] text-[var(--muted)] mb-1.5 uppercase tracking-wider">Permissões:</div><div id="crPV" class="flex flex-wrap gap-1"></div></div>`,
-    `<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="doChangeRole('${id}')">Salvar</button>`);
-  setTimeout(()=>{const s=document.getElementById('newRole');const up=()=>{const r=roles.find(x=>x.id===s.value),e=document.getElementById('crPV');if(!r||!e)return;e.innerHTML=Object.entries(r.permissions).map(([k,v])=>`<span class="text-[9px] px-1.5 py-0.5 rounded ${v?'bg-[rgba(237,137,54,.15)] text-[var(--orange)]':'bg-[var(--card)] text-[var(--muted)] line-through'}">${PERMS[k]||k}</span>`).join('')};s.addEventListener('change',up);up()},50);
-}
-function doChangeRole(id){const rid=document.getElementById('newRole').value,all=getU(),i=all.findIndex(u=>u.id===id);if(i>=0){all[i].roleId=rid;saveU(all);if(cu&&cu.id===id){const roles=getR();cu={...all[i],role:roles.find(r=>r.id===rid)};buildNav()}}closeModal();toast('Cargo alterado','success');renderAdmin()}
-function delUser(id){openModal('Confirmar','<p class="text-xs text-[var(--muted)]">Excluir este usuário?</p>',`<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-danger" onclick="doDelUser('${id}')">Excluir</button>`)}
-function doDelUser(id){saveU(getU().filter(u=>u.id!==id));if(cu&&cu.id===id)doLogout();closeModal();toast('Excluído','success');renderAdmin()}
+function apprU(id){const u=getU().find(x=>x.id===id);if(!u)return;const rl=getR();const ph=u.photo?`<img src="${u.photo}" style="width:100%;height:100%;object-fit:cover">`:u.nome.charAt(0).toUpperCase();openModal('Aprovar Conta',`<div style="text-align:center;margin-bottom:12px"><div style="width:52px;height:52px;border-radius:50%;${u.photo?'overflow-hidden':'background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600;color:var(--muted)'};margin:0 auto 8px">${ph}</div><div style="font-weight:600">${u.nome}</div><div style="font-size:10px;color:var(--muted)" class="mono">${u.username}</div></div><div><label class="text-[9px] text-[var(--muted)] uppercase tracking-wider block mb-1">Cargo:</label><select id="apR" class="input">${rl.map(r=>`<option value="${r.id}">${r.name} — ${r.desc}</option>`).join('')}</select></div><div id="apPV" style="margin-top:8px;background:var(--bg);border-radius:6px;padding:8px 10px"><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Permissões:</div><div id="apPVD" style="display:flex;flex-wrap:wrap;gap:3px"></div></div>`,`<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="doAppr('${id}')"><i class="fas fa-check"></i>Aprovar</button>`);setTimeout(()=>{const s=document.getElementById('apR');const up=()=>{const r=rl.find(x=>x.id===s.value),e=document.getElementById('apPVD');if(!r||!e)return;e.innerHTML=Object.entries(r.permissions).map(([k,v])=>`<span style="font-size:8px;padding:2px 6px;border-radius:4px;${v?'background:rgba(237,137,54,.12);color:var(--orange)':'background:var(--card);color:var(--muted);text-decoration:line-through'}">${PERMS[k]||k}</span>`).join('')};s.addEventListener('change',up);up()},50)}
+function doAppr(id){const rid=document.getElementById('apR').value,all=getU(),i=all.findIndex(u=>u.id===id);if(i>=0){all[i].status='ativo';all[i].roleId=rid;saveU(all)}closeModal();toast('Conta aprovada','success');buildNav();renderAD()}
+function rejU(id){openModal('Rejeitar','<p style="font-size:11px;color:var(--muted)">Conta será removida.</p>',`<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-danger" onclick="doRej('${id}')">Rejeitar</button>`)}
+function doRej(id){saveU(getU().filter(u=>u.id!==id));closeModal();toast('Rejeitada','success');buildNav();renderAD()}
 
-function renderARoles(el){
-  const roles=getR(),users=getU().filter(u=>!u.isMaster);
-  el.innerHTML=`<div class="flex justify-end mb-3"><button class="btn btn-primary btn-sm" onclick="openRoleModal()"><i class="fas fa-plus"></i>Novo Cargo</button></div>
-    <div class="space-y-3 fade-up">${roles.map(r=>{const cnt=users.filter(u=>u.roleId===r.id).length;return`<div class="card"><div class="flex items-center justify-between mb-2.5"><div><h3 class="font-semibold text-sm">${r.name}</h3><p class="text-[10px] text-[var(--muted)]">${r.desc} · ${cnt}
+function rAUs(el){
+  const us=getU().filter(u=>!u.isMaster&&u.status==='ativo'),rl=getR();
+  el.innerHTML=`<div class="card fade-up"><div class="tw"><table><thead><tr><th></th><th>Nome</th><th>Usuário</th><th>Cargo</th><th>Último Acesso</th><th>Acessos</th><th>Ações</th></tr></thead><tbody>${us.length?us.map(u=>{const r=rl.find(x=>x.id===u.roleId)||{name:'--'};const ph=u.photo?`<img src="${u.photo}" style="width:100%;height:100%;object-fit:cover">`:u.nome.charAt(0).toUpperCase();return`<tr><td><div style="width:28px;height:28px;border-radius:50%;${u.photo?'overflow-hidden':'background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:var(--muted)'}">${ph}</div></td><td style="font-weight:500">${u.nome}</td><td class="mono" style="color:var(--muted)">${u.username}</td><td><span class="badge badge-info">${r.name}</span></td><td style="font-size:10px;color:var(--muted)">${u.lastLogin?fmtDT(u.lastLogin):'--'}</td><td class="mono" style="color:var(--orange)">${u.loginCount||0}</td><td style="display:flex;gap:3px"><button class="btn btn-secondary btn-sm" onclick="chgRole('${u.id}')" title="Cargo"><i class="fas fa-user-tag" style="font-size:8px"></i></button><button class="btn btn-danger btn-sm" onclick="delUsr('${u.id}')" title="Excluir"><i class="fas fa-trash" style="font-size:8px"></i></button></td></tr>`}).join(''):'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px">Nenhum usuário</td></tr>'}</tbody></table></div></div>`;
+}
+function chgRole(id){const u=getU().find(x=>x.id===id);if(!u)return;const rl=getR();openModal('Alterar Cargo',`<div style="margin-bottom:8px"><span style="font-weight:600">${u.nome}</span> <span style="color:var(--muted);font-size:10px" class="mono">(${u.username})</span></div><div><label class="text-[9px] text-[var(--muted)] uppercase tracking-wider block mb-1">Cargo:</label><select id="nR" class="input">${rl.map(r=>`<option value="${r.id}" ${u.roleId===r.id?'selected':''}>${r.name} — ${r.desc}</option>`).join('')}</select></div><div style="margin-top:8px;background:var(--bg);border-radius:6px;padding:8px 10px"><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Permissões:</div><div id="crPVD" style="display:flex;flex-wrap:wrap;gap:3px"></div></div>`,`<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="doChgR('${id}')">Salvar</button>`);setTimeout(()=>{const s=document.getElementById('nR');const up=()=>{const r=rl.find(x=>x.id===s.value),e=document.getElementById('crPVD');if(!r||!e)return;e.innerHTML=Object.entries(r.permissions).map(([k,v])=>`<span style="font-size:8px;padding:2px 6px;border-radius:4px;${v?'background:rgba(237,137,54,.12);color:var(--orange)':'background:var(--card);color:var(--muted);text-decoration:line-through'}">${PERMS[k]||k}</span>`).join('')};s.addEventListener('change',up);up()},50)}
+function doChgR(id){const rid=document.getElementById('nR').value,all=getU(),i=all.findIndex(u=>u.id===id);if(i>=0){all[i].roleId=rid;saveU(all);if(cu&&cu.id===id){const rl=getR();cu={...all[i],role:rl.find(r=>r.id===rid)};buildNav()}}closeModal();toast('Cargo alterado','success');renderAD()}
+function delUsr(id){openModal('Confirmar','<p style="font-size:11px;color:var(--muted)">Excluir usuário?</p>',`<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-danger" onclick="doDelU('${id}')">Excluir</button>`)}
+function doDelU(id){saveU(getU().filter(u=>u.id!==id));if(cu&&cu.id===id)doLogout();closeModal();toast('Excluído','success');renderAD()}
+
+function rARl(el){
+  const rl=getR(),us=getU().filter(u=>!u.isMaster);
+  el.innerHTML=`<div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button class="btn btn-primary btn-sm" onclick="openRoleM()"><i class="fas fa-plus"></i>Novo Cargo</button></div>
+  <div style="display:flex;flex-direction:column;gap:8px" class="fade-up">${rl.map(r=>{const c=us.filter(u=>u.roleId===r.id).length;return`<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><div><h3 style="font-size:12px;font-weight:600">${r.name}</h3><p style="font-size:9px;color:var(--muted)">${r.desc} · ${c} usuário(s)</p></div>${r.id!=='r1'?`<div style="display:flex;gap:4px"><button class="btn btn-secondary btn-sm" onclick="openRoleM('${r.id}')"><i class="fas fa-pen" style="font-size:8px"></i></button><button class="btn btn-danger btn-sm" onclick="delRl('${r.id}')"><i class="fas fa-trash" style="font-size:8px"></i></button></div>`:''}</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:4px">${Object.entries(PERMS).map(([k,l])=>{const on=r.permissions[k];return`<div style="display:flex;align-items:center;gap:5px;background:var(--bg);border-radius:4px;padding:5px 8px"><div class="toggle toggle-ro ${on?'on':''}" style="width:28px;height:15px"></div><span style="font-size:9px;color:${on?'var(--text)':'var(--muted)'}">${l}</span></div>`}).join('')}</div></div>`}).join('')}</div>`;
+}
+function openRoleM(id){const rl=getR(),r=id?rl.find(x=>x.id===id):null;openModal(r?'Editar Cargo':'Novo Cargo',`<div style="display:flex;flex-direction:column;gap:8px"><div><label class="text-[9px] text-[var(--muted)] uppercase tracking-wider block mb-1">Nome</label><input id="rN" class="input" value="${r?r.name:''}"></div><div><label class="text-[9px] text-[var(--muted)] uppercase tracking-wider block mb-1">Descrição</label><input id="rD" class="input" value="${r?r.desc:''}"></div><div><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Permissões:</div><div style="display:flex;flex-direction:column;gap:4px">${Object.entries(PERMS).map(([k,l])=>{const on=r?!!r.permissions[k]:false;return`<div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg);border-radius:5px;padding:7px 10px"><span style="font-size:11px">${l}</span><div class="toggle ${on?'on':''}" data-p="${k}" onclick="this.classList.toggle('on')"></div></div>`}).join('')}</div></div></div>`,`<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveRl('${id||''}')">${r?'Salvar':'Criar'}</button>`)}
+function saveRl(id){const n=document.getElementById('rN').value.trim(),d=document.getElementById('rD').value.trim();if(!n){toast('Nome obrigatório','error');return}const p={};document.querySelectorAll('#modalBody .toggle[data-p]').forEach(t=>{p[t.dataset.p]=t.classList.contains('on')});const rl=getR();if(id){const i=rl.findIndex(r=>r.id===id);if(i>=0){rl[i].name=n;rl[i].desc=d;rl[i].permissions=p}toast('Atualizado','success')}else{rl.push({id:'r'+Date.now(),name:n,desc:d,permissions:p});toast('Criado','success')}saveR(rl);closeModal();renderAD()}
+function delRl(id){if(getU().filter(u=>u.roleId===id&&!u.isMaster).length){toast('Usuários usam este cargo','error');return}openModal('Confirmar','<p style="font-size:11px;color:var(--muted)">Excluir cargo?</p>',`<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-danger" onclick="doDelR('${id}')">Excluir</button>`)}
+function doDelR(id){saveR(getR().filter(r=>r.id!==id));closeModal();toast('Excluído','success');renderAD()}
+
+/* ===== SHIFTS ===== */
+function renderSH(){const d=getD();document.getElementById('secShifts').innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px"><h2 style="font-size:14px;font-weight:700">Turnos</h2><div style="flex:1;height:1px;background:var(--border)"></div></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px" class="fade-up">${d.shifts.map(s=>{const c=d.members.filter(m=>m.turma===s.turma).length,fc={ativo:'var(--green)',pendente:'var(--orange)',off:'var(--red)'}[s.status]||'var(--red)';return`<div class="card" style="border-top:2px solid ${fc}"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><h3 style="font-size:13px;font-weight:700">${s.name}</h3><span class="badge ${s.status==='ativo'?'badge-active':s.status==='pendente'?'badge-pending':'badge-off'}">${s.status}</span></div><div class="mono" style="font-size:11px;color:var(--orange);margin-bottom:6px">${s.time}</div><div style="font-size:11px;display:flex;flex-direction:column;gap:3px"><div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Turma</span><span style="font-weight:600">${s.turma}</span></div><div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Fiscal</span><span style="font-weight:600">${s.fiscal}</span></div><div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Membros</span><span style="font-weight:600">${c}</span></div></div><button class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;margin-top:10px" onclick="openSM('${s.id}')"><i class="fas fa-pen" style="font-size:8px"></i>Editar</button></div>`}).join('')}</div>`}
+function openSM(id){const d=getD(),s=d.shifts.find(x=>x.id===id);openModal('Editar Turno',`<div style="display:flex;flex-direction:column;gap:8px"><div><label class="text-[9px] text-[var(--muted)] uppercase tracking-wider block mb-1">Nome</label><input id="sN" class="input" value="${s.name}"></div><div><label class="text-[9px] text-[var(--muted)] uppercase tracking-wider block mb-1">Horário</label><input id="sT" class="input" value="${s.time}"></div><div><label class="text-[9px] text-[var(--muted)] uppercase tracking-wider block mb-1">Turma</label><select id="sTu" class="input">${['A','B','C','D'].map(t=>`<option ${s.turma===t?'selected':''}>${t}</option>`).join('')}</select></div><div><label class="text-[9px] text-[var(--muted)] uppercase tracking-wider block mb-1">Fiscal</label><input id="sF" class="input" value="${s.fiscal}"></div><div><label class="text-[9px] text-[var(--muted)] uppercase tracking-wider block mb-1">Status</label><select id="sS" class="input">${['ativo','pendente','off'].map(st=>`<option ${s.status===st?'selected':''}>${st}</option>`).join('')}</select></div></div>`,`<button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveSM('${id}')">Salvar</button>`)}
+function saveSM(id){const d=getD(),i=d.shifts.findIndex(s=>s.id===id);if(i>=0){d.shifts[i]={...d.shifts[i],name:document.getElementById('sN').value.trim(),time:document.getElementById('sT').value.trim(),turma:document.getElementById('sTu').value,fiscal:document.getElementById('sF').value.trim(),status:document.getElementById('sS').value};saveD(d);toast('Atualizado','success')}closeModal();renderSH()}
+
+/* ===== EXCEL ===== */
+let xlD=null,cM={};
+function renderEX(){document.getElementById('secExcel').innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px"><h2 style="font-size:14px;font-weight:700">Importar Planilha</h2><div style="flex:1;height:1px;background:var(--border)"></div></div>
+<div class="card fade-up" style="text-align:center;padding:28px" id="xlZ"><div style="display:flex;justify-content:center;gap:4px;margin-bottom:10px"><span style="width:22px;height:22px;border-radius:4px;background:var(--red);display:flex;align-items:center;justify-content:center"><i class="fas fa-file-excel" style="color:#fff;font-size:9px"></i></span><span style="width:22px;height:22px;border-radius:4px;background:var(--orange);display:flex;align-items:center;justify-content:center"><i class="fas fa-table" style="color:#fff;font-size:9px"></i></span><span style="width:22px;height:22px;border-radius:4px;background:var(--yellow);display:flex;align-items:center;justify-content:center"><i class="fas fa-download" style="color:#fff;font-size:9px"></i></span></div><p style="font-size:12px;font-weight:600;margin-bottom:3px">Arraste .xlsx ou .xls aqui</p><p style="font-size:9px;color:var(--muted);margin-bottom:12px">Detecção automática de colunas</p><input type="file" id="xlF" accept=".xlsx,.xls,.csv" style="display:none" onchange="hXL(this.files[0])"><button class="btn btn-primary" onclick="document.getElementById('xlF').click()"><i class="fas fa-upload"></i>Selecionar</button></div><div id="xlM" style="display:none"></div><div id="xlP" style="display:none"></div>`;
+  setTimeout(()=>{const z=document.getElementById('xlZ');if(!z)return;z.addEventListener('dragover',e=>{e.preventDefault();z.style.background='rgba(237,137,54,.03)'});z.addEventListener('dragleave',()=>{z.style.background=''});z.addEventListener('drop',e=>{e.preventDefault();z.style.background='';if(e.dataTransfer.files.length)hXL(e.dataTransfer.files[0])})},100)}
+function hXL(f){if(!f)return;const ext=f.name.split('.').pop().toLowerCase();if(!['xlsx','xls','csv'].includes(ext)){toast('Formato inválido','error');return}const r=new FileReader();r.onload=function(e){try{const wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'});const ws=wb.Sheets[wb.SheetNames[0]];const j=XLSX.utils.sheet_to_json(ws,{defval:''});if(!j.length){toast('Vazia','error');return}xlD=j;shMapUI(j,Object.keys(j[0]));toast(`${j.length} linhas`,'success')}catch(err){toast('Erro: '+err.message,'error')}};r.readAsArrayBuffer(f)}
+function shMapUI(d,cols){cM={};cols.forEach(c=>{const cl=c.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');for(const[f,ps]of Object.entries(FP)){if(ps.some(p=>cl.includes(p.normalize('NFD').replace(/[\u0300-\u036f]/g,')))){cM[c]=f;break}}});const el=document.getElementById('xlM');el.style.display='block';el.innerHTML=`<div class="card fade-up"><div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><h3 style="font-size:12px;font-weight:600">Mapeamento</h3><div style="flex:1"></div><span style="font-size:9px;color:var(--muted)">${cols.length} colunas</span></div><p style="font-size:9px;color:var(--muted);margin-bottom:8px">Verifique se cada coluna aponta para o campo correto.</p><div style="display:flex;flex-direction:column;gap:0;margin-bottom:10px">${cols.map(c=>`<div class="map-row"><div><div style="font-size:11px;font-weight:500">${c}</div><div style="font-size:8px;color:var(--muted)">Ex: ${d[0][c]||'(vazio)'}</div></div><div style="color:var(--orange);text-align:center;font-size:10px"><i class="fas fa-arrow-right"></i></div><select class="input cms" data-col="${c}" style="font-size:11px"><option value="">Ignorar</option>${Object.entries(FP).map(([f,ps])=>`<option value="${f}" ${cM[c]===f?'selected':''}>${ps[0]}</option>`).join('')}</select></div>`).join('')}</div><div style="display:flex;justify-content:flex-end;gap:6px"><button class="btn btn-secondary" onclick="document.getElementById('xlM').style.display='none';xlD=null">Cancelar</button><button class="btn btn-primary" onclick="cfMap()"><i class="fas fa-eye"></i>Pré-visualizar</button></div></div>`;setTimeout(()=>{el.querySelectorAll('.cms').forEach(s=>s.addEventListener('change',()=>{cM[s.dataset.col]=s.value||null}))},50)}
+function cfMap(){document.querySelectorAll('.cms').forEach(s=>{cM[s.dataset.col]=s.value||null});const mf=Object.values(cM).filter(Boolean);if(!mf.length){toast('Mapeie ao menos 1 coluna','error');return}const fl={};Object.entries(FP).forEach(([k,v])=>fl[k]=v[0]);const rm={};Object.entries(cM).forEach(([c,f])=>{if(f)rm[f]=c});const pv=xlD.slice(0,5);const el=document.getElementById('xlP');el.style.display='block';el.innerHTML=`<div class="card fade-up"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><h3 style="font-size:12px;font-weight:600">Pré-visualização</h3><div style="flex:1"></div><span style="font-size:9px;color:var(--muted)">${pv.length} de ${xlD.length}</span></div><div style="background:rgba(72,187,120,.06);border:1px solid rgba(72,187,120,.15);border-radius:5px;padding:6px 8px;margin-bottom:8px;font-size:9px;color:var(--green)"><i class="fas fa-check-circle" style="margin-right:3px"></i>Destino: <strong>${mf.map(f=>fl[f]).join(', ')}</strong></div><div class="tw" style="margin-bottom:8px"><table><thead><tr><th>#</th>${mf.map(f=>`<th>${fl[f]}</th>`).join('')}</tr></thead><tbody>${pv.map((r,i)=>`<tr><td class="mono" style="color:var(--muted)">${i+1}</td>${mf.map(f=>`<td>${r[rm[f]]||'<span style="color:var(--muted)">--</span>'}</td>`).join('')}</tr>`).join('')}</tbody></table></div><div style="display:flex;justify-content:flex-end;gap:6px"><button class="btn btn-secondary" onclick="document.getElementById('xlP').style.display='none'">Voltar</button><button class="btn btn-primary" onclick="exImp()"><i class="fas fa-database"></i>Importar ${xlD.length}</button></div></div>`}
+function exImp(){const rm={};Object.entries(cM).forEach(([c,f])=>{if(f)rm[f]=c});const d=getD();let n=0;xlD.forEach(row=>{const nome=(row[rm['nome']]||'').toString().trim();if(!nome)return;d.members.push({id:'m'+Date.now()+'_'+Math.random().toString(36).substr(2,4),nome,profissao:(row[rm['profissao']]||'').toString().trim()||'--',turno:(row[rm['turno']]||'').toString().trim()||'1° Turno',turma:(row[rm['turma']]||'').toString().trim()||'A',fiscal:(row[rm['fiscal']]||'').toString().trim(),matricula:(row[rm['matricula']]||'').toString().trim(),trem:(row[rm['trem']]||'').toString().trim(),status:(row[rm['status']]||'').toString().trim()||'ativo',observacao:(row[rm['observacao']]||'').toString().trim(),data:(row[rm['data']]||'').toString().trim(),hora:(row[rm['hora']]||'').toString().trim()});n++;const fc=(row[rm['fiscal']]||'').toString().trim(),tu=(row[rm['turma']]||'').toString().trim();if(fc&&tu){const sh=d.shifts.find(s=>s.turma===tu);if(sh&&!sh.fiscal)sh.fiscal=fc}});saveD(d);toast(`${n} importados!`,'success');xlD=null;cM={};renderEX()}
+
+/* ===== INIT ===== */
+document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+document.getElementById('loginUser').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass').focus()});
+autoLogin();
+</script>
+</body>
+</html>
