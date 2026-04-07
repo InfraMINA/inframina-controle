@@ -31,94 +31,559 @@
 body { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
 .mono { font-family: 'JetBrains Mono', monospace; }
 
-.login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-.login-box { width: 100%; max-width: 380px; }
-.login-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
-.login-title { text-align: center; margin-bottom: 4px; font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
-.login-sub { text-align: center; margin-bottom: 24px; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--border2); }
-.login-link { text-align: center; margin-top: 16px; font-size: 11px; color: var(--muted); }
-.login-link button { background: none; border: none; color: var(--orange); font-weight: 600; cursor: pointer; font-family: inherit; font-size: 11px; }
+/* LOGIN SCREEN COM HYDRA */
+.login-screen { 
+  min-height: 100vh; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  padding: 20px;
+  background: linear-gradient(135deg, #0e1015 0%, #1a1e28 100%);
+  position: relative;
+  overflow: hidden;
+}
 
-.sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 230px; background: var(--bg2); border-right: 1px solid var(--border); z-index: 50; display: flex; flex-direction: column; transition: transform 0.25s; }
-.sb-head { padding: 20px 16px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; gap: 12px; }
-.sb-logo { width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; }
-.sb-name { font-weight: 900; color: #fff; font-size: 16px; letter-spacing: 2px; text-transform: uppercase; text-align: center; }
+.login-screen::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+  opacity: 0.08;
+  pointer-events: none;
+}
 
-.nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 16px; cursor: pointer; color: var(--muted); transition: all 0.15s; border-left: 3px solid transparent; font-size: 12.5px; font-weight: 500; }
-.nav-item:hover { color: var(--text); background: rgba(237, 137, 54, 0.03); }
-.nav-item.active { color: var(--orange); background: rgba(237, 137, 54, 0.06); border-left-color: var(--orange); }
-.sb-foot { padding: 12px; border-top: 1px solid var(--border); margin-top: auto; }
-.sb-logout { width: 100%; padding: 6px 0; border: none; background: none; color: var(--muted); font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; border-radius: 6px; transition: all 0.15s; }
-.sb-logout:hover { background: var(--card); color: var(--red); }
+.login-box { 
+  width: 100%; 
+  max-width: 420px;
+  position: relative;
+  z-index: 10;
+}
 
-.main-content { margin-left: 230px; min-height: 100vh; }
-.top-bar { position: sticky; top: 0; z-index: 40; background: var(--glass); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); padding: 12px 22px; display: flex; align-items: center; justify-content: space-between; }
-.top-bar h1 { font-size: 13px; font-weight: 700; }
+.login-logo-container {
+  text-align: center;
+  margin-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
 
-.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
-.badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 10px; font-size: 9px; font-weight: 700; text-transform: uppercase; }
-.badge-active { background: rgba(72, 187, 120, 0.1); color: var(--green); }
+.login-logo-svg {
+  width: 120px;
+  height: 120px;
+  filter: drop-shadow(0 0 20px rgba(220, 38, 38, 0.3));
+}
 
-.btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; font-family: inherit; }
-.btn-primary { background: linear-gradient(135deg, var(--orange), #dd6b20); color: #fff; }
-.btn-primary:hover { box-shadow: 0 3px 10px rgba(237, 137, 54, 0.2); }
-.btn-secondary { background: var(--card2); color: var(--text); border: 1px solid var(--border); }
-.btn-secondary:hover { border-color: var(--orange); }
-.btn-danger { background: rgba(229, 62, 62, 0.1); color: var(--red); border: 1px solid rgba(229, 62, 62, 0.2); }
-.btn-danger:hover { background: rgba(229, 62, 62, 0.2); }
-.btn-sm { padding: 4px 9px; font-size: 10px; }
+.login-title {
+  font-size: 48px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #fff;
+  line-height: 1;
+}
 
-.input { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 8px 11px; color: var(--text); font-size: 11.5px; width: 100%; transition: border-color 0.15s; }
-.input:focus { outline: none; border-color: var(--orange); box-shadow: 0 0 0 2px rgba(237, 137, 54, 0.1); }
-select.input { cursor: pointer; }
+.login-sub {
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-top: 8px;
+}
 
-.section { display: none; padding: 20px 22px; }
-.section.active { display: block; }
+.login-card { 
+  background: var(--card); 
+  border: 1px solid var(--border); 
+  border-radius: 12px; 
+  padding: 24px;
+  margin-top: 24px;
+}
 
-.password-wrapper { position: relative; }
-.password-toggle { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--muted); cursor: pointer; padding: 5px; font-size: 12px; }
-.password-toggle:hover { color: var(--orange); }
+.login-link { 
+  text-align: center; 
+  margin-top: 16px; 
+  font-size: 11px; 
+  color: var(--muted); 
+}
 
-.toast-container { position: fixed; top: 14px; right: 14px; z-index: 9999; display: flex; flex-direction: column; gap: 5px; }
-.toast { display: flex; align-items: center; gap: 7px; padding: 9px 14px; border-radius: 7px; background: var(--card); border: 1px solid var(--border); transform: translateX(110%); transition: transform 0.25s; font-size: 11px; }
-.toast.show { transform: translateX(0); }
+.login-link button { 
+  background: none; 
+  border: none; 
+  color: var(--orange); 
+  font-weight: 600; 
+  cursor: pointer; 
+  font-family: inherit; 
+  font-size: 11px; 
+}
 
-.modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(3px); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
-.modal-overlay.show { opacity: 1; pointer-events: all; }
-.modal { background: var(--card); border: 1px solid var(--border); border-radius: 10px; width: 92%; max-width: 500px; max-height: 80vh; overflow-y: auto; transform: scale(0.96); transition: transform 0.2s; }
-.modal-overlay.show .modal { transform: scale(1); }
-.modal-head { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-.modal-head h3 { font-size: 13px; font-weight: 600; }
-.modal-body { padding: 18px; }
-.modal-foot { padding: 10px 18px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 6px; }
+.sidebar { 
+  position: fixed; 
+  left: 0; 
+  top: 0; 
+  bottom: 0; 
+  width: 230px; 
+  background: var(--bg2); 
+  border-right: 1px solid var(--border); 
+  z-index: 50; 
+  display: flex; 
+  flex-direction: column; 
+  transition: transform 0.25s; 
+}
 
-.table-responsive { overflow-x: auto; border-radius: 6px; border: 1px solid var(--border); margin-bottom: 12px; }
-.table-responsive table { width: 100%; border-collapse: collapse; font-size: 11px; }
-.table-responsive th { background: var(--bg2); padding: 10px; text-align: left; font-weight: 600; color: var(--muted); font-size: 9px; text-transform: uppercase; }
-.table-responsive td { padding: 10px; border-top: 1px solid var(--border); }
-.table-responsive tr:hover td { background: rgba(237, 137, 54, 0.015); }
+.sb-head { 
+  padding: 20px 16px; 
+  border-bottom: 1px solid var(--border); 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  gap: 12px; 
+}
 
-.stat-box { background: var(--card2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; }
-.stat-value { font-size: 24px; font-weight: 900; color: var(--orange); margin-bottom: 4px; }
-.stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; }
+.sb-logo { 
+  width: 70px; 
+  height: 70px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+}
 
-.fiscal-group { background: var(--card2); border-left: 3px solid var(--orange); border-radius: 6px; padding: 12px; margin-bottom: 12px; cursor: pointer; transition: all 0.15s; }
-.fiscal-group:hover { background: rgba(237, 137, 54, 0.05); }
-.fiscal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0; }
-.fiscal-name { font-weight: 600; font-size: 12px; color: var(--orange); }
-.operators-list { display: none; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
-.operators-list.show { display: block; }
-.operator-item { font-size: 11px; color: var(--text); padding: 6px 0; padding-left: 20px; border-bottom: 1px solid rgba(94, 101, 119, 0.3); }
-.operator-item:last-child { border-bottom: none; }
+.sb-name { 
+  font-weight: 900; 
+  color: #fff; 
+  font-size: 14px; 
+  letter-spacing: 2px; 
+  text-transform: uppercase; 
+  text-align: center; 
+}
 
-.empty-state { text-align: center; padding: 40px 20px; }
-.empty-state i { font-size: 48px; color: var(--muted); margin-bottom: 12px; display: block; opacity: 0.5; }
-.empty-state p { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
-.empty-state a { color: var(--orange); font-weight: 600; text-decoration: none; cursor: pointer; }
+.nav-item { 
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
+  padding: 9px 16px; 
+  cursor: pointer; 
+  color: var(--muted); 
+  transition: all 0.15s; 
+  border-left: 3px solid transparent; 
+  font-size: 12.5px; 
+  font-weight: 500; 
+}
+
+.nav-item:hover { 
+  color: var(--text); 
+  background: rgba(237, 137, 54, 0.03); 
+}
+
+.nav-item.active { 
+  color: var(--orange); 
+  background: rgba(237, 137, 54, 0.06); 
+  border-left-color: var(--orange); 
+}
+
+.sb-foot { 
+  padding: 12px; 
+  border-top: 1px solid var(--border); 
+  margin-top: auto; 
+}
+
+.sb-logout { 
+  width: 100%; 
+  padding: 6px 0; 
+  border: none; 
+  background: none; 
+  color: var(--muted); 
+  font-size: 11px; 
+  cursor: pointer; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  gap: 6px; 
+  border-radius: 6px; 
+  transition: all 0.15s; 
+}
+
+.sb-logout:hover { 
+  background: var(--card); 
+  color: var(--red); 
+}
+
+.main-content { 
+  margin-left: 230px; 
+  min-height: 100vh; 
+}
+
+.top-bar { 
+  position: sticky; 
+  top: 0; 
+  z-index: 40; 
+  background: var(--glass); 
+  backdrop-filter: blur(16px); 
+  border-bottom: 1px solid var(--border); 
+  padding: 12px 22px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+}
+
+.top-bar h1 { 
+  font-size: 13px; 
+  font-weight: 700; 
+}
+
+.card { 
+  background: var(--card); 
+  border: 1px solid var(--border); 
+  border-radius: 8px; 
+  padding: 16px; 
+  margin-bottom: 16px; 
+}
+
+.badge { 
+  display: inline-flex; 
+  align-items: center; 
+  padding: 2px 8px; 
+  border-radius: 10px; 
+  font-size: 9px; 
+  font-weight: 700; 
+  text-transform: uppercase; 
+}
+
+.badge-active { 
+  background: rgba(72, 187, 120, 0.1); 
+  color: var(--green); 
+}
+
+.btn { 
+  display: inline-flex; 
+  align-items: center; 
+  gap: 6px; 
+  padding: 7px 14px; 
+  border-radius: 6px; 
+  font-size: 11px; 
+  font-weight: 600; 
+  cursor: pointer; 
+  border: none; 
+  transition: all 0.15s; 
+  font-family: inherit; 
+}
+
+.btn-primary { 
+  background: linear-gradient(135deg, var(--orange), #dd6b20); 
+  color: #fff; 
+}
+
+.btn-primary:hover { 
+  box-shadow: 0 3px 10px rgba(237, 137, 54, 0.2); 
+}
+
+.btn-secondary { 
+  background: var(--card2); 
+  color: var(--text); 
+  border: 1px solid var(--border); 
+}
+
+.btn-secondary:hover { 
+  border-color: var(--orange); 
+}
+
+.btn-danger { 
+  background: rgba(229, 62, 62, 0.1); 
+  color: var(--red); 
+  border: 1px solid rgba(229, 62, 62, 0.2); 
+}
+
+.btn-danger:hover { 
+  background: rgba(229, 62, 62, 0.2); 
+}
+
+.btn-sm { 
+  padding: 4px 9px; 
+  font-size: 10px; 
+}
+
+.input { 
+  background: var(--bg); 
+  border: 1px solid var(--border); 
+  border-radius: 6px; 
+  padding: 8px 11px; 
+  color: var(--text); 
+  font-size: 11.5px; 
+  width: 100%; 
+  transition: border-color 0.15s; 
+}
+
+.input:focus { 
+  outline: none; 
+  border-color: var(--orange); 
+  box-shadow: 0 0 0 2px rgba(237, 137, 54, 0.1); 
+}
+
+select.input { 
+  cursor: pointer; 
+}
+
+.section { 
+  display: none; 
+  padding: 20px 22px; 
+}
+
+.section.active { 
+  display: block; 
+}
+
+.password-wrapper { 
+  position: relative; 
+}
+
+.password-toggle { 
+  position: absolute; 
+  right: 10px; 
+  top: 50%; 
+  transform: translateY(-50%); 
+  background: none; 
+  border: none; 
+  color: var(--muted); 
+  cursor: pointer; 
+  padding: 5px; 
+  font-size: 12px; 
+}
+
+.password-toggle:hover { 
+  color: var(--orange); 
+}
+
+.toast-container { 
+  position: fixed; 
+  top: 14px; 
+  right: 14px; 
+  z-index: 9999; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 5px; 
+}
+
+.toast { 
+  display: flex; 
+  align-items: center; 
+  gap: 7px; 
+  padding: 9px 14px; 
+  border-radius: 7px; 
+  background: var(--card); 
+  border: 1px solid var(--border); 
+  transform: translateX(110%); 
+  transition: transform 0.25s; 
+  font-size: 11px; 
+}
+
+.toast.show { 
+  transform: translateX(0); 
+}
+
+.modal-overlay { 
+  position: fixed; 
+  inset: 0; 
+  background: rgba(0, 0, 0, 0.5); 
+  backdrop-filter: blur(3px); 
+  z-index: 100; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  opacity: 0; 
+  pointer-events: none; 
+  transition: opacity 0.2s; 
+}
+
+.modal-overlay.show { 
+  opacity: 1; 
+  pointer-events: all; 
+}
+
+.modal { 
+  background: var(--card); 
+  border: 1px solid var(--border); 
+  border-radius: 10px; 
+  width: 92%; 
+  max-width: 500px; 
+  max-height: 80vh; 
+  overflow-y: auto; 
+  transform: scale(0.96); 
+  transition: transform 0.2s; 
+}
+
+.modal-overlay.show .modal { 
+  transform: scale(1); 
+}
+
+.modal-head { 
+  padding: 14px 18px; 
+  border-bottom: 1px solid var(--border); 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+}
+
+.modal-head h3 { 
+  font-size: 13px; 
+  font-weight: 600; 
+}
+
+.modal-body { 
+  padding: 18px; 
+}
+
+.modal-foot { 
+  padding: 10px 18px; 
+  border-top: 1px solid var(--border); 
+  display: flex; 
+  justify-content: flex-end; 
+  gap: 6px; 
+}
+
+.table-responsive { 
+  overflow-x: auto; 
+  border-radius: 6px; 
+  border: 1px solid var(--border); 
+  margin-bottom: 12px; 
+}
+
+.table-responsive table { 
+  width: 100%; 
+  border-collapse: collapse; 
+  font-size: 11px; 
+}
+
+.table-responsive th { 
+  background: var(--bg2); 
+  padding: 10px; 
+  text-align: left; 
+  font-weight: 600; 
+  color: var(--muted); 
+  font-size: 9px; 
+  text-transform: uppercase; 
+}
+
+.table-responsive td { 
+  padding: 10px; 
+  border-top: 1px solid var(--border); 
+}
+
+.table-responsive tr:hover td { 
+  background: rgba(237, 137, 54, 0.015); 
+}
+
+.stat-box { 
+  background: var(--card2); 
+  border: 1px solid var(--border); 
+  border-radius: 8px; 
+  padding: 12px; 
+  text-align: center; 
+}
+
+.stat-value { 
+  font-size: 24px; 
+  font-weight: 900; 
+  color: var(--orange); 
+  margin-bottom: 4px; 
+}
+
+.stat-label { 
+  font-size: 10px; 
+  color: var(--muted); 
+  text-transform: uppercase; 
+}
+
+.fiscal-group { 
+  background: var(--card2); 
+  border-left: 3px solid var(--orange); 
+  border-radius: 6px; 
+  padding: 12px; 
+  margin-bottom: 12px; 
+  cursor: pointer; 
+  transition: all 0.15s; 
+}
+
+.fiscal-group:hover { 
+  background: rgba(237, 137, 54, 0.05); 
+}
+
+.fiscal-header { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  margin-bottom: 0; 
+}
+
+.fiscal-name { 
+  font-weight: 600; 
+  font-size: 12px; 
+  color: var(--orange); 
+}
+
+.operators-list { 
+  display: none; 
+  margin-top: 8px; 
+  padding-top: 8px; 
+  border-top: 1px solid var(--border); 
+}
+
+.operators-list.show { 
+  display: block; 
+}
+
+.operator-item { 
+  font-size: 11px; 
+  color: var(--text); 
+  padding: 6px 0; 
+  padding-left: 20px; 
+  border-bottom: 1px solid rgba(94, 101, 119, 0.3); 
+}
+
+.operator-item:last-child { 
+  border-bottom: none; 
+}
+
+.empty-state { 
+  text-align: center; 
+  padding: 40px 20px; 
+}
+
+.empty-state i { 
+  font-size: 48px; 
+  color: var(--muted); 
+  margin-bottom: 12px; 
+  display: block; 
+  opacity: 0.5; 
+}
+
+.empty-state p { 
+  font-size: 12px; 
+  color: var(--muted); 
+  margin-bottom: 8px; 
+}
+
+.empty-state a { 
+  color: var(--orange); 
+  font-weight: 600; 
+  text-decoration: none; 
+  cursor: pointer; 
+}
 
 @media (max-width: 768px) {
-  .sidebar { transform: translateX(-100%); }
-  .main-content { margin-left: 0; }
+  .sidebar { 
+    transform: translateX(-100%); 
+  }
+  
+  .main-content { 
+    margin-left: 0; 
+  }
+  
+  .login-title {
+    font-size: 36px;
+  }
 }
 </style>
 </head>
@@ -142,17 +607,31 @@ select.input { cursor: pointer; }
 <!-- LOGIN -->
 <div id="loginScreen" class="login-screen">
   <div class="login-box">
-    <div style="text-align:center;margin-bottom:28px;">
-      <svg width="70" height="70" viewBox="0 0 100 100" fill="none" style="margin:0 auto;display:block;">
-        <path d="M50 10 C60 10 65 15 65 25 C65 35 55 40 50 50 C45 40 35 35 35 25 C35 15 40 10 50 10 Z" fill="#dc2626"/>
-        <circle cx="35" cy="35" r="8" fill="#dc2626"/>
-        <circle cx="65" cy="35" r="8" fill="#dc2626"/>
-        <path d="M50 50 C40 55 30 50 25 65 C20 75 25 85 35 90 C45 85 48 75 50 65" fill="#dc2626"/>
-        <path d="M50 50 C60 55 70 50 75 65 C80 75 75 85 65 90 C55 85 52 75 50 65" fill="#dc2626"/>
+    <div class="login-logo-container">
+      <svg class="login-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Caveira central -->
+        <circle cx="50" cy="30" r="12" fill="#dc2626"/>
+        <circle cx="42" cy="27" r="2.5" fill="#0e1015"/>
+        <circle cx="58" cy="27" r="2.5" fill="#0e1015"/>
+        <path d="M 45 32 Q 50 35 55 32" stroke="#0e1015" stroke-width="1.5" fill="none"/>
+        
+        <!-- Tentáculos -->
+        <path d="M 35 28 Q 25 20 20 25 Q 18 30 22 32 Q 28 30 35 30" fill="#dc2626"/>
+        <path d="M 65 28 Q 75 20 80 25 Q 82 30 78 32 Q 72 30 65 30" fill="#dc2626"/>
+        
+        <!-- Tentáculos inferiores -->
+        <path d="M 30 35 Q 20 40 15 50 Q 18 58 28 55 Q 32 45 35 40" fill="#dc2626"/>
+        <path d="M 70 35 Q 80 40 85 50 Q 82 58 72 55 Q 68 45 65 40" fill="#dc2626"/>
+        
+        <!-- Tentáculos abaixo -->
+        <path d="M 45 42 Q 40 55 35 70 Q 40 75 50 72 Q 48 55 50 45" fill="#dc2626"/>
+        <path d="M 55 42 Q 60 55 65 70 Q 60 75 50 72 Q 52 55 50 45" fill="#dc2626"/>
       </svg>
+      
+      <div class="login-title">INFRAMINA</div>
+      <div class="login-sub">Sistema de Controle</div>
     </div>
-    <div class="login-title">Controle de Abastecimento</div>
-    <div class="login-sub">InfraMINA</div>
+
     <div class="login-card">
       <div style="display:flex;flex-direction:column;gap:10px;">
         <div>
@@ -183,12 +662,24 @@ select.input { cursor: pointer; }
   <aside class="sidebar" id="sidebar">
     <div class="sb-head">
       <div class="sb-logo">
-        <svg width="70" height="70" viewBox="0 0 100 100" fill="none">
-          <path d="M50 10 C60 10 65 15 65 25 C65 35 55 40 50 50 C45 40 35 35 35 25 C35 15 40 10 50 10 Z" fill="#dc2626"/>
-          <circle cx="35" cy="35" r="8" fill="#dc2626"/>
-          <circle cx="65" cy="35" r="8" fill="#dc2626"/>
-          <path d="M50 50 C40 55 30 50 25 65 C20 75 25 85 35 90 C45 85 48 75 50 65" fill="#dc2626"/>
-          <path d="M50 50 C60 55 70 50 75 65 C80 75 75 85 65 90 C55 85 52 75 50 65" fill="#dc2626"/>
+        <svg width="60" height="60" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Caveira central -->
+          <circle cx="50" cy="30" r="12" fill="#dc2626"/>
+          <circle cx="42" cy="27" r="2.5" fill="#0e1015"/>
+          <circle cx="58" cy="27" r="2.5" fill="#0e1015"/>
+          <path d="M 45 32 Q 50 35 55 32" stroke="#0e1015" stroke-width="1.5" fill="none"/>
+          
+          <!-- Tentáculos -->
+          <path d="M 35 28 Q 25 20 20 25 Q 18 30 22 32 Q 28 30 35 30" fill="#dc2626"/>
+          <path d="M 65 28 Q 75 20 80 25 Q 82 30 78 32 Q 72 30 65 30" fill="#dc2626"/>
+          
+          <!-- Tentáculos inferiores -->
+          <path d="M 30 35 Q 20 40 15 50 Q 18 58 28 55 Q 32 45 35 40" fill="#dc2626"/>
+          <path d="M 70 35 Q 80 40 85 50 Q 82 58 72 55 Q 68 45 65 40" fill="#dc2626"/>
+          
+          <!-- Tentáculos abaixo -->
+          <path d="M 45 42 Q 40 55 35 70 Q 40 75 50 72 Q 48 55 50 45" fill="#dc2626"/>
+          <path d="M 55 42 Q 60 55 65 70 Q 60 75 50 72 Q 52 55 50 45" fill="#dc2626"/>
         </svg>
       </div>
       <div class="sb-name">INFRAMINA</div>
@@ -575,7 +1066,7 @@ function registrarAbastecimento(comboioId) {
 
 function deletarComboio(comboioId) {
   openModal('Confirmar Exclusão', `
-    <p style="font-size:11px;color:var(--muted);">Tem certeza que deseja remover este comboio? Esta ação não pode ser desfeita.</p>
+    <p style="font-size:11px;color:var(--muted);">Tem certeza que deseja remover este comboio?</p>
   `, `
     <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
     <button class="btn btn-danger" onclick="confirmarDelComboio('${comboioId}')">Remover</button>
@@ -736,7 +1227,7 @@ function salvarMembro() {
 function deletarMembro(event, id) {
   event.stopPropagation();
   openModal('Confirmar Exclusão', `
-    <p style="font-size:11px;color:var(--muted);">Deseja remover este membro da equipe?</p>
+    <p style="font-size:11px;color:var(--muted);">Deseja remover este membro?</p>
   `, `
     <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
     <button class="btn btn-danger" onclick="confirmarDelMembro('${id}')">Remover</button>
