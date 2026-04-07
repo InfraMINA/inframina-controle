@@ -4,6 +4,9 @@ FROM nginx:alpine
 # Copy the index.html file to the nginx server directory
 COPY ./index.html /usr/share/nginx/html/index.html
 
+# Copy the assets directory (images, etc) to the nginx server directory
+COPY ./assets /usr/share/nginx/html/assets
+
 # Expose port 80 to the outside world
 EXPOSE 80
 
