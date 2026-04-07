@@ -71,9 +71,10 @@ body { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: v
   gap: 16px;
 }
 
-.login-logo-svg {
+.login-logo-img {
   width: 120px;
   height: 120px;
+  object-fit: contain;
   filter: drop-shadow(0 0 20px rgba(220, 38, 38, 0.3));
 }
 
@@ -149,6 +150,13 @@ body { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: v
   display: flex; 
   align-items: center; 
   justify-content: center; 
+  overflow: hidden;
+}
+
+.sb-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .sb-name { 
@@ -608,25 +616,7 @@ select.input {
 <div id="loginScreen" class="login-screen">
   <div class="login-box">
     <div class="login-logo-container">
-      <svg class="login-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Caveira central -->
-        <circle cx="50" cy="30" r="12" fill="#dc2626"/>
-        <circle cx="42" cy="27" r="2.5" fill="#0e1015"/>
-        <circle cx="58" cy="27" r="2.5" fill="#0e1015"/>
-        <path d="M 45 32 Q 50 35 55 32" stroke="#0e1015" stroke-width="1.5" fill="none"/>
-        
-        <!-- Tentáculos -->
-        <path d="M 35 28 Q 25 20 20 25 Q 18 30 22 32 Q 28 30 35 30" fill="#dc2626"/>
-        <path d="M 65 28 Q 75 20 80 25 Q 82 30 78 32 Q 72 30 65 30" fill="#dc2626"/>
-        
-        <!-- Tentáculos inferiores -->
-        <path d="M 30 35 Q 20 40 15 50 Q 18 58 28 55 Q 32 45 35 40" fill="#dc2626"/>
-        <path d="M 70 35 Q 80 40 85 50 Q 82 58 72 55 Q 68 45 65 40" fill="#dc2626"/>
-        
-        <!-- Tentáculos abaixo -->
-        <path d="M 45 42 Q 40 55 35 70 Q 40 75 50 72 Q 48 55 50 45" fill="#dc2626"/>
-        <path d="M 55 42 Q 60 55 65 70 Q 60 75 50 72 Q 52 55 50 45" fill="#dc2626"/>
-      </svg>
+      <img src="assets/images.jpg" class="login-logo-img" alt="InfraMINA Logo">
       
       <div class="login-title">INFRAMINA</div>
       <div class="login-sub">Sistema de Controle</div>
@@ -662,25 +652,7 @@ select.input {
   <aside class="sidebar" id="sidebar">
     <div class="sb-head">
       <div class="sb-logo">
-        <svg width="60" height="60" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Caveira central -->
-          <circle cx="50" cy="30" r="12" fill="#dc2626"/>
-          <circle cx="42" cy="27" r="2.5" fill="#0e1015"/>
-          <circle cx="58" cy="27" r="2.5" fill="#0e1015"/>
-          <path d="M 45 32 Q 50 35 55 32" stroke="#0e1015" stroke-width="1.5" fill="none"/>
-          
-          <!-- Tentáculos -->
-          <path d="M 35 28 Q 25 20 20 25 Q 18 30 22 32 Q 28 30 35 30" fill="#dc2626"/>
-          <path d="M 65 28 Q 75 20 80 25 Q 82 30 78 32 Q 72 30 65 30" fill="#dc2626"/>
-          
-          <!-- Tentáculos inferiores -->
-          <path d="M 30 35 Q 20 40 15 50 Q 18 58 28 55 Q 32 45 35 40" fill="#dc2626"/>
-          <path d="M 70 35 Q 80 40 85 50 Q 82 58 72 55 Q 68 45 65 40" fill="#dc2626"/>
-          
-          <!-- Tentáculos abaixo -->
-          <path d="M 45 42 Q 40 55 35 70 Q 40 75 50 72 Q 48 55 50 45" fill="#dc2626"/>
-          <path d="M 55 42 Q 60 55 65 70 Q 60 75 50 72 Q 52 55 50 45" fill="#dc2626"/>
-        </svg>
+        <img src="assets/images.jpg" class="sb-logo-img" alt="InfraMINA">
       </div>
       <div class="sb-name">INFRAMINA</div>
     </div>
