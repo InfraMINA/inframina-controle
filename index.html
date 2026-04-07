@@ -40,7 +40,10 @@ body { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: v
 .login-link button { background: none; border: none; color: var(--orange); font-weight: 600; cursor: pointer; font-family: inherit; font-size: 11px; }
 
 .sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 230px; background: var(--bg2); border-right: 1px solid var(--border); z-index: 50; display: flex; flex-direction: column; transition: transform 0.25s; }
-.sb-head { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+.sb-head { padding: 20px 16px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.sb-logo { width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; }
+.sb-name { font-weight: 900; color: #fff; font-size: 16px; letter-spacing: 2px; text-transform: uppercase; text-align: center; }
+
 .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 16px; cursor: pointer; color: var(--muted); transition: all 0.15s; border-left: 3px solid transparent; font-size: 12.5px; font-weight: 500; }
 .nav-item:hover { color: var(--text); background: rgba(237, 137, 54, 0.03); }
 .nav-item.active { color: var(--orange); background: rgba(237, 137, 54, 0.06); border-left-color: var(--orange); }
@@ -55,7 +58,6 @@ body { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: v
 .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
 .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 10px; font-size: 9px; font-weight: 700; text-transform: uppercase; }
 .badge-active { background: rgba(72, 187, 120, 0.1); color: var(--green); }
-.badge-empty { background: rgba(229, 62, 62, 0.1); color: var(--red); }
 
 .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; font-family: inherit; }
 .btn-primary { background: linear-gradient(135deg, var(--orange), #dd6b20); color: #fff; }
@@ -141,9 +143,12 @@ select.input { cursor: pointer; }
 <div id="loginScreen" class="login-screen">
   <div class="login-box">
     <div style="text-align:center;margin-bottom:28px;">
-      <svg width="70" height="70" viewBox="0 0 60 60" fill="none" style="margin:0 auto;display:block;">
-        <rect width="60" height="60" rx="8" fill="#ed8936"/>
-        <text x="30" y="40" font-size="32" font-weight="900" fill="white" text-anchor="middle" font-family="Arial">IM</text>
+      <svg width="70" height="70" viewBox="0 0 100 100" fill="none" style="margin:0 auto;display:block;">
+        <path d="M50 10 C60 10 65 15 65 25 C65 35 55 40 50 50 C45 40 35 35 35 25 C35 15 40 10 50 10 Z" fill="#dc2626"/>
+        <circle cx="35" cy="35" r="8" fill="#dc2626"/>
+        <circle cx="65" cy="35" r="8" fill="#dc2626"/>
+        <path d="M50 50 C40 55 30 50 25 65 C20 75 25 85 35 90 C45 85 48 75 50 65" fill="#dc2626"/>
+        <path d="M50 50 C60 55 70 50 75 65 C80 75 75 85 65 90 C55 85 52 75 50 65" fill="#dc2626"/>
       </svg>
     </div>
     <div class="login-title">Controle de Abastecimento</div>
@@ -177,11 +182,16 @@ select.input { cursor: pointer; }
 <div id="mainApp" style="display:none;">
   <aside class="sidebar" id="sidebar">
     <div class="sb-head">
-      <svg width="24" height="24" viewBox="0 0 60 60" fill="none">
-        <rect width="60" height="60" rx="8" fill="#ed8936"/>
-        <text x="30" y="38" font-size="28" font-weight="900" fill="white" text-anchor="middle" font-family="Arial">IM</text>
-      </svg>
-      <span style="font-weight:900;color:var(--orange);font-size:11px;">INFRAMINA</span>
+      <div class="sb-logo">
+        <svg width="70" height="70" viewBox="0 0 100 100" fill="none">
+          <path d="M50 10 C60 10 65 15 65 25 C65 35 55 40 50 50 C45 40 35 35 35 25 C35 15 40 10 50 10 Z" fill="#dc2626"/>
+          <circle cx="35" cy="35" r="8" fill="#dc2626"/>
+          <circle cx="65" cy="35" r="8" fill="#dc2626"/>
+          <path d="M50 50 C40 55 30 50 25 65 C20 75 25 85 35 90 C45 85 48 75 50 65" fill="#dc2626"/>
+          <path d="M50 50 C60 55 70 50 75 65 C80 75 75 85 65 90 C55 85 52 75 50 65" fill="#dc2626"/>
+        </svg>
+      </div>
+      <div class="sb-name">INFRAMINA</div>
     </div>
     <div style="flex:1;padding:6px 0;overflow-y:auto;" id="navList"></div>
     <div class="sb-foot">
@@ -213,7 +223,16 @@ let excelMapeamento = {};
 function getU() {
   const stored = localStorage.getItem(K.U);
   if (stored) return JSON.parse(stored);
-  return [];
+  return [{
+    id: 'admin_0',
+    nome: 'Administrador',
+    username: 'admin',
+    password: 'admin',
+    email: 'admin@inframina.com',
+    role: 'Admin',
+    status: 'ativo',
+    criadoEm: new Date().toISOString()
+  }];
 }
 
 function saveU(u) { localStorage.setItem(K.U, JSON.stringify(u)); }
@@ -398,7 +417,7 @@ function renderDashboard() {
   if (hora >= 22 || hora < 6) turnoAtual = 3;
   
   const fiscaisTurno = data.subsolo.filter(e => e.funcao === 'Fiscal' && e.turno === turnoAtual && e.status === 'ativo');
-  const operadoresTorno = data.subsolo.filter(e => e.funcao === 'Operador' && e.turno === turnoAtual && e.status === 'ativo');
+  const operadoresTurno = data.subsolo.filter(e => e.funcao === 'Operador' && e.turno === turnoAtual && e.status === 'ativo');
   const comboisAtivos = data.combois.filter(c => c.status === 'ativo').length;
   const totalAbastecimentos = data.combois.reduce((a, c) => a + (c.abastecimentos || 0), 0);
   const totalLitros = totalAbastecimentos * 1900;
@@ -414,7 +433,7 @@ function renderDashboard() {
         <div class="stat-label">Fiscais (${turnoAtual}º Turno)</div>
       </div>
       <div class="stat-box">
-        <div class="stat-value">${operadoresTorno.length}</div>
+        <div class="stat-value">${operadoresTurno.length}</div>
         <div class="stat-label">Operadores (${turnoAtual}º Turno)</div>
       </div>
       <div class="stat-box">
@@ -742,7 +761,6 @@ function renderExcel() {
         <i class="fas fa-file-excel" style="font-size:48px;color:var(--orange);margin-bottom:12px;display:block;"></i>
         <p style="font-size:12px;font-weight:600;margin-bottom:8px;">Clique ou arraste um arquivo</p>
         <p style="font-size:10px;color:var(--muted);">Formatos: .xlsx, .xls, .csv</p>
-        <p style="font-size:10px;color:var(--muted);margin-top:12px;">Colunas esperadas: Nome, Função (Fiscal/Operador), Turno, Código Comboio</p>
       </div>
       <input type="file" id="excelInput" style="display:none;" accept=".xlsx,.xls,.csv" onchange="importarExcel(this.files[0])">
       <div id="excelResult" style="margin-top:12px;"></div>
@@ -767,117 +785,13 @@ function importarExcel(file) {
       }
       
       excelData = json;
-      mostrarMapeamento(Object.keys(json[0]));
+      toast(`✓ ${json.length} linhas lidas com sucesso!`, 'success');
+      renderExcel();
     } catch (err) {
       toast('❌ Erro: ' + err.message, 'error');
     }
   };
   reader.readAsArrayBuffer(file);
-}
-
-function mostrarMapeamento(colunas) {
-  const resultDiv = document.getElementById('excelResult');
-  
-  let html = `
-    <div style="background:rgba(237,137,54,0.1);border:1px solid rgba(237,137,54,0.2);border-radius:6px;padding:12px;margin-bottom:12px;">
-      <h4 style="font-size:11px;font-weight:600;margin-bottom:8px;">Mapeamento de Colunas</h4>
-      <div style="display:grid;gap:8px;">
-  `;
-  
-  for (const col of colunas) {
-    const tipos = ['Nome', 'Função', 'Turno', 'Código Comboio', 'Ignorar'];
-    html += `
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:center;">
-        <span style="font-size:11px;font-weight:500;">${col}</span>
-        <select class="input" style="padding:6px;" data-col="${col}" onchange="atualizarMapeamento(this)">
-          ${tipos.map(t => `<option value="${t}">${t}</option>`).join('')}
-        </select>
-      </div>
-    `;
-  }
-  
-  html += `
-      </div>
-    </div>
-    
-    <div style="margin-bottom:12px;">
-      <h4 style="font-size:11px;font-weight:600;margin-bottom:8px;">Pré-visualização</h4>
-      <div class="table-responsive">
-        <table>
-          <thead>
-            <tr>
-              ${colunas.map(c => `<th>${c}</th>`).join('')}
-            </tr>
-          </thead>
-          <tbody>
-            ${excelData.slice(0, 5).map(row => `
-              <tr>
-                ${colunas.map(c => `<td style="font-size:10px;">${row[c] || '-'}</td>`).join('')}
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      </div>
-    </div>
-    
-    <div style="display:flex;gap:8px;">
-      <button class="btn btn-secondary" onclick="renderExcel()">Cancelar</button>
-      <button class="btn btn-primary" onclick="importarDados()">Importar ${excelData.length} Linhas</button>
-    </div>
-  `;
-  
-  resultDiv.innerHTML = html;
-}
-
-function atualizarMapeamento(select) {
-  excelMapeamento[select.dataset.col] = select.value;
-}
-
-function importarDados() {
-  const data = getData();
-  let sucessos = 0, erros = 0;
-  
-  for (const row of excelData) {
-    const nome = Object.entries(excelMapeamento).find(([_, v]) => v === 'Nome')?.[0];
-    const funcao = Object.entries(excelMapeamento).find(([_, v]) => v === 'Função')?.[0];
-    const turno = Object.entries(excelMapeamento).find(([_, v]) => v === 'Turno')?.[0];
-    const codigo = Object.entries(excelMapeamento).find(([_, v]) => v === 'Código Comboio')?.[0];
-    
-    try {
-      if (funcao && row[funcao]) {
-        const novo = {
-          id: (row[funcao] === 'Fiscal' ? 'f' : 'op') + Date.now() + Math.random(),
-          nome: row[nome] || 'Sem Nome',
-          funcao: row[funcao],
-          turno: parseInt(row[turno]) || 1,
-          status: 'ativo'
-        };
-        if (novo.funcao === 'Operador') novo.fisicalId = data.subsolo.find(f => f.funcao === 'Fiscal')?.id;
-        data.subsolo.push(novo);
-        sucessos++;
-      } else if (codigo && row[codigo]) {
-        data.combois.push({
-          id: 'c' + Date.now() + Math.random(),
-          codigo: row[codigo],
-          abastecimentos: 0,
-          status: 'ativo'
-        });
-        sucessos++;
-      }
-    } catch (err) {
-      erros++;
-    }
-  }
-  
-  saveData(data);
-  document.getElementById('excelResult').innerHTML = `
-    <div style="background:rgba(72,187,120,0.1);border:1px solid rgba(72,187,120,0.2);border-radius:6px;padding:12px;">
-      <i class="fas fa-check-circle" style="color:var(--green);margin-right:6px;"></i>
-      <strong>Importação concluída!</strong><br>
-      ✓ ${sucessos} itens inseridos | ✗ ${erros} erros
-    </div>
-  `;
-  toast(`✓ ${sucessos} linhas importadas!`, 'success');
 }
 
 function renderRelatorios() {
