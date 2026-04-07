@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>InfraMINA - Controle Operacional</title>
+<title>InfraMINA - Controle de Abastecimento</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -55,17 +55,20 @@ body { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: v
 .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
 .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 10px; font-size: 9px; font-weight: 700; text-transform: uppercase; }
 .badge-active { background: rgba(72, 187, 120, 0.1); color: var(--green); }
-.badge-orange { background: rgba(237, 137, 54, 0.1); color: var(--orange); }
+.badge-empty { background: rgba(229, 62, 62, 0.1); color: var(--red); }
 
 .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; font-family: inherit; }
 .btn-primary { background: linear-gradient(135deg, var(--orange), #dd6b20); color: #fff; }
 .btn-primary:hover { box-shadow: 0 3px 10px rgba(237, 137, 54, 0.2); }
 .btn-secondary { background: var(--card2); color: var(--text); border: 1px solid var(--border); }
 .btn-secondary:hover { border-color: var(--orange); }
+.btn-danger { background: rgba(229, 62, 62, 0.1); color: var(--red); border: 1px solid rgba(229, 62, 62, 0.2); }
+.btn-danger:hover { background: rgba(229, 62, 62, 0.2); }
 .btn-sm { padding: 4px 9px; font-size: 10px; }
 
 .input { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 8px 11px; color: var(--text); font-size: 11.5px; width: 100%; transition: border-color 0.15s; }
 .input:focus { outline: none; border-color: var(--orange); box-shadow: 0 0 0 2px rgba(237, 137, 54, 0.1); }
+select.input { cursor: pointer; }
 
 .section { display: none; padding: 20px 22px; }
 .section.active { display: block; }
@@ -87,7 +90,7 @@ body { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: v
 .modal-body { padding: 18px; }
 .modal-foot { padding: 10px 18px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 6px; }
 
-.table-responsive { overflow-x: auto; border-radius: 6px; border: 1px solid var(--border); }
+.table-responsive { overflow-x: auto; border-radius: 6px; border: 1px solid var(--border); margin-bottom: 12px; }
 .table-responsive table { width: 100%; border-collapse: collapse; font-size: 11px; }
 .table-responsive th { background: var(--bg2); padding: 10px; text-align: left; font-weight: 600; color: var(--muted); font-size: 9px; text-transform: uppercase; }
 .table-responsive td { padding: 10px; border-top: 1px solid var(--border); }
@@ -99,15 +102,17 @@ body { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: v
 
 .fiscal-group { background: var(--card2); border-left: 3px solid var(--orange); border-radius: 6px; padding: 12px; margin-bottom: 12px; cursor: pointer; transition: all 0.15s; }
 .fiscal-group:hover { background: rgba(237, 137, 54, 0.05); }
-.fiscal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.fiscal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0; }
 .fiscal-name { font-weight: 600; font-size: 12px; color: var(--orange); }
 .operators-list { display: none; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
 .operators-list.show { display: block; }
-.operator-item { font-size: 11px; color: var(--text); padding: 4px 0; padding-left: 16px; }
+.operator-item { font-size: 11px; color: var(--text); padding: 6px 0; padding-left: 20px; border-bottom: 1px solid rgba(94, 101, 119, 0.3); }
+.operator-item:last-child { border-bottom: none; }
 
-.photo-box { width: 80px; height: 80px; border-radius: 50%; border: 2px dashed var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; background: var(--card2); margin: 0 auto; }
-.photo-box:hover { border-color: var(--orange); background: rgba(237, 137, 54, 0.05); }
-.photo-box img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+.empty-state { text-align: center; padding: 40px 20px; }
+.empty-state i { font-size: 48px; color: var(--muted); margin-bottom: 12px; display: block; opacity: 0.5; }
+.empty-state p { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+.empty-state a { color: var(--orange); font-weight: 600; text-decoration: none; cursor: pointer; }
 
 @media (max-width: 768px) {
   .sidebar { transform: translateX(-100%); }
@@ -141,7 +146,7 @@ body { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: v
         <text x="30" y="40" font-size="32" font-weight="900" fill="white" text-anchor="middle" font-family="Arial">IM</text>
       </svg>
     </div>
-    <div class="login-title">Controle Operacional</div>
+    <div class="login-title">Controle de Abastecimento</div>
     <div class="login-sub">InfraMINA</div>
     <div class="login-card">
       <div style="display:flex;flex-direction:column;gap:10px;">
@@ -201,20 +206,14 @@ body { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: v
 <script>
 const K = { U: 'im_users', S: 'im_session', D: 'im_data' };
 let currentUser = null;
+let excelData = null;
+let excelMapeamento = {};
 
 // ===== STORAGE =====
 function getU() {
   const stored = localStorage.getItem(K.U);
   if (stored) return JSON.parse(stored);
-  return [{
-    id: 'admin_0',
-    nome: 'Administrador',
-    username: 'admin',
-    password: 'admin',
-    email: 'admin@inframina.com',
-    role: 'Admin',
-    status: 'ativo'
-  }];
+  return [];
 }
 
 function saveU(u) { localStorage.setItem(K.U, JSON.stringify(u)); }
@@ -223,23 +222,8 @@ function getData() {
   const stored = localStorage.getItem(K.D);
   if (stored) return JSON.parse(stored);
   return {
-    combois: [
-      { id: 'c1', codigo: 'T-101', linha: 'Linha Norte', descidas: 0, status: 'ativo' },
-      { id: 'c2', codigo: 'T-205', linha: 'Linha Sul', descidas: 0, status: 'ativo' },
-      { id: 'c3', codigo: 'T-312', linha: 'Linha Leste', descidas: 0, status: 'ativo' },
-    ],
-    subsolo: [
-      { id: 'f1', nome: 'Carlos Silva', funcao: 'Fiscal', turno: 1, status: 'ativo', operadores: ['op1', 'op2'] },
-      { id: 'op1', nome: 'João Santos', funcao: 'Operador', turno: 1, status: 'ativo', fisicalId: 'f1' },
-      { id: 'op2', nome: 'Maria Oliveira', funcao: 'Operador', turno: 1, status: 'ativo', fisicalId: 'f1' },
-      { id: 'f2', nome: 'Roberto Lima', funcao: 'Fiscal', turno: 2, status: 'ativo', operadores: ['op3'] },
-      { id: 'op3', nome: 'Ana Costa', funcao: 'Operador', turno: 2, status: 'ativo', fisicalId: 'f2' },
-    ],
-    schedule: [
-      { id: 'sch1', tipo: 'Montagem', hora: '06:00', duracao: '2h', responsavel: 'Carlos Silva', status: 'concluído' },
-      { id: 'sch2', tipo: 'Operação Normal', hora: '08:00', duracao: '6h', responsavel: 'Equipe 1º', status: 'em andamento' },
-      { id: 'sch3', tipo: 'Desmontagem', hora: '14:30', duracao: '2h', responsavel: 'Roberto Lima', status: 'próximo' },
-    ]
+    combois: [],
+    subsolo: []
   };
 }
 
@@ -318,6 +302,12 @@ function doLogin() {
     return;
   }
   
+  if (user.status !== 'ativo') {
+    errorEl.textContent = '❌ Conta inativa';
+    errorEl.style.display = 'block';
+    return;
+  }
+  
   currentUser = user;
   saveSess({ uid: user.id });
   document.getElementById('loginScreen').style.display = 'none';
@@ -362,16 +352,16 @@ function buildNav() {
       <i class="fas fa-tachometer-alt"></i><span>Dashboard</span>
     </div>
     <div class="nav-item" onclick="navTo('secCombois')">
-      <i class="fas fa-train"></i><span>Comboios</span>
+      <i class="fas fa-gas-pump"></i><span>Comboios</span>
     </div>
     <div class="nav-item" onclick="navTo('secSubsolo')">
-      <i class="fas fa-hard-hat"></i><span>Subsolo</span>
+      <i class="fas fa-users-rectangle"></i><span>Equipe</span>
     </div>
     <div class="nav-item" onclick="navTo('secExcel')">
-      <i class="fas fa-file-excel"></i><span>Excel</span>
+      <i class="fas fa-file-excel"></i><span>Importar</span>
     </div>
     <div class="nav-item" onclick="navTo('secRelatorios')">
-      <i class="fas fa-file-pdf"></i><span>Relatórios</span>
+      <i class="fas fa-chart-bar"></i><span>Relatórios</span>
     </div>
   `;
 }
@@ -384,9 +374,9 @@ function navTo(secId) {
   
   const titles = {
     'secDashboard': 'Dashboard Operacional',
-    'secCombois': 'Controle de Comboios',
+    'secCombois': 'Comboios de Abastecimento',
     'secSubsolo': 'Equipe de Subsolo',
-    'secExcel': 'Importar Excel',
+    'secExcel': 'Importar Dados',
     'secRelatorios': 'Relatórios'
   };
   document.getElementById('pageTitle').textContent = titles[secId];
@@ -407,10 +397,11 @@ function renderDashboard() {
   if (hora >= 14) turnoAtual = 2;
   if (hora >= 22 || hora < 6) turnoAtual = 3;
   
-  const equipeTurno = data.subsolo.filter(e => e.turno === turnoAtual && e.status === 'ativo');
+  const fiscaisTurno = data.subsolo.filter(e => e.funcao === 'Fiscal' && e.turno === turnoAtual && e.status === 'ativo');
+  const operadoresTorno = data.subsolo.filter(e => e.funcao === 'Operador' && e.turno === turnoAtual && e.status === 'ativo');
   const comboisAtivos = data.combois.filter(c => c.status === 'ativo').length;
-  const totalDescidas = data.combois.reduce((a, c) => a + c.descidas, 0);
-  const totalLitros = totalDescidas * 1900;
+  const totalAbastecimentos = data.combois.reduce((a, c) => a + (c.abastecimentos || 0), 0);
+  const totalLitros = totalAbastecimentos * 1900;
   
   const html = `
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px;">
@@ -419,45 +410,33 @@ function renderDashboard() {
         <div class="stat-label">Comboios Ativos</div>
       </div>
       <div class="stat-box">
-        <div class="stat-value">${equipeTurno.length}</div>
-        <div class="stat-label">Equipe (${turnoAtual}º Turno)</div>
+        <div class="stat-value">${fiscaisTurno.length}</div>
+        <div class="stat-label">Fiscais (${turnoAtual}º Turno)</div>
       </div>
       <div class="stat-box">
-        <div class="stat-value">${totalDescidas}</div>
-        <div class="stat-label">Total Descidas</div>
+        <div class="stat-value">${operadoresTorno.length}</div>
+        <div class="stat-label">Operadores (${turnoAtual}º Turno)</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value">${totalAbastecimentos}</div>
+        <div class="stat-label">Total Abastecimentos</div>
       </div>
       <div class="stat-box">
         <div class="stat-value">${(totalLitros/1000).toFixed(1)}k</div>
-        <div class="stat-label">Litros Descidos</div>
+        <div class="stat-label">Litros Distribuídos</div>
       </div>
     </div>
 
     <div class="card">
-      <h3 style="font-size:13px;font-weight:600;margin-bottom:12px;">📅 Cronograma da Correia</h3>
-      ${data.schedule.map(s => {
-        const cores = { 'concluído': 'var(--green)', 'em andamento': 'var(--orange)', 'próximo': 'var(--teal)' };
-        return `
-          <div style="background:var(--card2);border-left:3px solid ${cores[s.status]};border-radius:6px;padding:12px;margin-bottom:8px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-              <div style="font-weight:600;font-size:12px;">${s.tipo}</div>
-              <span class="badge" style="background:${cores[s.status] === 'var(--green)' ? 'rgba(72,187,120,0.1)' : cores[s.status] === 'var(--orange)' ? 'rgba(237,137,54,0.1)' : 'rgba(56,178,172,0.1)'};color:${cores[s.status]};">${s.status}</span>
-            </div>
-            <div style="font-size:10px;color:var(--muted);">🕐 ${s.hora} | ${s.duracao} | ${s.responsavel}</div>
-          </div>
-        `;
-      }).join('')}
-    </div>
-
-    <div class="card">
-      <h3 style="font-size:13px;font-weight:600;margin-bottom:12px;">⏱️ Status Operacional</h3>
+      <h3 style="font-size:13px;font-weight:600;margin-bottom:12px;">💧 Resumo Operacional</h3>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-        <div style="background:var(--card2);border-left:3px solid var(--green);border-radius:6px;padding:12px;">
-          <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">ADIANTAMENTO</div>
-          <div style="font-size:18px;font-weight:900;color:var(--green);">00h 00m</div>
+        <div style="background:var(--card2);border-left:3px solid var(--orange);border-radius:6px;padding:12px;">
+          <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">CAPACIDADE POR COMBOIO</div>
+          <div style="font-size:18px;font-weight:900;color:var(--orange);">1900<span style="font-size:12px;">L</span></div>
         </div>
-        <div style="background:var(--card2);border-left:3px solid var(--red);border-radius:6px;padding:12px;">
-          <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">ATRASO</div>
-          <div style="font-size:18px;font-weight:900;color:var(--red);">00h 00m</div>
+        <div style="background:var(--card2);border-left:3px solid var(--green);border-radius:6px;padding:12px;">
+          <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">TOTAL DISTRIBUÍDO</div>
+          <div style="font-size:18px;font-weight:900;color:var(--green);">${totalLitros.toLocaleString('pt-BR')}<span style="font-size:12px;">L</span></div>
         </div>
       </div>
     </div>
@@ -467,16 +446,35 @@ function renderDashboard() {
 
 function renderCombois() {
   const data = getData();
+  
+  if (data.combois.length === 0) {
+    const html = `
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <h3 style="font-size:13px;font-weight:600;">Comboios de Abastecimento</h3>
+          <button class="btn btn-primary btn-sm" onclick="novoComboio()"><i class="fas fa-plus"></i>Novo</button>
+        </div>
+        <div class="empty-state">
+          <i class="fas fa-gas-pump"></i>
+          <p>Nenhum comboio cadastrado</p>
+          <a onclick="novoComboio()">Cadastre um novo comboio</a>
+        </div>
+      </div>
+    `;
+    document.getElementById('secCombois').innerHTML = html;
+    return;
+  }
+  
   const rows = data.combois.map(c => `
     <tr>
       <td style="font-weight:600;">${c.codigo}</td>
-      <td>${c.linha}</td>
       <td style="text-align:center;">1900L</td>
-      <td style="text-align:center;font-weight:600;color:var(--yellow);">${c.descidas}</td>
-      <td style="text-align:center;color:var(--orange);">${(c.descidas * 1900).toLocaleString('pt-BR')}L</td>
+      <td style="text-align:center;font-weight:600;color:var(--yellow);">${c.abastecimentos || 0}</td>
+      <td style="text-align:center;color:var(--orange);">${((c.abastecimentos || 0) * 1900).toLocaleString('pt-BR')}L</td>
       <td style="text-align:center;"><span class="badge badge-active">${c.status}</span></td>
-      <td style="text-align:center;">
-        <button class="btn btn-primary btn-sm" onclick="descerComboio('${c.id}')"><i class="fas fa-arrow-down"></i>Descer</button>
+      <td style="text-align:center;display:flex;gap:4px;justify-content:center;">
+        <button class="btn btn-primary btn-sm" onclick="registrarAbastecimento('${c.id}')"><i class="fas fa-plus"></i></button>
+        <button class="btn btn-danger btn-sm" onclick="deletarComboio('${c.id}')"><i class="fas fa-trash"></i></button>
       </td>
     </tr>
   `).join('');
@@ -484,21 +482,19 @@ function renderCombois() {
   const html = `
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <h3 style="font-size:13px;font-weight:600;">Controle de Comboios</h3>
+        <h3 style="font-size:13px;font-weight:600;">Comboios de Abastecimento</h3>
         <button class="btn btn-primary btn-sm" onclick="novoComboio()"><i class="fas fa-plus"></i>Novo</button>
       </div>
-      <p style="font-size:10px;color:var(--muted);margin-bottom:12px;">💧 Cada comboio desce com 1900L de óleo lubrificante</p>
       <div class="table-responsive">
         <table>
           <thead>
             <tr>
               <th>Código</th>
-              <th>Linha</th>
-              <th>Cap. Litros</th>
-              <th>Descidas</th>
+              <th>Capacidade</th>
+              <th>Abastecimentos</th>
               <th>Total Litros</th>
               <th>Status</th>
-              <th>Ação</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody>${rows}</tbody>
@@ -510,15 +506,11 @@ function renderCombois() {
 }
 
 function novoComboio() {
-  openModal('Novo Comboio', `
+  openModal('Novo Comboio de Abastecimento', `
     <div style="display:flex;flex-direction:column;gap:10px;">
       <div>
-        <label for="combCodigo" style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Código (ex: T-401)</label>
+        <label style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Código Identificador (ex: AB-001)</label>
         <input id="combCodigo" class="input" placeholder="">
-      </div>
-      <div>
-        <label for="combLinha" style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Linha</label>
-        <input id="combLinha" class="input" placeholder="">
       </div>
     </div>
   `, `
@@ -529,10 +521,9 @@ function novoComboio() {
 
 function salvarComboio() {
   const codigo = document.getElementById('combCodigo').value.trim();
-  const linha = document.getElementById('combLinha').value.trim();
   
-  if (!codigo || !linha) {
-    toast('Preencha todos os campos', 'error');
+  if (!codigo) {
+    toast('Preencha o código do comboio', 'error');
     return;
   }
   
@@ -540,36 +531,73 @@ function salvarComboio() {
   data.combois.push({
     id: 'c' + Date.now(),
     codigo,
-    linha,
-    descidas: 0,
-    status: 'ativo'
+    abastecimentos: 0,
+    status: 'ativo',
+    criadoEm: new Date().toISOString()
   });
   saveData(data);
   closeModal();
-  toast('✓ Comboio criado', 'success');
+  toast('✓ Comboio cadastrado', 'success');
   renderCombois();
   renderDashboard();
 }
 
-function descerComboio(comboioId) {
+function registrarAbastecimento(comboioId) {
   const data = getData();
   const c = data.combois.find(x => x.id === comboioId);
   if (c) {
-    c.descidas++;
+    c.abastecimentos = (c.abastecimentos || 0) + 1;
     saveData(data);
-    toast(`✓ Descida registrada! ${(c.descidas * 1900).toLocaleString('pt-BR')}L descidos`, 'success');
+    toast(`✓ Abastecimento registrado! Total: ${(c.abastecimentos * 1900).toLocaleString('pt-BR')}L`, 'success');
     renderCombois();
     renderDashboard();
   }
+}
+
+function deletarComboio(comboioId) {
+  openModal('Confirmar Exclusão', `
+    <p style="font-size:11px;color:var(--muted);">Tem certeza que deseja remover este comboio? Esta ação não pode ser desfeita.</p>
+  `, `
+    <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+    <button class="btn btn-danger" onclick="confirmarDelComboio('${comboioId}')">Remover</button>
+  `);
+}
+
+function confirmarDelComboio(id) {
+  const data = getData();
+  data.combois = data.combois.filter(c => c.id !== id);
+  saveData(data);
+  closeModal();
+  toast('✓ Comboio removido', 'success');
+  renderCombois();
+  renderDashboard();
 }
 
 function renderSubsolo() {
   const data = getData();
   const fiscais = data.subsolo.filter(e => e.funcao === 'Fiscal');
   
+  if (fiscais.length === 0) {
+    const html = `
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <h3 style="font-size:13px;font-weight:600;">Equipe de Subsolo</h3>
+          <button class="btn btn-primary btn-sm" onclick="novoMembro()"><i class="fas fa-plus"></i>Novo</button>
+        </div>
+        <div class="empty-state">
+          <i class="fas fa-users"></i>
+          <p>Nenhum membro cadastrado</p>
+          <a onclick="novoMembro()">Cadastre um fiscal ou operador</a>
+        </div>
+      </div>
+    `;
+    document.getElementById('secSubsolo').innerHTML = html;
+    return;
+  }
+  
   const html = `
     <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
         <h3 style="font-size:13px;font-weight:600;">Equipe de Subsolo</h3>
         <button class="btn btn-primary btn-sm" onclick="novoMembro()"><i class="fas fa-plus"></i>Novo</button>
       </div>
@@ -581,15 +609,19 @@ function renderSubsolo() {
             <div class="fiscal-header">
               <div class="fiscal-name">👨‍💼 ${f.nome}</div>
               <div style="display:flex;gap:8px;align-items:center;">
-                <span style="font-size:9px;color:var(--muted);">${ops.length} operador(es)</span>
+                <span style="font-size:9px;color:var(--muted);">${ops.length} operador(es) | ${f.turno}º turno</span>
                 <span class="badge badge-active">${f.status}</span>
                 <i class="fas fa-chevron-down" style="font-size:10px;color:var(--muted);transition:transform 0.2s;"></i>
+                <button class="btn btn-danger btn-sm" onclick="deletarMembro(event, '${f.id}')"><i class="fas fa-trash"></i></button>
               </div>
             </div>
             <div class="operators-list">
-              ${ops.map(op => `
-                <div class="operator-item">👤 ${op.nome} <span style="color:var(--muted);">(Operador - ${op.turno}º Turno)</span></div>
-              `).join('')}
+              ${ops.length > 0 ? ops.map(op => `
+                <div class="operator-item" style="display:flex;justify-content:space-between;">
+                  <span>👤 ${op.nome}</span>
+                  <button class="btn btn-danger btn-sm" onclick="deletarMembro(event, '${op.id}')"><i class="fas fa-trash" style="font-size:10px;"></i></button>
+                </div>
+              `).join('') : '<div style="padding:6px 20px;color:var(--muted);font-size:10px;">Nenhum operador vinculado</div>'}
             </div>
           </div>
         `;
@@ -601,7 +633,7 @@ function renderSubsolo() {
 
 function toggleOperadores(element) {
   const list = element.querySelector('.operators-list');
-  const icon = element.querySelector('i');
+  const icon = element.querySelector('i.fa-chevron-down');
   list.classList.toggle('show');
   icon.style.transform = list.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0)';
 }
@@ -610,27 +642,27 @@ function novoMembro() {
   const data = getData();
   const fiscais = data.subsolo.filter(e => e.funcao === 'Fiscal');
   
-  openModal('Novo Membro - Subsolo', `
+  openModal('Novo Membro - Equipe de Subsolo', `
     <div style="display:flex;flex-direction:column;gap:10px;">
       <div>
-        <label for="memNome" style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Nome</label>
+        <label style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Nome Completo</label>
         <input id="memNome" class="input" placeholder="">
       </div>
       <div>
-        <label for="memFuncao" style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Função</label>
+        <label style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Função</label>
         <select id="memFuncao" class="input" onchange="updateFiscalSelect()">
-          <option value="Fiscal">Fiscal</option>
-          <option value="Operador">Operador</option>
+          <option value="Fiscal">Fiscal (Responsável Principal)</option>
+          <option value="Operador">Operador (Subordinado)</option>
         </select>
       </div>
       <div id="fiscalSelectDiv" style="display:none;">
-        <label for="memFiscal" style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Vinculado a Fiscal</label>
+        <label style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Vinculado a Fiscal</label>
         <select id="memFiscal" class="input">
           ${fiscais.map(f => `<option value="${f.id}">${f.nome}</option>`).join('')}
         </select>
       </div>
       <div>
-        <label for="memTurno" style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Turno</label>
+        <label style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Turno</label>
         <select id="memTurno" class="input">
           <option value="1">1º Turno (06:00-14:00)</option>
           <option value="2">2º Turno (14:00-22:00)</option>
@@ -666,30 +698,51 @@ function salvarMembro() {
     nome,
     funcao,
     turno: parseInt(turno),
-    status: 'ativo'
+    status: 'ativo',
+    criadoEm: new Date().toISOString()
   };
   
   if (funcao === 'Operador') {
     novo.fisicalId = document.getElementById('memFiscal').value;
-  } else {
-    novo.operadores = [];
   }
   
   data.subsolo.push(novo);
   saveData(data);
   closeModal();
-  toast('✓ Membro adicionado', 'success');
+  toast('✓ Membro adicionado à equipe', 'success');
   renderSubsolo();
+  renderDashboard();
+}
+
+function deletarMembro(event, id) {
+  event.stopPropagation();
+  openModal('Confirmar Exclusão', `
+    <p style="font-size:11px;color:var(--muted);">Deseja remover este membro da equipe?</p>
+  `, `
+    <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+    <button class="btn btn-danger" onclick="confirmarDelMembro('${id}')">Remover</button>
+  `);
+}
+
+function confirmarDelMembro(id) {
+  const data = getData();
+  data.subsolo = data.subsolo.filter(m => m.id !== id);
+  saveData(data);
+  closeModal();
+  toast('✓ Membro removido', 'success');
+  renderSubsolo();
+  renderDashboard();
 }
 
 function renderExcel() {
   const html = `
     <div class="card">
-      <h3 style="font-size:13px;font-weight:600;margin-bottom:12px;">📊 Importar Dados via Excel</h3>
+      <h3 style="font-size:13px;font-weight:600;margin-bottom:16px;">📊 Importar Dados via Excel</h3>
       <div style="border:2px dashed var(--border);border-radius:8px;padding:40px;text-align:center;cursor:pointer;" onclick="document.getElementById('excelInput').click()">
         <i class="fas fa-file-excel" style="font-size:48px;color:var(--orange);margin-bottom:12px;display:block;"></i>
         <p style="font-size:12px;font-weight:600;margin-bottom:8px;">Clique ou arraste um arquivo</p>
         <p style="font-size:10px;color:var(--muted);">Formatos: .xlsx, .xls, .csv</p>
+        <p style="font-size:10px;color:var(--muted);margin-top:12px;">Colunas esperadas: Nome, Função (Fiscal/Operador), Turno, Código Comboio</p>
       </div>
       <input type="file" id="excelInput" style="display:none;" accept=".xlsx,.xls,.csv" onchange="importarExcel(this.files[0])">
       <div id="excelResult" style="margin-top:12px;"></div>
@@ -708,68 +761,147 @@ function importarExcel(file) {
       const sheet = workbook.Sheets[workbook.SheetNames[0]];
       const json = XLSX.utils.sheet_to_json(sheet);
       
-      const resultDiv = document.getElementById('excelResult');
-      const table = `
-        <div style="margin-top:16px;">
-          <div style="background:rgba(72,187,120,0.1);border:1px solid rgba(72,187,120,0.2);border-radius:6px;padding:12px;margin-bottom:12px;">
-            <i class="fas fa-check-circle" style="color:var(--green);margin-right:6px;"></i>
-            <strong>${json.length} linhas importadas com sucesso!</strong>
-          </div>
-          <div class="table-responsive">
-            <table>
-              <thead>
-                <tr>
-                  ${Object.keys(json[0] || {}).map(k => `<th>${k}</th>`).join('')}
-                </tr>
-              </thead>
-              <tbody>
-                ${json.slice(0, 10).map(row => `
-                  <tr>
-                    ${Object.values(row).map(v => `<td>${v}</td>`).join('')}
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          </div>
-          ${json.length > 10 ? `<p style="font-size:10px;color:var(--muted);margin-top:8px;">...e mais ${json.length - 10} linhas</p>` : ''}
-        </div>
-      `;
-      resultDiv.innerHTML = table;
-      toast(`✓ ${json.length} linhas importadas!`, 'success');
+      if (!json || json.length === 0) {
+        toast('❌ Arquivo vazio', 'error');
+        return;
+      }
+      
+      excelData = json;
+      mostrarMapeamento(Object.keys(json[0]));
     } catch (err) {
-      toast('❌ Erro ao ler: ' + err.message, 'error');
+      toast('❌ Erro: ' + err.message, 'error');
     }
   };
   reader.readAsArrayBuffer(file);
 }
 
+function mostrarMapeamento(colunas) {
+  const resultDiv = document.getElementById('excelResult');
+  
+  let html = `
+    <div style="background:rgba(237,137,54,0.1);border:1px solid rgba(237,137,54,0.2);border-radius:6px;padding:12px;margin-bottom:12px;">
+      <h4 style="font-size:11px;font-weight:600;margin-bottom:8px;">Mapeamento de Colunas</h4>
+      <div style="display:grid;gap:8px;">
+  `;
+  
+  for (const col of colunas) {
+    const tipos = ['Nome', 'Função', 'Turno', 'Código Comboio', 'Ignorar'];
+    html += `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:center;">
+        <span style="font-size:11px;font-weight:500;">${col}</span>
+        <select class="input" style="padding:6px;" data-col="${col}" onchange="atualizarMapeamento(this)">
+          ${tipos.map(t => `<option value="${t}">${t}</option>`).join('')}
+        </select>
+      </div>
+    `;
+  }
+  
+  html += `
+      </div>
+    </div>
+    
+    <div style="margin-bottom:12px;">
+      <h4 style="font-size:11px;font-weight:600;margin-bottom:8px;">Pré-visualização</h4>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              ${colunas.map(c => `<th>${c}</th>`).join('')}
+            </tr>
+          </thead>
+          <tbody>
+            ${excelData.slice(0, 5).map(row => `
+              <tr>
+                ${colunas.map(c => `<td style="font-size:10px;">${row[c] || '-'}</td>`).join('')}
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-secondary" onclick="renderExcel()">Cancelar</button>
+      <button class="btn btn-primary" onclick="importarDados()">Importar ${excelData.length} Linhas</button>
+    </div>
+  `;
+  
+  resultDiv.innerHTML = html;
+}
+
+function atualizarMapeamento(select) {
+  excelMapeamento[select.dataset.col] = select.value;
+}
+
+function importarDados() {
+  const data = getData();
+  let sucessos = 0, erros = 0;
+  
+  for (const row of excelData) {
+    const nome = Object.entries(excelMapeamento).find(([_, v]) => v === 'Nome')?.[0];
+    const funcao = Object.entries(excelMapeamento).find(([_, v]) => v === 'Função')?.[0];
+    const turno = Object.entries(excelMapeamento).find(([_, v]) => v === 'Turno')?.[0];
+    const codigo = Object.entries(excelMapeamento).find(([_, v]) => v === 'Código Comboio')?.[0];
+    
+    try {
+      if (funcao && row[funcao]) {
+        const novo = {
+          id: (row[funcao] === 'Fiscal' ? 'f' : 'op') + Date.now() + Math.random(),
+          nome: row[nome] || 'Sem Nome',
+          funcao: row[funcao],
+          turno: parseInt(row[turno]) || 1,
+          status: 'ativo'
+        };
+        if (novo.funcao === 'Operador') novo.fisicalId = data.subsolo.find(f => f.funcao === 'Fiscal')?.id;
+        data.subsolo.push(novo);
+        sucessos++;
+      } else if (codigo && row[codigo]) {
+        data.combois.push({
+          id: 'c' + Date.now() + Math.random(),
+          codigo: row[codigo],
+          abastecimentos: 0,
+          status: 'ativo'
+        });
+        sucessos++;
+      }
+    } catch (err) {
+      erros++;
+    }
+  }
+  
+  saveData(data);
+  document.getElementById('excelResult').innerHTML = `
+    <div style="background:rgba(72,187,120,0.1);border:1px solid rgba(72,187,120,0.2);border-radius:6px;padding:12px;">
+      <i class="fas fa-check-circle" style="color:var(--green);margin-right:6px;"></i>
+      <strong>Importação concluída!</strong><br>
+      ✓ ${sucessos} itens inseridos | ✗ ${erros} erros
+    </div>
+  `;
+  toast(`✓ ${sucessos} linhas importadas!`, 'success');
+}
+
 function renderRelatorios() {
   const data = getData();
-  const totalLitros = data.combois.reduce((a, c) => a + (c.descidas * 1900), 0);
+  const totalLitros = data.combois.reduce((a, c) => a + ((c.abastecimentos || 0) * 1900), 0);
   
   const html = `
     <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <h3 style="font-size:13px;font-weight:600;">📋 Relatórios</h3>
-      </div>
+      <h3 style="font-size:13px;font-weight:600;margin-bottom:16px;">📋 Relatórios Operacionais</h3>
       <div style="background:var(--card2);border-left:3px solid var(--orange);border-radius:6px;padding:12px;margin-bottom:16px;">
-        <div style="font-size:12px;font-weight:600;margin-bottom:4px;">Resumo Operacional</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px;">
-          <div>Comboios: <strong>${data.combois.length}</strong></div>
-          <div>Total Descidas: <strong>${data.combois.reduce((a,c) => a+c.descidas, 0)}</strong></div>
-          <div>Litros Descidos: <strong>${totalLitros.toLocaleString('pt-BR')}L</strong></div>
-          <div>Equipe Ativa: <strong>${data.subsolo.filter(e => e.status === 'ativo').length}</strong></div>
+        <div style="font-size:12px;font-weight:600;margin-bottom:8px;">Resumo Geral</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:11px;">
+          <div>🚛 Comboios: <strong>${data.combois.length}</strong></div>
+          <div>👥 Equipe: <strong>${data.subsolo.length}</strong></div>
+          <div>📊 Abastecimentos: <strong>${data.combois.reduce((a,c) => a+(c.abastecimentos||0), 0)}</strong></div>
+          <div>💧 Litros: <strong>${totalLitros.toLocaleString('pt-BR')}L</strong></div>
         </div>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;">
         <button class="btn btn-secondary" style="width:100%;justify-content:center;" onclick="exportarPDF()">
           <i class="fas fa-file-pdf"></i>PDF
         </button>
         <button class="btn btn-secondary" style="width:100%;justify-content:center;" onclick="enviarWhatsApp()">
           <i class="fab fa-whatsapp"></i>WhatsApp
-        </button>
-        <button class="btn btn-secondary" style="width:100%;justify-content:center;" onclick="enviarEmail()">
-          <i class="fas fa-envelope"></i>Email
         </button>
       </div>
     </div>
@@ -779,20 +911,19 @@ function renderRelatorios() {
 
 function exportarPDF() {
   const data = getData();
-  const totalLitros = data.combois.reduce((a, c) => a + (c.descidas * 1900), 0);
+  const totalLitros = data.combois.reduce((a, c) => a + ((c.abastecimentos || 0) * 1900), 0);
   const html = `
     <div style="font-family:Arial;padding:20px;background:#fff;color:#000;">
-      <h1>INFRAMINA - Relatório Operacional</h1>
+      <h1>INFRAMINA - Relatório de Abastecimento</h1>
       <p><strong>Data:</strong> ${new Date().toLocaleDateString('pt-BR')} ${new Date().toLocaleTimeString('pt-BR')}</p>
       <p><strong>Gerado por:</strong> ${currentUser.nome}</p>
       <hr style="margin:16px 0;">
-      <h2 style="margin-top:16px;">Comboios</h2>
+      <h2>Comboios</h2>
       <table style="width:100%;border-collapse:collapse;margin-top:8px;">
         <thead>
           <tr style="background:#f0f0f0;">
             <th style="border:1px solid #ccc;padding:8px;">Código</th>
-            <th style="border:1px solid #ccc;padding:8px;">Linha</th>
-            <th style="border:1px solid #ccc;padding:8px;">Descidas</th>
+            <th style="border:1px solid #ccc;padding:8px;">Abastecimentos</th>
             <th style="border:1px solid #ccc;padding:8px;">Total Litros</th>
           </tr>
         </thead>
@@ -800,81 +931,53 @@ function exportarPDF() {
           ${data.combois.map(c => `
             <tr>
               <td style="border:1px solid #ccc;padding:8px;">${c.codigo}</td>
-              <td style="border:1px solid #ccc;padding:8px;">${c.linha}</td>
-              <td style="border:1px solid #ccc;padding:8px;">${c.descidas}</td>
-              <td style="border:1px solid #ccc;padding:8px;">${(c.descidas * 1900).toLocaleString('pt-BR')}L</td>
+              <td style="border:1px solid #ccc;padding:8px;">${c.abastecimentos || 0}</td>
+              <td style="border:1px solid #ccc;padding:8px;">${((c.abastecimentos || 0) * 1900).toLocaleString('pt-BR')}L</td>
             </tr>
           `).join('')}
         </tbody>
       </table>
-      <h3 style="margin-top:16px;">Total Geral: ${totalLitros.toLocaleString('pt-BR')}L</h3>
+      <h3 style="margin-top:16px;">Total: ${totalLitros.toLocaleString('pt-BR')}L</h3>
     </div>
   `;
   const element = document.createElement('div');
   element.innerHTML = html;
-  const opt = {
+  html2pdf().set({
     margin: 10,
     filename: 'relatorio-inframina.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
     html2canvas: { scale: 2 },
     jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
-  };
-  html2pdf().set(opt).from(element).save();
+  }).from(element).save();
   toast('✓ PDF gerado!', 'success');
 }
 
 function enviarWhatsApp() {
   const data = getData();
-  const totalLitros = data.combois.reduce((a, c) => a + (c.descidas * 1900), 0);
-  const msg = `📊 *Relatório InfraMINA*\n\n✓ Total Litros: ${totalLitros.toLocaleString('pt-BR')}L\n✓ Comboios: ${data.combois.length}\n✓ Descidas: ${data.combois.reduce((a,c) => a+c.descidas, 0)}\n✓ Equipe: ${data.subsolo.length}\n\nGerado por: ${currentUser.nome}\n${new Date().toLocaleDateString('pt-BR')} ${new Date().toLocaleTimeString('pt-BR')}`;
-  const url = `https://wa.me/?text=${encodeURIComponent(msg)}`;
-  window.open(url, '_blank');
+  const totalLitros = data.combois.reduce((a, c) => a + ((c.abastecimentos || 0) * 1900), 0);
+  const msg = `📊 *Relatório InfraMINA*\n\n💧 Litros: ${totalLitros.toLocaleString('pt-BR')}L\n🚛 Comboios: ${data.combois.length}\n👥 Equipe: ${data.subsolo.length}\n\n${new Date().toLocaleDateString('pt-BR')} ${new Date().toLocaleTimeString('pt-BR')}`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
   toast('✓ Abrindo WhatsApp...', 'info');
 }
 
-function enviarEmail() {
-  const data = getData();
-  const totalLitros = data.combois.reduce((a, c) => a + (c.descidas * 1900), 0);
-  const subject = 'Relatório InfraMINA - ' + new Date().toLocaleDateString('pt-BR');
-  const body = `Olá,\n\nSegue relatório operacional:\n\n=== RESUMO ===\nTotal de Litros: ${totalLitros.toLocaleString('pt-BR')}L\nTotal de Comboios: ${data.combois.length}\nTotal de Descidas: ${data.combois.reduce((a,c) => a+c.descidas, 0)}\nEquipe Ativa: ${data.subsolo.length}\n\nGerado por: ${currentUser.nome}\nData: ${new Date().toLocaleDateString('pt-BR')} ${new Date().toLocaleTimeString('pt-BR')}\n\nAtenciosamente,\nSistema InfraMINA`;
-  window.location.href = `mailto:${currentUser.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  toast('✓ Abrindo email...', 'info');
-}
-
 // ===== REGISTRO =====
-let regFotoData = '';
-
 function openRegisterModal() {
   openModal('Criar Conta', `
     <div style="display:flex;flex-direction:column;gap:10px;">
-      <div style="text-align:center;margin-bottom:12px;">
-        <div class="photo-box" onclick="document.getElementById('regFoto').click();">
-          <i class="fas fa-camera" style="font-size:24px;color:var(--muted);"></i>
-        </div>
-        <p style="font-size:9px;color:var(--muted);margin-top:6px;">Clique para adicionar foto</p>
-        <input type="file" id="regFoto" accept="image/*" style="display:none;" onchange="previewFoto(this)">
-      </div>
       <div>
-        <label for="regNome" style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Nome Completo</label>
+        <label style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Nome Completo</label>
         <input id="regNome" class="input" placeholder="">
       </div>
       <div>
-        <label for="regEmail" style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Email</label>
+        <label style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Email</label>
         <input id="regEmail" class="input" type="email" placeholder="">
       </div>
       <div>
-        <label for="regUser" style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Usuário</label>
+        <label style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Usuário</label>
         <input id="regUser" class="input" placeholder="">
       </div>
       <div>
-        <label for="regPass" style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Senha</label>
+        <label style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Senha</label>
         <input id="regPass" class="input" type="password" placeholder="">
-      </div>
-      <div>
-        <label style="font-size:9px;color:var(--muted);text-transform:uppercase;display:flex;align-items:center;gap:6px;cursor:pointer;">
-          <input type="checkbox" id="regNotif">
-          <span>Receber notificações por email</span>
-        </label>
       </div>
     </div>
   `, `
@@ -883,25 +986,14 @@ function openRegisterModal() {
   `);
 }
 
-function previewFoto(input) {
-  if (!input.files[0]) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    regFotoData = e.target.result;
-    document.querySelector('.photo-box').innerHTML = `<img src="${regFotoData}">`;
-  };
-  reader.readAsDataURL(input.files[0]);
-}
-
 function criarConta() {
   const nome = document.getElementById('regNome').value.trim();
   const email = document.getElementById('regEmail').value.trim();
   const user = document.getElementById('regUser').value.trim();
   const pass = document.getElementById('regPass').value;
-  const notif = document.getElementById('regNotif').checked;
   
   if (!nome || !email || !user || !pass) {
-    toast('Preencha todos os campos obrigatórios', 'error');
+    toast('Preencha todos os campos', 'error');
     return;
   }
   
@@ -911,7 +1003,7 @@ function criarConta() {
     return;
   }
   
-  const newUser = {
+  users.push({
     id: 'u' + Date.now(),
     nome,
     email,
@@ -919,15 +1011,11 @@ function criarConta() {
     password: pass,
     role: 'Usuário',
     status: 'ativo',
-    foto: regFotoData,
-    notificacoes: notif,
     criadoEm: new Date().toISOString()
-  };
+  });
   
-  users.push(newUser);
   saveU(users);
   closeModal();
-  regFotoData = '';
   toast('✓ Conta criada! Faça login', 'success');
   document.getElementById('loginUser').value = user;
   document.getElementById('loginPass').value = '';
