@@ -1,22 +1,12 @@
-# Dockerfile for Node.js Serve Setup
+# Use the official Nginx image from the Docker Hub
+FROM nginx:alpine
 
-# Use the official Node.js image.
-FROM node:14
+# Copy static files to the nginx server directory
+COPY ./index.html /usr/share/nginx/html/index.html
+COPY ./assets/ /usr/share/nginx/html/assets/
 
-# Set the working directory inside the container.
-WORKDIR /usr/src/app
+# Expose port 80 to the outside world
+EXPOSE 80
 
-# Copy package.json and package-lock.json for npm install.
-COPY package*.json ./
-
-# Install the application dependencies.
-RUN npm install
-
-# Copy the rest of the application code.
-COPY . .
-
-# Expose port 3000.
-EXPOSE 3000
-
-# Command to run the application.
-CMD [ "npm", "start" ]
+# Start Nginx server
+CMD ["nginx", "-g", "daemon off;"]
