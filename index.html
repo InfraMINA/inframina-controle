@@ -3,1419 +3,1463 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>InfraMINA - Controle de Abastecimento</title>
+<title>InfraMINA - Controle Operacional Subterraneo</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        bg: '#0e1015',
+        card: '#1a1e28',
+        'card-hover': '#222736',
+        accent: '#f97316',
+        'accent-dark': '#c2590f',
+        border: '#2a2f3d',
+        muted: '#6b7280',
+        success: '#22c55e',
+        danger: '#ef4444',
+        warning: '#eab308',
+        info: '#3b82f6',
+      },
+      fontFamily: {
+        sans: ['Space Grotesk', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
+      }
+    }
+  }
+}
+</script>
 <style>
-:root {
-  --bg: #0e1015;
-  --bg2: #151820;
-  --card: #1a1e28;
-  --card2: #222630;
-  --border: #2a2f3a;
-  --border2: #363c4a;
-  --red: #e53e3e;
-  --orange: #ed8936;
-  --yellow: #ecc94b;
-  --teal: #38b2ac;
-  --green: #48bb78;
-  --text: #e8ebf0;
-  --muted: #5f6577;
-  --glass: rgba(26, 30, 40, 0.94);
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
-.mono { font-family: 'JetBrains Mono', monospace; }
-
-/* LOGIN SCREEN COM HYDRA */
-.login-screen { 
-  min-height: 100vh; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  padding: 20px;
-  background: linear-gradient(135deg, #0e1015 0%, #1a1e28 100%);
-  position: relative;
-  overflow: hidden;
-}
-
-.login-screen::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 600px;
-  height: 600px;
-  opacity: 0.08;
-  pointer-events: none;
-}
-
-.login-box { 
-  width: 100%; 
-  max-width: 420px;
-  position: relative;
-  z-index: 10;
-}
-
-.login-logo-container {
-  text-align: center;
-  margin-bottom: 32px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-}
-
-.login-logo-img {
-  width: 120px;
-  height: 120px;
-  object-fit: contain;
-  filter: drop-shadow(0 0 20px rgba(220, 38, 38, 0.3));
-}
-
-.login-title {
-  font-size: 48px;
-  font-weight: 900;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  color: #fff;
-  line-height: 1;
-}
-
-.login-sub {
-  text-align: center;
-  font-size: 12px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--orange);
-  margin-top: 8px;
-}
-
-.login-card { 
-  background: var(--card); 
-  border: 1px solid var(--border); 
-  border-radius: 12px; 
-  padding: 24px;
-  margin-top: 24px;
-}
-
-.login-link { 
-  text-align: center; 
-  margin-top: 16px; 
-  font-size: 11px; 
-  color: var(--muted); 
-}
-
-.login-link button { 
-  background: none; 
-  border: none; 
-  color: var(--orange); 
-  font-weight: 600; 
-  cursor: pointer; 
-  font-family: inherit; 
-  font-size: 11px; 
-}
-
-.sidebar { 
-  position: fixed; 
-  left: 0; 
-  top: 0; 
-  bottom: 0; 
-  width: 230px; 
-  background: var(--bg2); 
-  border-right: 1px solid var(--border); 
-  z-index: 50; 
-  display: flex; 
-  flex-direction: column; 
-  transition: transform 0.25s; 
-}
-
-.sb-head { 
-  padding: 20px 16px; 
-  border-bottom: 1px solid var(--border); 
-  display: flex; 
-  flex-direction: column; 
-  align-items: center; 
-  gap: 12px; 
-}
-
-.sb-logo { 
-  width: 70px; 
-  height: 70px; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  overflow: hidden;
-}
-
-.sb-logo-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.sb-name { 
-  font-weight: 900; 
-  color: #fff; 
-  font-size: 14px; 
-  letter-spacing: 2px; 
-  text-transform: uppercase; 
-  text-align: center; 
-}
-
-.nav-item { 
-  display: flex; 
-  align-items: center; 
-  gap: 10px; 
-  padding: 9px 16px; 
-  cursor: pointer; 
-  color: var(--muted); 
-  transition: all 0.15s; 
-  border-left: 3px solid transparent; 
-  font-size: 12.5px; 
-  font-weight: 500; 
-}
-
-.nav-item:hover { 
-  color: var(--text); 
-  background: rgba(237, 137, 54, 0.03); 
-}
-
-.nav-item.active { 
-  color: var(--orange); 
-  background: rgba(237, 137, 54, 0.06); 
-  border-left-color: var(--orange); 
-}
-
-.sb-foot { 
-  padding: 12px; 
-  border-top: 1px solid var(--border); 
-  margin-top: auto; 
-}
-
-.sb-logout { 
-  width: 100%; 
-  padding: 6px 0; 
-  border: none; 
-  background: none; 
-  color: var(--muted); 
-  font-size: 11px; 
-  cursor: pointer; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  gap: 6px; 
-  border-radius: 6px; 
-  transition: all 0.15s; 
-}
-
-.sb-logout:hover { 
-  background: var(--card); 
-  color: var(--red); 
-}
-
-.main-content { 
-  margin-left: 230px; 
-  min-height: 100vh; 
-}
-
-.top-bar { 
-  position: sticky; 
-  top: 0; 
-  z-index: 40; 
-  background: var(--glass); 
-  backdrop-filter: blur(16px); 
-  border-bottom: 1px solid var(--border); 
-  padding: 12px 22px; 
-  display: flex; 
-  align-items: center; 
-  justify-content: space-between; 
-}
-
-.top-bar h1 { 
-  font-size: 13px; 
-  font-weight: 700; 
-}
-
-.card { 
-  background: var(--card); 
-  border: 1px solid var(--border); 
-  border-radius: 8px; 
-  padding: 16px; 
-  margin-bottom: 16px; 
-}
-
-.badge { 
-  display: inline-flex; 
-  align-items: center; 
-  padding: 2px 8px; 
-  border-radius: 10px; 
-  font-size: 9px; 
-  font-weight: 700; 
-  text-transform: uppercase; 
-}
-
-.badge-active { 
-  background: rgba(72, 187, 120, 0.1); 
-  color: var(--green); 
-}
-
-.btn { 
-  display: inline-flex; 
-  align-items: center; 
-  gap: 6px; 
-  padding: 7px 14px; 
-  border-radius: 6px; 
-  font-size: 11px; 
-  font-weight: 600; 
-  cursor: pointer; 
-  border: none; 
-  transition: all 0.15s; 
-  font-family: inherit; 
-}
-
-.btn-primary { 
-  background: linear-gradient(135deg, var(--orange), #dd6b20); 
-  color: #fff; 
-}
-
-.btn-primary:hover { 
-  box-shadow: 0 3px 10px rgba(237, 137, 54, 0.2); 
-}
-
-.btn-secondary { 
-  background: var(--card2); 
-  color: var(--text); 
-  border: 1px solid var(--border); 
-}
-
-.btn-secondary:hover { 
-  border-color: var(--orange); 
-}
-
-.btn-danger { 
-  background: rgba(229, 62, 62, 0.1); 
-  color: var(--red); 
-  border: 1px solid rgba(229, 62, 62, 0.2); 
-}
-
-.btn-danger:hover { 
-  background: rgba(229, 62, 62, 0.2); 
-}
-
-.btn-sm { 
-  padding: 4px 9px; 
-  font-size: 10px; 
-}
-
-.input { 
-  background: var(--bg); 
-  border: 1px solid var(--border); 
-  border-radius: 6px; 
-  padding: 8px 11px; 
-  color: var(--text); 
-  font-size: 11.5px; 
-  width: 100%; 
-  transition: border-color 0.15s; 
-}
-
-.input:focus { 
-  outline: none; 
-  border-color: var(--orange); 
-  box-shadow: 0 0 0 2px rgba(237, 137, 54, 0.1); 
-}
-
-select.input { 
-  cursor: pointer; 
-}
-
-.section { 
-  display: none; 
-  padding: 20px 22px; 
-}
-
-.section.active { 
-  display: block; 
-}
-
-.password-wrapper { 
-  position: relative; 
-}
-
-.password-toggle { 
-  position: absolute; 
-  right: 10px; 
-  top: 50%; 
-  transform: translateY(-50%); 
-  background: none; 
-  border: none; 
-  color: var(--muted); 
-  cursor: pointer; 
-  padding: 5px; 
-  font-size: 12px; 
-}
-
-.password-toggle:hover { 
-  color: var(--orange); 
-}
-
-.toast-container { 
-  position: fixed; 
-  top: 14px; 
-  right: 14px; 
-  z-index: 9999; 
-  display: flex; 
-  flex-direction: column; 
-  gap: 5px; 
-}
-
-.toast { 
-  display: flex; 
-  align-items: center; 
-  gap: 7px; 
-  padding: 9px 14px; 
-  border-radius: 7px; 
-  background: var(--card); 
-  border: 1px solid var(--border); 
-  transform: translateX(110%); 
-  transition: transform 0.25s; 
-  font-size: 11px; 
-}
-
-.toast.show { 
-  transform: translateX(0); 
-}
-
-.modal-overlay { 
-  position: fixed; 
-  inset: 0; 
-  background: rgba(0, 0, 0, 0.5); 
-  backdrop-filter: blur(3px); 
-  z-index: 100; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  opacity: 0; 
-  pointer-events: none; 
-  transition: opacity 0.2s; 
-}
-
-.modal-overlay.show { 
-  opacity: 1; 
-  pointer-events: all; 
-}
-
-.modal { 
-  background: var(--card); 
-  border: 1px solid var(--border); 
-  border-radius: 10px; 
-  width: 92%; 
-  max-width: 500px; 
-  max-height: 80vh; 
-  overflow-y: auto; 
-  transform: scale(0.96); 
-  transition: transform 0.2s; 
-}
-
-.modal-overlay.show .modal { 
-  transform: scale(1); 
-}
-
-.modal-head { 
-  padding: 14px 18px; 
-  border-bottom: 1px solid var(--border); 
-  display: flex; 
-  align-items: center; 
-  justify-content: space-between; 
-}
-
-.modal-head h3 { 
-  font-size: 13px; 
-  font-weight: 600; 
-}
-
-.modal-body { 
-  padding: 18px; 
-}
-
-.modal-foot { 
-  padding: 10px 18px; 
-  border-top: 1px solid var(--border); 
-  display: flex; 
-  justify-content: flex-end; 
-  gap: 6px; 
-}
-
-.table-responsive { 
-  overflow-x: auto; 
-  border-radius: 6px; 
-  border: 1px solid var(--border); 
-  margin-bottom: 12px; 
-}
-
-.table-responsive table { 
-  width: 100%; 
-  border-collapse: collapse; 
-  font-size: 11px; 
-}
-
-.table-responsive th { 
-  background: var(--bg2); 
-  padding: 10px; 
-  text-align: left; 
-  font-weight: 600; 
-  color: var(--muted); 
-  font-size: 9px; 
-  text-transform: uppercase; 
-}
-
-.table-responsive td { 
-  padding: 10px; 
-  border-top: 1px solid var(--border); 
-}
-
-.table-responsive tr:hover td { 
-  background: rgba(237, 137, 54, 0.015); 
-}
-
-.stat-box { 
-  background: var(--card2); 
-  border: 1px solid var(--border); 
-  border-radius: 8px; 
-  padding: 12px; 
-  text-align: center; 
-}
-
-.stat-value { 
-  font-size: 24px; 
-  font-weight: 900; 
-  color: var(--orange); 
-  margin-bottom: 4px; 
-}
-
-.stat-label { 
-  font-size: 10px; 
-  color: var(--muted); 
-  text-transform: uppercase; 
-}
-
-.fiscal-group { 
-  background: var(--card2); 
-  border-left: 3px solid var(--orange); 
-  border-radius: 6px; 
-  padding: 12px; 
-  margin-bottom: 12px; 
-  cursor: pointer; 
-  transition: all 0.15s; 
-}
-
-.fiscal-group:hover { 
-  background: rgba(237, 137, 54, 0.05); 
-}
-
-.fiscal-header { 
-  display: flex; 
-  align-items: center; 
-  justify-content: space-between; 
-  margin-bottom: 0; 
-}
-
-.fiscal-name { 
-  font-weight: 600; 
-  font-size: 12px; 
-  color: var(--orange); 
-}
-
-.operators-list { 
-  display: none; 
-  margin-top: 8px; 
-  padding-top: 8px; 
-  border-top: 1px solid var(--border); 
-}
-
-.operators-list.show { 
-  display: block; 
-}
-
-.operator-item { 
-  font-size: 11px; 
-  color: var(--text); 
-  padding: 6px 0; 
-  padding-left: 20px; 
-  border-bottom: 1px solid rgba(94, 101, 119, 0.3); 
-}
-
-.operator-item:last-child { 
-  border-bottom: none; 
-}
-
-.empty-state { 
-  text-align: center; 
-  padding: 40px 20px; 
-}
-
-.empty-state i { 
-  font-size: 48px; 
-  color: var(--muted); 
-  margin-bottom: 12px; 
-  display: block; 
-  opacity: 0.5; 
-}
-
-.empty-state p { 
-  font-size: 12px; 
-  color: var(--muted); 
-  margin-bottom: 8px; 
-}
-
-.empty-state a { 
-  color: var(--orange); 
-  font-weight: 600; 
-  text-decoration: none; 
-  cursor: pointer; 
-}
-
-@media (max-width: 768px) {
-  .sidebar { 
-    transform: translateX(-100%); 
-  }
-  
-  .main-content { 
-    margin-left: 0; 
-  }
-  
-  .login-title {
-    font-size: 36px;
-  }
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Space Grotesk', sans-serif; background: #0e1015; color: #e5e7eb; overflow-x: hidden; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0e1015; }
+::-webkit-scrollbar-thumb { background: #2a2f3d; border-radius: 3px; }
+.data-font { font-family: 'JetBrains Mono', monospace; }
+.glow-accent { box-shadow: 0 0 20px rgba(249, 115, 22, 0.15); }
+.sidebar-link { transition: all 0.2s ease; border-left: 3px solid transparent; }
+.sidebar-link:hover, .sidebar-link.active { background: rgba(249,115,22,0.08); border-left-color: #f97316; color: #f97316; }
+.tab-content { display: none; animation: fadeIn 0.3s ease; }
+.tab-content.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+.toast-enter { animation: slideIn 0.35s ease; }
+.equip-manutencao { border-left: 4px solid #ef4444 !important; background: rgba(239,68,68,0.06) !important; }
+.checkbox-5s { appearance: none; width: 22px; height: 22px; border: 2px solid #2a2f3d; border-radius: 4px; cursor: pointer; transition: all 0.2s; }
+.checkbox-5s:checked { background: #f97316; border-color: #f97316; }
+.status-badge { padding: 2px 10px; border-radius: 9999px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+input, select, textarea { font-family: 'Space Grotesk', sans-serif; }
+select option { background: #1a1e28; color: #e5e7eb; }
+.modal-overlay { background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); }
 </style>
 </head>
 <body>
 
-<div id="toastContainer" class="toast-container"></div>
-
-<div id="modalOverlay" class="modal-overlay" onclick="if(event.target===this) closeModal()">
-  <div class="modal">
-    <div class="modal-head">
-      <h3 id="modalTitle"></h3>
-      <button onclick="closeModal()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0;">
-        <i class="fas fa-times"></i>
+<!-- TELA DE LOGIN -->
+<div id="loginScreen" class="fixed inset-0 z-[100] flex items-center justify-center" style="background: radial-gradient(ellipse at center, #151922 0%, #0e1015 70%);">
+  <div class="w-full max-w-md px-6">
+    <div class="text-center mb-10">
+      <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-card border border-border mb-5 glow-accent">
+        <i class="fa-solid fa-mountain-sun text-accent text-3xl"></i>
+      </div>
+      <h1 class="text-3xl font-bold text-white tracking-tight">InfraMINA</h1>
+      <p class="text-muted text-sm mt-2">Controle Operacional Subterraneo</p>
+    </div>
+    <div class="bg-card rounded-2xl border border-border p-8">
+      <div class="mb-5">
+        <label class="block text-xs font-semibold text-muted uppercase tracking-wider mb-2">Usuario</label>
+        <div class="relative">
+          <i class="fa-solid fa-user absolute left-3 top-1/2 -translate-y-1/2 text-muted text-sm"></i>
+          <input id="loginUser" type="text" value="admin" class="w-full bg-bg border border-border rounded-lg pl-10 pr-4 py-3 text-white text-sm focus:outline-none focus:border-accent transition">
+        </div>
+      </div>
+      <div class="mb-6">
+        <label class="block text-xs font-semibold text-muted uppercase tracking-wider mb-2">Senha</label>
+        <div class="relative">
+          <i class="fa-solid fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-muted text-sm"></i>
+          <input id="loginPass" type="password" value="admin" onkeydown="if(event.key==='Enter')fazerLogin()" class="w-full bg-bg border border-border rounded-lg pl-10 pr-10 py-3 text-white text-sm focus:outline-none focus:border-accent transition">
+          <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-accent transition">
+            <i id="togglePassIcon" class="fa-solid fa-eye text-sm"></i>
+          </button>
+        </div>
+      </div>
+      <button onclick="fazerLogin()" class="w-full bg-accent hover:bg-accent-dark text-white font-semibold py-3 rounded-lg transition transform hover:scale-[1.01] active:scale-[0.99]">
+        <i class="fa-solid fa-right-to-bracket mr-2"></i>Entrar no Sistema
+      </button>
+      <p id="loginError" class="text-danger text-xs text-center mt-3 hidden">Credenciais invalidas</p>
+      <button onclick="openRegisterModal()" class="w-full mt-3 border border-border text-muted hover:text-white hover:border-accent py-2.5 rounded-lg text-sm transition">
+        <i class="fa-solid fa-user-plus mr-2"></i>Criar Conta
       </button>
     </div>
-    <div class="modal-body" id="modalBody"></div>
-    <div class="modal-foot" id="modalFoot"></div>
+    <p class="text-center text-muted text-xs mt-6">v2.1 - Modulos: Operacional | EHS/QA | RH | 5S</p>
   </div>
 </div>
 
-<!-- LOGIN -->
-<div id="loginScreen" class="login-screen">
-  <div class="login-box">
-    <div class="login-logo-container">
-      <img src="assets/images.jpg" class="login-logo-img" alt="InfraMINA Logo">
-      
-      <div class="login-title">INFRAMINA</div>
-      <div class="login-sub">Sistema de Controle</div>
-    </div>
+<!-- APP PRINCIPAL -->
+<div id="mainApp" class="hidden">
 
-    <div class="login-card">
-      <div style="display:flex;flex-direction:column;gap:10px;">
-        <div>
-          <label for="loginUser" style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:5px;">Usuário</label>
-          <input id="loginUser" class="input" placeholder="">
+  <!-- SIDEBAR -->
+  <aside class="fixed left-0 top-0 bottom-0 w-64 bg-card border-r border-border z-50 flex flex-col">
+    <div class="p-5 border-b border-border">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
+          <i class="fa-solid fa-mountain-sun text-accent"></i>
         </div>
         <div>
-          <label for="loginPass" style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:5px;">Senha</label>
-          <div class="password-wrapper">
-            <input id="loginPass" type="password" class="input" placeholder="" style="padding-right:35px;">
-            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('loginPass', this)">
-              <i class="fas fa-eye"></i>
-            </button>
-          </div>
+          <h2 class="font-bold text-white text-sm">InfraMINA</h2>
+          <p class="text-muted text-[10px] uppercase tracking-widest">Sistema Operacional</p>
         </div>
-        <button onclick="doLogin()" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:10px;">
-          <i class="fas fa-arrow-right-to-bracket"></i>Entrar
-        </button>
       </div>
-      <div id="loginError" style="background:rgba(229,62,62,0.1);border:1px solid rgba(229,62,62,0.2);color:var(--red);padding:8px 10px;border-radius:6px;font-size:10px;display:none;margin-top:12px;"></div>
     </div>
-    <div class="login-link">Não tem conta? <button onclick="openRegisterModal()">Criar Conta</button></div>
-  </div>
-</div>
 
-<!-- APP -->
-<div id="mainApp" style="display:none;">
-  <aside class="sidebar" id="sidebar">
-    <div class="sb-head">
-      <div class="sb-logo">
-        <img src="assets/images.jpg" class="sb-logo-img" alt="InfraMINA">
+    <nav class="flex-1 py-4 overflow-y-auto">
+      <p class="px-5 text-[10px] font-semibold text-muted uppercase tracking-widest mb-2">Modulos</p>
+      <a href="#" class="sidebar-link active flex items-center gap-3 px-5 py-3 text-sm" data-tab="operacional" onclick="mudarAba('operacional', this)">
+        <i class="fa-solid fa-gas-pump w-5 text-center"></i>Operacional
+      </a>
+      <a href="#" class="sidebar-link flex items-center gap-3 px-5 py-3 text-sm" data-tab="seguranca" onclick="mudarAba('seguranca', this)">
+        <i class="fa-solid fa-shield-halved w-5 text-center"></i>Seguranca EHS/QA
+      </a>
+      <a href="#" class="sidebar-link flex items-center gap-3 px-5 py-3 text-sm" data-tab="equipe" onclick="mudarAba('equipe', this)">
+        <i class="fa-solid fa-users w-5 text-center"></i>Equipe & Treinos
+      </a>
+      <a href="#" class="sidebar-link flex items-center gap-3 px-5 py-3 text-sm" data-tab="cincoS" onclick="mudarAba('cincoS', this)">
+        <i class="fa-solid fa-clipboard-check w-5 text-center"></i>Gestao 5S
+      </a>
+
+      <p class="px-5 text-[10px] font-semibold text-muted uppercase tracking-widest mb-2 mt-6">Exportacao</p>
+      <a href="#" class="sidebar-link flex items-center gap-3 px-5 py-3 text-sm" onclick="exportarPDF(); return false;">
+        <i class="fa-solid fa-file-pdf w-5 text-center text-danger"></i>Exportar PDF
+      </a>
+      <a href="#" class="sidebar-link flex items-center gap-3 px-5 py-3 text-sm" onclick="exportarExcel(); return false;">
+        <i class="fa-solid fa-file-excel w-5 text-center text-success"></i>Exportar Excel
+      </a>
+      <a href="#" class="sidebar-link flex items-center gap-3 px-5 py-3 text-sm" onclick="enviarWhatsApp(); return false;">
+        <i class="fa-brands fa-whatsapp w-5 text-center text-success"></i>Enviar WhatsApp
+      </a>
+    </nav>
+
+    <div class="p-4 border-t border-border">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-9 h-9 rounded-full bg-accent/20 flex items-center justify-center">
+          <i class="fa-solid fa-user text-accent text-xs"></i>
+        </div>
+        <div>
+          <p class="text-white text-xs font-semibold" id="sidebarUserName">Admin</p>
+          <p class="text-muted text-[10px]">Supervisor de Turno</p>
+        </div>
       </div>
-      <div class="sb-name">INFRAMINA</div>
-    </div>
-    <div style="flex:1;padding:6px 0;overflow-y:auto;" id="navList"></div>
-    <div class="sb-foot">
-      <button class="sb-logout" onclick="doLogout()">
-        <i class="fas fa-right-from-bracket"></i>Sair
+      <button onclick="fazerLogout()" class="w-full flex items-center justify-center gap-2 text-muted hover:text-danger text-xs py-2 rounded-lg hover:bg-danger/10 transition">
+        <i class="fa-solid fa-right-from-bracket"></i>Sair do Sistema
       </button>
     </div>
   </aside>
-  <div class="main-content">
-    <div class="top-bar">
-      <h1 id="pageTitle">Dashboard</h1>
-      <span class="mono" id="clock" style="font-size:10px;color:var(--muted);">--:--:--</span>
-    </div>
-    <div id="secDashboard" class="section active"></div>
-    <div id="secCombois" class="section"></div>
-    <div id="secSubsolo" class="section"></div>
-    <div id="secExcel" class="section"></div>
-    <div id="secRelatorios" class="section"></div>
-  </div>
-</div>
 
-<script>
-const K = { U: 'im_users', S: 'im_session', D: 'im_data' };
-let currentUser = null;
-let excelData = null;
-let excelMapeamento = {};
+  <!-- CONTEUDO PRINCIPAL -->
+  <main class="ml-64 min-h-screen">
 
-// ===== STORAGE =====
-function getU() {
-  const stored = localStorage.getItem(K.U);
-  if (stored) return JSON.parse(stored);
-  return [{
-    id: 'admin_0',
-    nome: 'Administrador',
-    username: 'admin',
-    password: 'admin',
-    email: 'admin@inframina.com',
-    role: 'Admin',
-    status: 'ativo',
-    criadoEm: new Date().toISOString()
-  }];
-}
-
-function saveU(u) { localStorage.setItem(K.U, JSON.stringify(u)); }
-
-function getData() {
-  const stored = localStorage.getItem(K.D);
-  if (stored) return JSON.parse(stored);
-  return {
-    combois: [],
-    subsolo: []
-  };
-}
-
-function saveData(d) { localStorage.setItem(K.D, JSON.stringify(d)); }
-
-function getSess() {
-  const stored = localStorage.getItem(K.S);
-  return stored ? JSON.parse(stored) : null;
-}
-
-function saveSess(s) { localStorage.setItem(K.S, JSON.stringify(s)); }
-
-// ===== UI =====
-function togglePasswordVisibility(inputId, button) {
-  const input = document.getElementById(inputId);
-  if (input.type === 'password') {
-    input.type = 'text';
-    button.querySelector('i').className = 'fas fa-eye-slash';
-  } else {
-    input.type = 'password';
-    button.querySelector('i').className = 'fas fa-eye';
-  }
-}
-
-function toast(msg, type = 'info') {
-  const container = document.getElementById('toastContainer');
-  const el = document.createElement('div');
-  const icons = { success: 'check-circle', error: 'exclamation-circle', info: 'info-circle' };
-  const colors = { success: 'var(--green)', error: 'var(--red)', info: 'var(--teal)' };
-  el.className = `toast`;
-  el.innerHTML = `<i class="fas fa-${icons[type]}" style="color:${colors[type]};"></i><span>${msg}</span>`;
-  container.appendChild(el);
-  setTimeout(() => el.classList.add('show'), 10);
-  setTimeout(() => {
-    el.classList.remove('show');
-    setTimeout(() => el.remove(), 250);
-  }, 2800);
-}
-
-function openModal(title, body, footer) {
-  document.getElementById('modalTitle').textContent = title;
-  document.getElementById('modalBody').innerHTML = body;
-  document.getElementById('modalFoot').innerHTML = footer || '';
-  document.getElementById('modalOverlay').classList.add('show');
-}
-
-function closeModal() {
-  document.getElementById('modalOverlay').classList.remove('show');
-}
-
-// ===== AUTH =====
-function doLogin() {
-  const username = document.getElementById('loginUser').value.trim();
-  const password = document.getElementById('loginPass').value;
-  const errorEl = document.getElementById('loginError');
-  errorEl.style.display = 'none';
-  
-  if (!username || !password) {
-    errorEl.textContent = '❌ Preencha usuário e senha';
-    errorEl.style.display = 'block';
-    return;
-  }
-  
-  const users = getU();
-  const user = users.find(u => u.username === username);
-  
-  if (!user) {
-    errorEl.textContent = '❌ Usuário não encontrado';
-    errorEl.style.display = 'block';
-    return;
-  }
-  
-  if (user.password !== password) {
-    errorEl.textContent = '❌ Senha incorreta';
-    errorEl.style.display = 'block';
-    return;
-  }
-  
-  if (user.status !== 'ativo') {
-    errorEl.textContent = '❌ Conta inativa';
-    errorEl.style.display = 'block';
-    return;
-  }
-  
-  currentUser = user;
-  saveSess({ uid: user.id });
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('mainApp').style.display = 'block';
-  buildNav();
-  renderDashboard();
-  startClock();
-  toast(`✓ Bem-vindo, ${user.nome}!`, 'success');
-}
-
-function doLogout() {
-  currentUser = null;
-  localStorage.removeItem(K.S);
-  document.getElementById('mainApp').style.display = 'none';
-  document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('loginUser').value = '';
-  document.getElementById('loginPass').value = '';
-  document.getElementById('loginPass').type = 'password';
-  toast('Desconectado', 'info');
-}
-
-function autoLogin() {
-  const sess = getSess();
-  if (!sess) return;
-  const users = getU();
-  const user = users.find(u => u.id === sess.uid);
-  if (user && user.status === 'ativo') {
-    currentUser = user;
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('mainApp').style.display = 'block';
-    buildNav();
-    renderDashboard();
-    startClock();
-  }
-}
-
-// ===== NAV =====
-function buildNav() {
-  const navList = document.getElementById('navList');
-  navList.innerHTML = `
-    <div class="nav-item active" onclick="navTo('secDashboard')">
-      <i class="fas fa-tachometer-alt"></i><span>Dashboard</span>
-    </div>
-    <div class="nav-item" onclick="navTo('secCombois')">
-      <i class="fas fa-gas-pump"></i><span>Comboios</span>
-    </div>
-    <div class="nav-item" onclick="navTo('secSubsolo')">
-      <i class="fas fa-users-rectangle"></i><span>Equipe</span>
-    </div>
-    <div class="nav-item" onclick="navTo('secExcel')">
-      <i class="fas fa-file-excel"></i><span>Importar</span>
-    </div>
-    <div class="nav-item" onclick="navTo('secRelatorios')">
-      <i class="fas fa-chart-bar"></i><span>Relatórios</span>
-    </div>
-  `;
-}
-
-function navTo(secId) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById(secId).classList.add('active');
-  event.currentTarget?.classList.add('active');
-  
-  const titles = {
-    'secDashboard': 'Dashboard Operacional',
-    'secCombois': 'Comboios de Abastecimento',
-    'secSubsolo': 'Equipe de Subsolo',
-    'secExcel': 'Importar Dados',
-    'secRelatorios': 'Relatórios'
-  };
-  document.getElementById('pageTitle').textContent = titles[secId];
-  
-  if (secId === 'secDashboard') renderDashboard();
-  else if (secId === 'secCombois') renderCombois();
-  else if (secId === 'secSubsolo') renderSubsolo();
-  else if (secId === 'secExcel') renderExcel();
-  else if (secId === 'secRelatorios') renderRelatorios();
-}
-
-// ===== SCREENS =====
-function renderDashboard() {
-  const data = getData();
-  const now = new Date();
-  const hora = now.getHours();
-  let turnoAtual = 1;
-  if (hora >= 14) turnoAtual = 2;
-  if (hora >= 22 || hora < 6) turnoAtual = 3;
-  
-  const fiscaisTurno = data.subsolo.filter(e => e.funcao === 'Fiscal' && e.turno === turnoAtual && e.status === 'ativo');
-  const operadoresTurno = data.subsolo.filter(e => e.funcao === 'Operador' && e.turno === turnoAtual && e.status === 'ativo');
-  const comboisAtivos = data.combois.filter(c => c.status === 'ativo').length;
-  const totalAbastecimentos = data.combois.reduce((a, c) => a + (c.abastecimentos || 0), 0);
-  const totalLitros = totalAbastecimentos * 1900;
-  
-  const html = `
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px;">
-      <div class="stat-box">
-        <div class="stat-value">${comboisAtivos}</div>
-        <div class="stat-label">Comboios Ativos</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-value">${fiscaisTurno.length}</div>
-        <div class="stat-label">Fiscais (${turnoAtual}º Turno)</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-value">${operadoresTurno.length}</div>
-        <div class="stat-label">Operadores (${turnoAtual}º Turno)</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-value">${totalAbastecimentos}</div>
-        <div class="stat-label">Total Abastecimentos</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-value">${(totalLitros/1000).toFixed(1)}k</div>
-        <div class="stat-label">Litros Distribuídos</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3 style="font-size:13px;font-weight:600;margin-bottom:12px;">💧 Resumo Operacional</h3>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-        <div style="background:var(--card2);border-left:3px solid var(--orange);border-radius:6px;padding:12px;">
-          <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">CAPACIDADE POR COMBOIO</div>
-          <div style="font-size:18px;font-weight:900;color:var(--orange);">1900<span style="font-size:12px;">L</span></div>
-        </div>
-        <div style="background:var(--card2);border-left:3px solid var(--green);border-radius:6px;padding:12px;">
-          <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">TOTAL DISTRIBUÍDO</div>
-          <div style="font-size:18px;font-weight:900;color:var(--green);">${totalLitros.toLocaleString('pt-BR')}<span style="font-size:12px;">L</span></div>
-        </div>
-      </div>
-    </div>
-  `;
-  document.getElementById('secDashboard').innerHTML = html;
-}
-
-function renderCombois() {
-  const data = getData();
-  
-  if (data.combois.length === 0) {
-    const html = `
-      <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-          <h3 style="font-size:13px;font-weight:600;">Comboios de Abastecimento</h3>
-          <button class="btn btn-primary btn-sm" onclick="novoComboio()"><i class="fas fa-plus"></i>Novo</button>
-        </div>
-        <div class="empty-state">
-          <i class="fas fa-gas-pump"></i>
-          <p>Nenhum comboio cadastrado</p>
-          <a onclick="novoComboio()">Cadastre um novo comboio</a>
-        </div>
-      </div>
-    `;
-    document.getElementById('secCombois').innerHTML = html;
-    return;
-  }
-  
-  const rows = data.combois.map(c => `
-    <tr>
-      <td style="font-weight:600;">${c.codigo}</td>
-      <td style="text-align:center;">1900L</td>
-      <td style="text-align:center;font-weight:600;color:var(--yellow);">${c.abastecimentos || 0}</td>
-      <td style="text-align:center;color:var(--orange);">${((c.abastecimentos || 0) * 1900).toLocaleString('pt-BR')}L</td>
-      <td style="text-align:center;"><span class="badge badge-active">${c.status}</span></td>
-      <td style="text-align:center;display:flex;gap:4px;justify-content:center;">
-        <button class="btn btn-primary btn-sm" onclick="registrarAbastecimento('${c.id}')"><i class="fas fa-plus"></i></button>
-        <button class="btn btn-danger btn-sm" onclick="deletarComboio('${c.id}')"><i class="fas fa-trash"></i></button>
-      </td>
-    </tr>
-  `).join('');
-  
-  const html = `
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <h3 style="font-size:13px;font-weight:600;">Comboios de Abastecimento</h3>
-        <button class="btn btn-primary btn-sm" onclick="novoComboio()"><i class="fas fa-plus"></i>Novo</button>
-      </div>
-      <div class="table-responsive">
-        <table>
-          <thead>
-            <tr>
-              <th>Código</th>
-              <th>Capacidade</th>
-              <th>Abastecimentos</th>
-              <th>Total Litros</th>
-              <th>Status</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>${rows}</tbody>
-        </table>
-      </div>
-    </div>
-  `;
-  document.getElementById('secCombois').innerHTML = html;
-}
-
-function novoComboio() {
-  openModal('Novo Comboio de Abastecimento', `
-    <div style="display:flex;flex-direction:column;gap:10px;">
+    <!-- TOPO -->
+    <header class="sticky top-0 z-40 bg-bg/80 backdrop-blur-xl border-b border-border px-8 py-4 flex items-center justify-between">
       <div>
-        <label style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Código Identificador (ex: AB-001)</label>
-        <input id="combCodigo" class="input" placeholder="">
+        <h1 id="pageTitle" class="text-xl font-bold text-white">Painel Operacional</h1>
+        <p id="pageSubtitle" class="text-muted text-xs mt-0.5">Controle de abastecimento e frota</p>
       </div>
-    </div>
-  `, `
-    <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
-    <button class="btn btn-primary" onclick="salvarComboio()">Criar</button>
-  `);
-}
-
-function salvarComboio() {
-  const codigo = document.getElementById('combCodigo').value.trim();
-  
-  if (!codigo) {
-    toast('Preencha o código do comboio', 'error');
-    return;
-  }
-  
-  const data = getData();
-  data.combois.push({
-    id: 'c' + Date.now(),
-    codigo,
-    abastecimentos: 0,
-    status: 'ativo',
-    criadoEm: new Date().toISOString()
-  });
-  saveData(data);
-  closeModal();
-  toast('✓ Comboio cadastrado', 'success');
-  renderCombois();
-  renderDashboard();
-}
-
-function registrarAbastecimento(comboioId) {
-  const data = getData();
-  const c = data.combois.find(x => x.id === comboioId);
-  if (c) {
-    c.abastecimentos = (c.abastecimentos || 0) + 1;
-    saveData(data);
-    toast(`✓ Abastecimento registrado! Total: ${(c.abastecimentos * 1900).toLocaleString('pt-BR')}L`, 'success');
-    renderCombois();
-    renderDashboard();
-  }
-}
-
-function deletarComboio(comboioId) {
-  openModal('Confirmar Exclusão', `
-    <p style="font-size:11px;color:var(--muted);">Tem certeza que deseja remover este comboio?</p>
-  `, `
-    <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
-    <button class="btn btn-danger" onclick="confirmarDelComboio('${comboioId}')">Remover</button>
-  `);
-}
-
-function confirmarDelComboio(id) {
-  const data = getData();
-  data.combois = data.combois.filter(c => c.id !== id);
-  saveData(data);
-  closeModal();
-  toast('✓ Comboio removido', 'success');
-  renderCombois();
-  renderDashboard();
-}
-
-function renderSubsolo() {
-  const data = getData();
-  const fiscais = data.subsolo.filter(e => e.funcao === 'Fiscal');
-  
-  if (fiscais.length === 0) {
-    const html = `
-      <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-          <h3 style="font-size:13px;font-weight:600;">Equipe de Subsolo</h3>
-          <button class="btn btn-primary btn-sm" onclick="novoMembro()"><i class="fas fa-plus"></i>Novo</button>
-        </div>
-        <div class="empty-state">
-          <i class="fas fa-users"></i>
-          <p>Nenhum membro cadastrado</p>
-          <a onclick="novoMembro()">Cadastre um fiscal ou operador</a>
-        </div>
+      <div class="flex items-center gap-4">
+        <span class="data-font text-xs text-muted" id="headerClock"></span>
+        <div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
       </div>
-    `;
-    document.getElementById('secSubsolo').innerHTML = html;
-    return;
-  }
-  
-  const html = `
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-        <h3 style="font-size:13px;font-weight:600;">Equipe de Subsolo</h3>
-        <button class="btn btn-primary btn-sm" onclick="novoMembro()"><i class="fas fa-plus"></i>Novo</button>
-      </div>
-      
-      ${fiscais.map(f => {
-        const ops = data.subsolo.filter(e => e.fisicalId === f.id && e.funcao === 'Operador');
-        return `
-          <div class="fiscal-group" onclick="toggleOperadores(this)">
-            <div class="fiscal-header">
-              <div class="fiscal-name">👨‍💼 ${f.nome}</div>
-              <div style="display:flex;gap:8px;align-items:center;">
-                <span style="font-size:9px;color:var(--muted);">${ops.length} operador(es) | ${f.turno}º turno</span>
-                <span class="badge badge-active">${f.status}</span>
-                <i class="fas fa-chevron-down" style="font-size:10px;color:var(--muted);transition:transform 0.2s;"></i>
-                <button class="btn btn-danger btn-sm" onclick="deletarMembro(event, '${f.id}')"><i class="fas fa-trash"></i></button>
-              </div>
+    </header>
+
+    <div class="p-8">
+
+      <!-- ABA OPERACIONAL -->
+      <div id="tab-operacional" class="tab-content active">
+
+        <!-- KPIs -->
+        <div class="grid grid-cols-4 gap-4 mb-8">
+          <div class="bg-card rounded-xl border border-border p-5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-muted text-xs font-semibold uppercase tracking-wider">Abastec. Hoje</span>
+              <i class="fa-solid fa-gas-pump text-accent text-sm"></i>
             </div>
-            <div class="operators-list">
-              ${ops.length > 0 ? ops.map(op => `
-                <div class="operator-item" style="display:flex;justify-content:space-between;">
-                  <span>👤 ${op.nome}</span>
-                  <button class="btn btn-danger btn-sm" onclick="deletarMembro(event, '${op.id}')"><i class="fas fa-trash" style="font-size:10px;"></i></button>
-                </div>
-              `).join('') : '<div style="padding:6px 20px;color:var(--muted);font-size:10px;">Nenhum operador vinculado</div>'}
+            <p class="text-2xl font-bold text-white data-font" id="kpiAbastHoje">0</p>
+          </div>
+          <div class="bg-card rounded-xl border border-border p-5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-muted text-xs font-semibold uppercase tracking-wider">Litros (Mes)</span>
+              <i class="fa-solid fa-droplet text-info text-sm"></i>
+            </div>
+            <p class="text-2xl font-bold text-white data-font" id="kpiLitrosMes">0</p>
+          </div>
+          <div class="bg-card rounded-xl border border-border p-5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-muted text-xs font-semibold uppercase tracking-wider">Em Manutencao</span>
+              <i class="fa-solid fa-wrench text-warning text-sm"></i>
+            </div>
+            <p class="text-2xl font-bold text-white data-font" id="kpiManutencao">0</p>
+          </div>
+          <div class="bg-card rounded-xl border border-border p-5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-muted text-xs font-semibold uppercase tracking-wider">Acoes Seguranca</span>
+              <i class="fa-solid fa-triangle-exclamation text-danger text-sm"></i>
+            </div>
+            <p class="text-2xl font-bold text-white data-font" id="kpiSegAberto">0</p>
+          </div>
+        </div>
+
+        <!-- Status da Frota -->
+        <div class="mb-8">
+          <h3 class="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-truck-monster text-accent text-xs"></i>Status da Frota
+          </h3>
+          <div class="grid grid-cols-3 gap-3" id="frotaGrid"></div>
+        </div>
+
+        <!-- Formulario de Abastecimento -->
+        <div class="bg-card rounded-xl border border-border p-6 mb-8">
+          <h3 class="text-sm font-semibold text-white mb-5 flex items-center gap-2">
+            <i class="fa-solid fa-plus-circle text-accent text-xs"></i>Registrar Abastecimento
+          </h3>
+          <div id="alertaOperador" class="hidden mb-4 bg-danger/10 border border-danger/30 rounded-lg px-4 py-3 text-sm text-danger flex items-center gap-2">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span id="alertaOperadorMsg"></span>
+          </div>
+          <div class="grid grid-cols-6 gap-4">
+            <div>
+              <label class="block text-[10px] font-semibold text-muted uppercase tracking-wider mb-1.5">Data</label>
+              <input id="abastData" type="date" class="w-full bg-bg border border-border rounded-lg px-3 py-2.5 text-white text-sm data-font focus:outline-none focus:border-accent transition">
+            </div>
+            <div>
+              <label class="block text-[10px] font-semibold text-muted uppercase tracking-wider mb-1.5">TAG Equip.</label>
+              <select id="abastTag" onchange="validarOperadorEquipamento()" class="w-full bg-bg border border-border rounded-lg px-3 py-2.5 text-white text-sm data-font focus:outline-none focus:border-accent transition">
+                <option value="">Selecione...</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] font-semibold text-muted uppercase tracking-wider mb-1.5">Operador</label>
+              <select id="abastOperador" onchange="validarOperadorEquipamento()" class="w-full bg-bg border border-border rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-accent transition">
+                <option value="">Selecione...</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] font-semibold text-muted uppercase tracking-wider mb-1.5">Litros</label>
+              <input id="abastLitros" type="number" step="0.1" min="0" placeholder="0.0" class="w-full bg-bg border border-border rounded-lg px-3 py-2.5 text-white text-sm data-font focus:outline-none focus:border-accent transition">
+            </div>
+            <div>
+              <label class="block text-[10px] font-semibold text-muted uppercase tracking-wider mb-1.5">Hodometro</label>
+              <input id="abastHodometro" type="number" placeholder="0" class="w-full bg-bg border border-border rounded-lg px-3 py-2.5 text-white text-sm data-font focus:outline-none focus:border-accent transition">
+            </div>
+            <div>
+              <label class="block text-[10px] font-semibold text-muted uppercase tracking-wider mb-1.5">Combustivel</label>
+              <select id="abastCombustivel" class="w-full bg-bg border border-border rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-accent transition">
+                <option value="Diesel S500">Diesel S500</option>
+                <option value="Diesel S10">Diesel S10</option>
+              </select>
             </div>
           </div>
-        `;
-      }).join('')}
-    </div>
-  `;
-  document.getElementById('secSubsolo').innerHTML = html;
-}
+          <div class="mt-4 flex items-end gap-4">
+            <div class="flex-1">
+              <label class="block text-[10px] font-semibold text-muted uppercase tracking-wider mb-1.5">Observacoes</label>
+              <input id="abastObs" type="text" placeholder="Opcional..." class="w-full bg-bg border border-border rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-accent transition">
+            </div>
+            <button onclick="registrarAbastecimento()" class="bg-accent hover:bg-accent-dark text-white font-semibold px-6 py-2.5 rounded-lg transition transform hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap">
+              <i class="fa-solid fa-check mr-2"></i>Registrar
+            </button>
+          </div>
+        </div>
 
-function toggleOperadores(element) {
-  const list = element.querySelector('.operators-list');
-  const icon = element.querySelector('i.fa-chevron-down');
-  list.classList.toggle('show');
-  icon.style.transform = list.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0)';
-}
-
-function novoMembro() {
-  const data = getData();
-  const fiscais = data.subsolo.filter(e => e.funcao === 'Fiscal');
-  
-  openModal('Novo Membro - Equipe de Subsolo', `
-    <div style="display:flex;flex-direction:column;gap:10px;">
-      <div>
-        <label style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Nome Completo</label>
-        <input id="memNome" class="input" placeholder="">
-      </div>
-      <div>
-        <label style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Função</label>
-        <select id="memFuncao" class="input" onchange="updateFiscalSelect()">
-          <option value="Fiscal">Fiscal (Responsável Principal)</option>
-          <option value="Operador">Operador (Subordinado)</option>
-        </select>
-      </div>
-      <div id="fiscalSelectDiv" style="display:none;">
-        <label style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Vinculado a Fiscal</label>
-        <select id="memFiscal" class="input">
-          ${fiscais.map(f => `<option value="${f.id}">${f.nome}</option>`).join('')}
-        </select>
-      </div>
-      <div>
-        <label style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Turno</label>
-        <select id="memTurno" class="input">
-          <option value="1">1º Turno (06:00-14:00)</option>
-          <option value="2">2º Turno (14:00-22:00)</option>
-          <option value="3">3º Turno (22:00-06:00)</option>
-        </select>
-      </div>
-    </div>
-  `, `
-    <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
-    <button class="btn btn-primary" onclick="salvarMembro()">Adicionar</button>
-  `);
-}
-
-function updateFiscalSelect() {
-  const funcao = document.getElementById('memFuncao').value;
-  const div = document.getElementById('fiscalSelectDiv');
-  div.style.display = funcao === 'Operador' ? 'block' : 'none';
-}
-
-function salvarMembro() {
-  const nome = document.getElementById('memNome').value.trim();
-  const funcao = document.getElementById('memFuncao').value;
-  const turno = document.getElementById('memTurno').value;
-  
-  if (!nome) {
-    toast('Preencha o nome', 'error');
-    return;
-  }
-  
-  const data = getData();
-  const novo = {
-    id: (funcao === 'Fiscal' ? 'f' : 'op') + Date.now(),
-    nome,
-    funcao,
-    turno: parseInt(turno),
-    status: 'ativo',
-    criadoEm: new Date().toISOString()
-  };
-  
-  if (funcao === 'Operador') {
-    novo.fisicalId = document.getElementById('memFiscal').value;
-  }
-  
-  data.subsolo.push(novo);
-  saveData(data);
-  closeModal();
-  toast('✓ Membro adicionado à equipe', 'success');
-  renderSubsolo();
-  renderDashboard();
-}
-
-function deletarMembro(event, id) {
-  event.stopPropagation();
-  openModal('Confirmar Exclusão', `
-    <p style="font-size:11px;color:var(--muted);">Deseja remover este membro?</p>
-  `, `
-    <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
-    <button class="btn btn-danger" onclick="confirmarDelMembro('${id}')">Remover</button>
-  `);
-}
-
-function confirmarDelMembro(id) {
-  const data = getData();
-  data.subsolo = data.subsolo.filter(m => m.id !== id);
-  saveData(data);
-  closeModal();
-  toast('✓ Membro removido', 'success');
-  renderSubsolo();
-  renderDashboard();
-}
-
-function renderExcel() {
-  const html = `
-    <div class="card">
-      <h3 style="font-size:13px;font-weight:600;margin-bottom:16px;">📊 Importar Dados via Excel</h3>
-      <div style="border:2px dashed var(--border);border-radius:8px;padding:40px;text-align:center;cursor:pointer;" onclick="document.getElementById('excelInput').click()">
-        <i class="fas fa-file-excel" style="font-size:48px;color:var(--orange);margin-bottom:12px;display:block;"></i>
-        <p style="font-size:12px;font-weight:600;margin-bottom:8px;">Clique ou arraste um arquivo</p>
-        <p style="font-size:10px;color:var(--muted);">Formatos: .xlsx, .xls, .csv</p>
-      </div>
-      <input type="file" id="excelInput" style="display:none;" accept=".xlsx,.xls,.csv" onchange="importarExcel(this.files[0])">
-      <div id="excelResult" style="margin-top:12px;"></div>
-    </div>
-  `;
-  document.getElementById('secExcel').innerHTML = html;
-}
-
-function importarExcel(file) {
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: 'array' });
-      const sheet = workbook.Sheets[workbook.SheetNames[0]];
-      const json = XLSX.utils.sheet_to_json(sheet);
-      
-      if (!json || json.length === 0) {
-        toast('❌ Arquivo vazio', 'error');
-        return;
-      }
-      
-      excelData = json;
-      toast(`✓ ${json.length} linhas lidas com sucesso!`, 'success');
-      renderExcel();
-    } catch (err) {
-      toast('❌ Erro: ' + err.message, 'error');
-    }
-  };
-  reader.readAsArrayBuffer(file);
-}
-
-function renderRelatorios() {
-  const data = getData();
-  const totalLitros = data.combois.reduce((a, c) => a + ((c.abastecimentos || 0) * 1900), 0);
-  
-  const html = `
-    <div class="card">
-      <h3 style="font-size:13px;font-weight:600;margin-bottom:16px;">📋 Relatórios Operacionais</h3>
-      <div style="background:var(--card2);border-left:3px solid var(--orange);border-radius:6px;padding:12px;margin-bottom:16px;">
-        <div style="font-size:12px;font-weight:600;margin-bottom:8px;">Resumo Geral</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:11px;">
-          <div>🚛 Comboios: <strong>${data.combois.length}</strong></div>
-          <div>👥 Equipe: <strong>${data.subsolo.length}</strong></div>
-          <div>📊 Abastecimentos: <strong>${data.combois.reduce((a,c) => a+(c.abastecimentos||0), 0)}</strong></div>
-          <div>💧 Litros: <strong>${totalLitros.toLocaleString('pt-BR')}L</strong></div>
+        <!-- Tabela de Abastecimentos -->
+        <div class="bg-card rounded-xl border border-border overflow-hidden">
+          <div class="p-5 border-b border-border flex items-center justify-between">
+            <h3 class="text-sm font-semibold text-white flex items-center gap-2">
+              <i class="fa-solid fa-table text-accent text-xs"></i>Registros de Abastecimento
+            </h3>
+            <span class="text-muted text-xs data-font" id="totalRegistros">0 registros</span>
+          </div>
+          <div class="overflow-x-auto max-h-[400px] overflow-y-auto">
+            <table class="w-full text-sm">
+              <thead class="sticky top-0 bg-card z-10">
+                <tr class="border-b border-border text-muted text-[10px] uppercase tracking-wider">
+                  <th class="text-left px-5 py-3 font-semibold">Data</th>
+                  <th class="text-left px-5 py-3 font-semibold">TAG</th>
+                  <th class="text-left px-5 py-3 font-semibold">Operador</th>
+                  <th class="text-right px-5 py-3 font-semibold">Litros</th>
+                  <th class="text-right px-5 py-3 font-semibold">Hodometro</th>
+                  <th class="text-left px-5 py-3 font-semibold">Combustivel</th>
+                  <th class="text-left px-5 py-3 font-semibold">Obs</th>
+                  <th class="text-center px-5 py-3 font-semibold">Acao</th>
+                </tr>
+              </thead>
+              <tbody id="tabelaAbastecimentos" class="data-font text-xs"></tbody>
+            </table>
+          </div>
+          <div id="emptyStateAbast" class="hidden p-12 text-center text-muted">
+            <i class="fa-solid fa-inbox text-3xl mb-3 opacity-30"></i>
+            <p class="text-sm">Nenhum abastecimento registrado</p>
+          </div>
         </div>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;">
-        <button class="btn btn-secondary" style="width:100%;justify-content:center;" onclick="exportarPDF()">
-          <i class="fas fa-file-pdf"></i>PDF
-        </button>
-        <button class="btn btn-secondary" style="width:100%;justify-content:center;" onclick="enviarWhatsApp()">
-          <i class="fab fa-whatsapp"></i>WhatsApp
-        </button>
+
+      <!-- ABA SEGURANCA EHS/QA -->
+      <div id="tab-seguranca" class="tab-content">
+
+        <div class="grid grid-cols-4 gap-4 mb-8">
+          <div class="bg-card rounded-xl border border-border p-5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-muted text-xs font-semibold uppercase tracking-wider">Abertos</span>
+              <div class="w-2.5 h-2.5 rounded-full bg-danger"></div>
+            </div>
+            <p class="text-2xl font-bold text-danger data-font" id="kpiSegAbertos">0</p>
+          </div>
+          <div class="bg-card rounded-xl border border-border p-5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-muted text-xs font-semibold uppercase tracking-wider">Em Tratamento</span>
+              <div class="w-2.5 h-2.5 rounded-full bg-warning"></div>
+            </div>
+            <p class="text-2xl font-bold text-warning data-font" id="kpiSegTratamento">0</p>
+          </div>
+          <div class="bg-card rounded-xl border border-border p-5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-muted text-xs font-semibold uppercase tracking-wider">Resolvidos</span>
+              <div class="w-2.5 h-2.5 rounded-full bg-success"></div>
+            </div>
+            <p class="text-2xl font-bold text-success data-font" id="kpiSegResolvidos">0</p>
+          </div>
+          <div class="bg-card rounded-xl border border-border p-5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-muted text-xs font-semibold uppercase tracking-wider">Total Registros</span>
+              <i class="fa-solid fa-list text-accent text-sm"></i>
+            </div>
+            <p class="text-2xl font-bold text-white data-font" id="kpiSegTotal">0</p>
+          </div>
+        </div>
+
+        <!-- Formulario de Desvio -->
+        <div class="bg-card rounded-xl border border-border p-6 mb-8">
+          <h3 class="text-sm font-semibold text-white mb-5 flex items-center gap-2">
+            <i class="fa-solid fa-plus-circle text-accent text-xs"></i>Registrar Desvio / Acao Corretiva
+          </h3>
+          <div class="grid grid-cols-5 gap-4">
+            <div>
+              <label class="block text-[10px] font-semibold text-muted uppercase tracking-wider mb-1.5">No Registro</label>
+              <input id="segRegistro" type="text" placeholder="EX: DEV-2024-001" class="w-full bg-bg border border-border rounded-lg px-3 py-2.5 text-white text-sm data-font focus:outline-none focus:border-accent transition">
+            </div>
+            <div>
+              <label class="block text-[10px] font-semibold text-muted uppercase tracking-wider mb-1.5">Localizacao (CMM)</label>
+              <select id="segLocalizacao" class="w-full bg-bg border border-border rounded-lg px-3 py-2.5 text-white text-sm data-font focus:outline-none focus:border-accent transition">
+                <option value="">Selecione...</option>
+                <option>CMM-1350</option><option>CMM-1400</option><option>CMM-1450</option>
+                <option>CMM-1500</option><option>CMM-1550</option><option>CMM-1600</option>
+                <option>Rampa Principal</option><option>Oficina Subterranea</option>
+              </select>
+            </div>
+            <div class="col-span-2">
+              <label class="block text-[10px] font-semibold text-muted uppercase tracking-wider mb-1.5">Descricao do Desvio</label>
+              <input id="segDescricao" type="text" placeholder="Descreva o desvio encontrado..." class="w-full bg-bg border border-border rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-accent transition">
+            </div>
+            <div>
+              <label class="block text-[10px] font-semibold text-muted uppercase tracking-wider mb-1.5">Status</label>
+              <select id="segStatus" class="w-full bg-bg border border-border rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-accent transition">
+                <option value="aberto">Aberto</option>
+                <option value="tratamento">Em Tratamento</option>
+                <option value="resolvido">Resolvido</option>
+              </select>
+            </div>
+          </div>
+          <div class="mt-4 flex justify-end">
+            <button onclick="registrarDesvio()" class="bg-accent hover:bg-accent-dark text-white font-semibold px-6 py-2.5 rounded-lg transition transform hover:scale-[1.02] active:scale-[0.98]">
+              <i class="fa-solid fa-check mr-2"></i>Registrar Desvio
+            </button>
+          </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="flex items-center gap-2 mb-4">
+          <button onclick="filtrarDesvios('todos')" class="seg-filter active text-xs px-4 py-2 rounded-lg bg-accent/10 text-accent border border-accent/30 transition hover:bg-accent/20" data-filter="todos">Todos</button>
+          <button onclick="filtrarDesvios('aberto')" class="seg-filter text-xs px-4 py-2 rounded-lg bg-card text-muted border border-border transition hover:border-danger/40 hover:text-danger" data-filter="aberto">Abertos</button>
+          <button onclick="filtrarDesvios('tratamento')" class="seg-filter text-xs px-4 py-2 rounded-lg bg-card text-muted border border-border transition hover:border-warning/40 hover:text-warning" data-filter="tratamento">Em Tratamento</button>
+          <button onclick="filtrarDesvios('resolvido')" class="seg-filter text-xs px-4 py-2 rounded-lg bg-card text-muted border border-border transition hover:border-success/40 hover:text-success" data-filter="resolvido">Resolvidos</button>
+        </div>
+
+        <!-- Tabela de Desvios -->
+        <div class="bg-card rounded-xl border border-border overflow-hidden">
+          <div class="overflow-x-auto max-h-[450px] overflow-y-auto">
+            <table class="w-full text-sm">
+              <thead class="sticky top-0 bg-card z-10">
+                <tr class="border-b border-border text-muted text-[10px] uppercase tracking-wider">
+                  <th class="text-left px-5 py-3 font-semibold">No Registro</th>
+                  <th class="text-left px-5 py-3 font-semibold">Data</th>
+                  <th class="text-left px-5 py-3 font-semibold">Localizacao (CMM)</th>
+                  <th class="text-left px-5 py-3 font-semibold">Descricao do Desvio</th>
+                  <th class="text-center px-5 py-3 font-semibold">Status</th>
+                  <th class="text-center px-5 py-3 font-semibold">Acoes</th>
+                </tr>
+              </thead>
+              <tbody id="tabelaDesvios" class="data-font text-xs"></tbody>
+            </table>
+          </div>
+          <div id="emptyStateSeg" class="hidden p-12 text-center text-muted">
+            <i class="fa-solid fa-shield-halved text-3xl mb-3 opacity-30"></i>
+            <p class="text-sm">Nenhum desvio registrado</p>
+          </div>
+        </div>
       </div>
+
+      <!-- ABA EQUIPE & TREINOS -->
+      <div id="tab-equipe" class="tab-content">
+
+        <div class="bg-card rounded-xl border border-border p-6 mb-8">
+          <div class="flex items-center justify-between mb-5">
+            <h3 class="text-sm font-semibold text-white flex items-center gap-2">
+              <i class="fa-solid fa-users text-accent text-xs"></i>Consulta de Aptidao Operacional
+            </h3>
+            <div class="relative">
+              <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-muted text-xs"></i>
+              <input id="buscaEquipe" type="text" placeholder="Buscar colaborador..." oninput="renderizarEquipe()" class="bg-bg border border-border rounded-lg pl-9 pr-4 py-2 text-white text-sm focus:outline-none focus:border-accent transition w-64">
+            </div>
+          </div>
+
+          <!-- Legenda -->
+          <div class="flex items-center gap-6 mb-5 text-xs">
+            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm bg-success inline-block"></span><span class="text-muted">Apto</span></div>
+            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm bg-danger inline-block"></span><span class="text-muted">Nao Apto</span></div>
+            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm bg-border inline-block"></span><span class="text-muted">Nao Treinado</span></div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-border text-muted text-[10px] uppercase tracking-wider">
+                  <th class="text-left px-5 py-3 font-semibold">Colaborador</th>
+                  <th class="text-center px-5 py-3 font-semibold">Turno</th>
+                  <th class="text-center px-5 py-3 font-semibold"><i class="fa-solid fa-truck-monster mr-1"></i>Sandvik</th>
+                  <th class="text-center px-5 py-3 font-semibold"><i class="fa-solid fa-truck mr-1"></i>Getman</th>
+                  <th class="text-center px-5 py-3 font-semibold"><i class="fa-solid fa-truck-pickup mr-1"></i>L200</th>
+                  <th class="text-center px-5 py-3 font-semibold">Status Geral</th>
+                </tr>
+              </thead>
+              <tbody id="tabelaEquipe" class="text-xs"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Gerenciar Treinos -->
+        <div class="bg-card rounded-xl border border-border p-6">
+          <h3 class="text-sm font-semibold text-white mb-5 flex items-center gap-2">
+            <i class="fa-solid fa-graduation-cap text-accent text-xs"></i>Gerenciar Treinamentos
+          </h3>
+          <div class="grid grid-cols-4 gap-4">
+            <div>
+              <label class="block text-[10px] font-semibold text-muted uppercase tracking-wider mb-1.5">Colaborador</label>
+              <select id="treinoColaborador" class="w-full bg-bg border border-border rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-accent transition">
+                <option value="">Selecione...</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] font-semibold text-muted uppercase tracking-wider mb-1.5">Equipamento</label>
+              <select id="treinoEquipamento" class="w-full bg-bg border border-border rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-accent transition">
+                <option value="sandvik">Sandvik (LHD)</option>
+                <option value="getman">Getman</option>
+                <option value="l200">L200 (Volvo)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] font-semibold text-muted uppercase tracking-wider mb-1.5">Acao</label>
+              <select id="treinoAcao" class="w-full bg-bg border border-border rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-accent transition">
+                <option value="aprovar">Aprovar Treinamento</option>
+                <option value="remover">Remover Aptidao</option>
+              </select>
+            </div>
+            <div class="flex items-end">
+              <button onclick="atualizarTreinamento()" class="w-full bg-accent hover:bg-accent-dark text-white font-semibold px-6 py-2.5 rounded-lg transition">
+                <i class="fa-solid fa-check mr-2"></i>Atualizar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABA GESTAO 5S -->
+      <div id="tab-cincoS" class="tab-content">
+
+        <div class="grid grid-cols-3 gap-4 mb-8">
+          <div class="bg-card rounded-xl border border-border p-5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-muted text-xs font-semibold uppercase tracking-wider">Checklists Hoje</span>
+              <i class="fa-solid fa-clipboard-check text-accent text-sm"></i>
+            </div>
+            <p class="text-2xl font-bold text-white data-font" id="kpi5sHoje">0</p>
+          </div>
+          <div class="bg-card rounded-xl border border-border p-5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-muted text-xs font-semibold uppercase tracking-wider">Conformidade Media</span>
+              <i class="fa-solid fa-chart-line text-success text-sm"></i>
+            </div>
+            <p class="text-2xl font-bold text-white data-font" id="kpi5sConformidade">--%</p>
+          </div>
+          <div class="bg-card rounded-xl border border-border p-5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-muted text-xs font-semibold uppercase tracking-wider">Nao Conformidades</span>
+              <i class="fa-solid fa-xmark text-danger text-sm"></i>
+            </div>
+            <p class="text-2xl font-bold text-danger data-font" id="kpi5sNaoConforme">0</p>
+          </div>
+        </div>
+
+        <!-- Formulario de Checklist -->
+        <div class="bg-card rounded-xl border border-border p-6 mb-8">
+          <h3 class="text-sm font-semibold text-white mb-5 flex items-center gap-2">
+            <i class="fa-solid fa-clipboard-check text-accent text-xs"></i>Nova Inspecao 5S
+          </h3>
+          <div class="grid grid-cols-3 gap-4 mb-6">
+            <div>
+              <label class="block text-[10px] font-semibold text-muted uppercase tracking-wider mb-1.5">Frente de Trabalho</label>
+              <select id="ssFrente" class="w-full bg-bg border border-border rounded-lg px-3 py-2.5 text-white text-sm data-font focus:outline-none focus:border-accent transition">
+                <option value="">Selecione...</option>
+                <option>CMM-1350 - Galeria Leste</option>
+                <option>CMM-1400 - Avanco Norte</option>
+                <option>CMM-1450 - Galeria Principal</option>
+                <option>CMM-1500 - Sublevel Sul</option>
+                <option>Oficina Subterranea</option>
+                <option>Rampa de Acesso</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] font-semibold text-muted uppercase tracking-wider mb-1.5">Inspetor</label>
+              <select id="ssInspetor" class="w-full bg-bg border border-border rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-accent transition">
+                <option value="">Selecione...</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] font-semibold text-muted uppercase tracking-wider mb-1.5">Data</label>
+              <input id="ssData" type="date" class="w-full bg-bg border border-border rounded-lg px-3 py-2.5 text-white text-sm data-font focus:outline-none focus:border-accent transition">
+            </div>
+          </div>
+
+          <!-- Checklist de Criterios -->
+          <div class="space-y-3" id="checklist5sContainer">
+            <p class="text-[10px] font-semibold text-accent uppercase tracking-widest">Seiri - Utilizacao</p>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="flex items-center gap-3 bg-bg rounded-lg px-4 py-3 border border-border cursor-pointer hover:border-accent/30 transition">
+                <input type="checkbox" class="checkbox-5s" data-item="seiri1" data-senso="seiri">
+                <span class="text-sm text-gray-300">Itens desnecessarios removidos da area</span>
+              </label>
+              <label class="flex items-center gap-3 bg-bg rounded-lg px-4 py-3 border border-border cursor-pointer hover:border-accent/30 transition">
+                <input type="checkbox" class="checkbox-5s" data-item="seiri2" data-senso="seiri">
+                <span class="text-sm text-gray-300">Ferramentas e materiais sao estritamente necessarios</span>
+              </label>
+            </div>
+
+            <p class="text-[10px] font-semibold text-accent uppercase tracking-widest mt-4">Seiton - Organizacao</p>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="flex items-center gap-3 bg-bg rounded-lg px-4 py-3 border border-border cursor-pointer hover:border-accent/30 transition">
+                <input type="checkbox" class="checkbox-5s" data-item="seiton1" data-senso="seiton">
+                <span class="text-sm text-gray-300">Ferramentas organizadas e identificadas</span>
+              </label>
+              <label class="flex items-center gap-3 bg-bg rounded-lg px-4 py-3 border border-border cursor-pointer hover:border-accent/30 transition">
+                <input type="checkbox" class="checkbox-5s" data-item="seiton2" data-senso="seiton">
+                <span class="text-sm text-gray-300">Materiais armazenados nos locais designados</span>
+              </label>
+            </div>
+
+            <p class="text-[10px] font-semibold text-accent uppercase tracking-widest mt-4">Seiso - Limpeza</p>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="flex items-center gap-3 bg-bg rounded-lg px-4 py-3 border border-border cursor-pointer hover:border-accent/30 transition">
+                <input type="checkbox" class="checkbox-5s" data-item="seiso1" data-senso="seiso">
+                <span class="text-sm text-gray-300">Piso limpo e livre de detritos</span>
+              </label>
+              <label class="flex items-center gap-3 bg-bg rounded-lg px-4 py-3 border border-border cursor-pointer hover:border-accent/30 transition">
+                <input type="checkbox" class="checkbox-5s" data-item="seiso2" data-senso="seiso">
+                <span class="text-sm text-gray-300">Equipamentos limpos e sem acumulo de poeira</span>
+              </label>
+            </div>
+
+            <p class="text-[10px] font-semibold text-accent uppercase tracking-widest mt-4">Seiketsu - Padronizacao</p>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="flex items-center gap-3 bg-bg rounded-lg px-4 py-3 border border-border cursor-pointer hover:border-accent/30 transition">
+                <input type="checkbox" class="checkbox-5s" data-item="seiketsu1" data-senso="seiketsu">
+                <span class="text-sm text-gray-300">Sinalizacao visivel e em boas condicoes</span>
+              </label>
+              <label class="flex items-center gap-3 bg-bg rounded-lg px-4 py-3 border border-border cursor-pointer hover:border-accent/30 transition">
+                <input type="checkbox" class="checkbox-5s" data-item="seiketsu2" data-senso="seiketsu">
+                <span class="text-sm text-gray-300">Procedimentos de 5S documentados e acessiveis</span>
+              </label>
+            </div>
+
+            <p class="text-[10px] font-semibold text-accent uppercase tracking-widest mt-4">Shitsuke - Disciplina</p>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="flex items-center gap-3 bg-bg rounded-lg px-4 py-3 border border-border cursor-pointer hover:border-accent/30 transition">
+                <input type="checkbox" class="checkbox-5s" data-item="shitsuke1" data-senso="shitsuke">
+                <span class="text-sm text-gray-300">Equipe segue os procedimentos estabelecidos</span>
+              </label>
+              <label class="flex items-center gap-3 bg-bg rounded-lg px-4 py-3 border border-border cursor-pointer hover:border-accent/30 transition">
+                <input type="checkbox" class="checkbox-5s" data-item="shitsuke2" data-senso="shitsuke">
+                <span class="text-sm text-gray-300">Checklist de 5S executado conforme cronograma</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <label class="block text-[10px] font-semibold text-muted uppercase tracking-wider mb-1.5">Observacoes</label>
+            <textarea id="ssObs" rows="2" placeholder="Observacoes adicionais..." class="w-full bg-bg border border-border rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-accent transition resize-none"></textarea>
+          </div>
+
+          <div class="mt-4 flex justify-end">
+            <button onclick="salvarChecklist5S()" class="bg-accent hover:bg-accent-dark text-white font-semibold px-6 py-2.5 rounded-lg transition transform hover:scale-[1.02] active:scale-[0.98]">
+              <i class="fa-solid fa-save mr-2"></i>Salvar Inspecao
+            </button>
+          </div>
+        </div>
+
+        <!-- Historico de Inspecoes -->
+        <div class="bg-card rounded-xl border border-border overflow-hidden">
+          <div class="p-5 border-b border-border">
+            <h3 class="text-sm font-semibold text-white flex items-center gap-2">
+              <i class="fa-solid fa-clock-rotate-left text-accent text-xs"></i>Historico de Inspecoes
+            </h3>
+          </div>
+          <div class="overflow-x-auto max-h-[350px] overflow-y-auto">
+            <table class="w-full text-sm">
+              <thead class="sticky top-0 bg-card z-10">
+                <tr class="border-b border-border text-muted text-[10px] uppercase tracking-wider">
+                  <th class="text-left px-5 py-3 font-semibold">Data</th>
+                  <th class="text-left px-5 py-3 font-semibold">Frente</th>
+                  <th class="text-left px-5 py-3 font-semibold">Inspetor</th>
+                  <th class="text-center px-5 py-3 font-semibold">Pontuacao</th>
+                  <th class="text-center px-5 py-3 font-semibold">Conformidade</th>
+                  <th class="text-center px-5 py-3 font-semibold">Detalhes</th>
+                </tr>
+              </thead>
+              <tbody id="tabela5sHistorico" class="data-font text-xs"></tbody>
+            </table>
+          </div>
+          <div id="emptyState5s" class="hidden p-12 text-center text-muted">
+            <i class="fa-solid fa-clipboard-check text-3xl mb-3 opacity-30"></i>
+            <p class="text-sm">Nenhuma inspecao 5S registrada</p>
+          </div>
+        </div>
+      </div>
+
     </div>
-  `;
-  document.getElementById('secRelatorios').innerHTML = html;
+  </main>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div id="toastContainer" class="fixed top-5 right-5 z-[200] space-y-2"></div>
+
+<script>
+/* ========== UTILITARIOS ========== */
+function gerarId() { return 'id_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9); }
+function dataHoje() { return new Date().toISOString().split('T')[0]; }
+function dataHoraFormatada() { return new Date().toLocaleString('pt-BR'); }
+
+function toast(msg, tipo = 'info') {
+  const cores = { success: 'bg-success', danger: 'bg-danger', warning: 'bg-warning', info: 'bg-info' };
+  const iconMap = { success: 'fa-check', danger: 'fa-xmark', warning: 'fa-exclamation', info: 'fa-info' };
+  const el = document.createElement('div');
+  el.className = `toast-enter flex items-center gap-3 px-4 py-3 rounded-lg bg-card border border-border text-white text-sm shadow-lg`;
+  el.innerHTML = `<span class="w-6 h-6 rounded-full ${cores[tipo]} flex items-center justify-center"><i class="fa-solid ${iconMap[tipo]} text-xs text-white"></i></span>${msg}`;
+  document.getElementById('toastContainer').appendChild(el);
+  setTimeout(() => el.remove(), 4000);
 }
 
-function exportarPDF() {
-  const data = getData();
-  const totalLitros = data.combois.reduce((a, c) => a + ((c.abastecimentos || 0) * 1900), 0);
-  const html = `
-    <div style="font-family:Arial;padding:20px;background:#fff;color:#000;">
-      <h1>INFRAMINA - Relatório de Abastecimento</h1>
-      <p><strong>Data:</strong> ${new Date().toLocaleDateString('pt-BR')} ${new Date().toLocaleTimeString('pt-BR')}</p>
-      <p><strong>Gerado por:</strong> ${currentUser.nome}</p>
-      <hr style="margin:16px 0;">
-      <h2>Comboios</h2>
-      <table style="width:100%;border-collapse:collapse;margin-top:8px;">
-        <thead>
-          <tr style="background:#f0f0f0;">
-            <th style="border:1px solid #ccc;padding:8px;">Código</th>
-            <th style="border:1px solid #ccc;padding:8px;">Abastecimentos</th>
-            <th style="border:1px solid #ccc;padding:8px;">Total Litros</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${data.combois.map(c => `
-            <tr>
-              <td style="border:1px solid #ccc;padding:8px;">${c.codigo}</td>
-              <td style="border:1px solid #ccc;padding:8px;">${c.abastecimentos || 0}</td>
-              <td style="border:1px solid #ccc;padding:8px;">${((c.abastecimentos || 0) * 1900).toLocaleString('pt-BR')}L</td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-      <h3 style="margin-top:16px;">Total: ${totalLitros.toLocaleString('pt-BR')}L</h3>
-    </div>
-  `;
-  const element = document.createElement('div');
-  element.innerHTML = html;
-  html2pdf().set({
-    margin: 10,
-    filename: 'relatorio-inframina.pdf',
-    html2canvas: { scale: 2 },
-    jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
-  }).from(element).save();
-  toast('✓ PDF gerado!', 'success');
+function salvarEstado() {
+  localStorage.setItem('inframina_abastecimentos', JSON.stringify(abastecimentos));
+  localStorage.setItem('inframina_operadores', JSON.stringify(operadores));
 }
 
-function enviarWhatsApp() {
-  const data = getData();
-  const totalLitros = data.combois.reduce((a, c) => a + ((c.abastecimentos || 0) * 1900), 0);
-  const msg = `📊 *Relatório InfraMINA*\n\n💧 Litros: ${totalLitros.toLocaleString('pt-BR')}L\n🚛 Comboios: ${data.combois.length}\n👥 Equipe: ${data.subsolo.length}\n\n${new Date().toLocaleDateString('pt-BR')} ${new Date().toLocaleTimeString('pt-BR')}`;
-  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-  toast('✓ Abrindo WhatsApp...', 'info');
+/* ========== DADOS PADRAO ========== */
+let equipamentos = JSON.parse(localStorage.getItem('inframina_equipamentos')) || [
+  { tag: 'LHD-001', descricao: 'Sandvik LH517i', categoria: 'sandvik', status: 'operacional' },
+  { tag: 'LHD-002', descricao: 'Sandvik LH410', categoria: 'sandvik', status: 'operacional' },
+  { tag: 'GTM-001', descricao: 'Getman A64', categoria: 'getman', status: 'operacional' },
+  { tag: 'GTM-002', descricao: 'Getman A64', categoria: 'getman', status: 'manutencao' },
+  { tag: 'L200-001', descricao: 'Mitsubishi L200 Triton', categoria: 'l200', status: 'operacional' },
+  { tag: 'L200-002', descricao: 'Mitsubishi L200 Triton', categoria: 'l200', status: 'parado' },
+];
+
+let operadores = JSON.parse(localStorage.getItem('inframina_operadores')) || [
+  { nome: 'Carlos Silva', turno: 1, treinos: { sandvik: true, getman: true, l200: true } },
+  { nome: 'Jose Santos', turno: 1, treinos: { sandvik: true, getman: false, l200: true } },
+  { nome: 'Pedro Oliveira', turno: 2, treinos: { sandvik: false, getman: true, l200: false } },
+  { nome: 'Ana Costa', turno: 2, treinos: { sandvik: true, getman: true, l200: false } },
+  { nome: 'Maria Souza', turno: 3, treinos: { sandvik: false, getman: false, l200: true } },
+];
+
+let abastecimentos = JSON.parse(localStorage.getItem('inframina_abastecimentos')) || [];
+let desvios = JSON.parse(localStorage.getItem('inframina_desvios')) || [];
+let checklists5S = JSON.parse(localStorage.getItem('inframina_checklists5s')) || [];
+let filtroDesviosAtual = 'todos';
+
+const titulosAba = {
+  operacional: ['Painel Operacional', 'Controle de abastecimento e frota'],
+  seguranca: ['Seguranca EHS/QA', 'Desvios e acoes corretivas'],
+  equipe: ['Equipe & Treinos', 'Aptidao operacional dos colaboradores'],
+  cincoS: ['Gestao 5S', 'Checklists de inspecao e conformidade']
+};
+
+/* ========== USUARIOS ========== */
+let usuarios = JSON.parse(localStorage.getItem('inframina_usuarios')) || [
+  { nome: 'admin', senha: 'admin', cargo: 'Supervisor' }
+];
+
+function salvarUsuarios() {
+  localStorage.setItem('inframina_usuarios', JSON.stringify(usuarios));
 }
 
-// ===== REGISTRO =====
+/* ========== TOGGLE SENHA ========== */
+function togglePasswordVisibility() {
+  const input = document.getElementById('loginPass');
+  const icon = document.getElementById('togglePassIcon');
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.classList.remove('fa-eye');
+    icon.classList.add('fa-eye-slash');
+  } else {
+    input.type = 'password';
+    icon.classList.remove('fa-eye-slash');
+    icon.classList.add('fa-eye');
+  }
+}
+
+/* ========== AUTENTICACAO ========== */
+function fazerLogin() {
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const usuarioEncontrado = usuarios.find(u => u.nome === user && u.senha === pass);
+
+  if (usuarioEncontrado) {
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('mainApp').classList.remove('hidden');
+    document.getElementById('sidebarUserName').textContent = usuarioEncontrado.nome;
+    sessionStorage.setItem('inframina_logado', '1');
+    sessionStorage.setItem('inframina_usuario', usuarioEncontrado.nome);
+    inicializarApp();
+  } else {
+    document.getElementById('loginError').classList.remove('hidden');
+    setTimeout(() => document.getElementById('loginError').classList.add('hidden'), 3000);
+  }
+}
+
+/* ========== CADASTRO DE USUARIO ========== */
 function openRegisterModal() {
-  openModal('Criar Conta', `
-    <div style="display:flex;flex-direction:column;gap:10px;">
-      <div>
-        <label style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Nome Completo</label>
-        <input id="regNome" class="input" placeholder="">
+  const overlay = document.createElement('div');
+  overlay.className = 'fixed inset-0 z-[150] modal-overlay flex items-center justify-center p-4';
+  overlay.id = 'registerModal';
+  overlay.onclick = e => { if (e.target === overlay) overlay.remove(); };
+  overlay.innerHTML = `
+    <div class="bg-card rounded-2xl border border-border w-full max-w-md">
+      <div class="p-5 border-b border-border flex items-center justify-between">
+        <h3 class="text-sm font-bold text-white"><i class="fa-solid fa-user-plus text-accent mr-2"></i>Criar Nova Conta</h3>
+        <button onclick="this.closest('.fixed').remove()" class="w-8 h-8 rounded-lg bg-bg border border-border flex items-center justify-center text-muted hover:text-white transition">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
       </div>
-      <div>
-        <label style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Email</label>
-        <input id="regEmail" class="input" type="email" placeholder="">
+      <div class="p-5 space-y-4">
+        <div>
+          <label class="block text-[10px] font-semibold text-muted uppercase tracking-wider mb-1.5">Nome de Usuario</label>
+          <input id="regNome" type="text" placeholder="Ex: joao.silva" class="w-full bg-bg border border-border rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-accent transition">
+        </div>
+        <div>
+          <label class="block text-[10px] font-semibold text-muted uppercase tracking-wider mb-1.5">Senha</label>
+          <input id="regSenha" type="password" placeholder="Minimo 4 caracteres" class="w-full bg-bg border border-border rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-accent transition">
+        </div>
+        <div>
+          <label class="block text-[10px] font-semibold text-muted uppercase tracking-wider mb-1.5">Confirmar Senha</label>
+          <input id="regSenhaConfirm" type="password" placeholder="Repita a senha" class="w-full bg-bg border border-border rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-accent transition">
+        </div>
+        <div>
+          <label class="block text-[10px] font-semibold text-muted uppercase tracking-wider mb-1.5">Cargo</label>
+          <select id="regCargo" class="w-full bg-bg border border-border rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-accent transition">
+            <option value="Operador">Operador</option>
+            <option value="Fiscal">Fiscal</option>
+            <option value="Supervisor">Supervisor</option>
+            <option value="Engenheiro">Engenheiro</option>
+          </select>
+        </div>
+        <button onclick="criarConta()" class="w-full bg-accent hover:bg-accent-dark text-white font-semibold py-2.5 rounded-lg transition">
+          <i class="fa-solid fa-check mr-2"></i>Criar Conta
+        </button>
       </div>
-      <div>
-        <label style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Usuário</label>
-        <input id="regUser" class="input" placeholder="">
-      </div>
-      <div>
-        <label style="font-size:9px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;">Senha</label>
-        <input id="regPass" class="input" type="password" placeholder="">
-      </div>
-    </div>
-  `, `
-    <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
-    <button class="btn btn-primary" onclick="criarConta()">Criar Conta</button>
-  `);
+    </div>`;
+  document.body.appendChild(overlay);
 }
 
 function criarConta() {
   const nome = document.getElementById('regNome').value.trim();
-  const email = document.getElementById('regEmail').value.trim();
-  const user = document.getElementById('regUser').value.trim();
-  const pass = document.getElementById('regPass').value;
-  
-  if (!nome || !email || !user || !pass) {
-    toast('Preencha todos os campos', 'error');
+  const senha = document.getElementById('regSenha').value;
+  const senhaConfirm = document.getElementById('regSenhaConfirm').value;
+  const cargo = document.getElementById('regCargo').value;
+
+  if (!nome || !senha) {
+    toast('Preencha nome e senha.', 'danger');
     return;
   }
-  
-  const users = getU();
-  if (users.find(u => u.username === user)) {
-    toast('Usuário já existe', 'error');
+  if (nome.length < 3) {
+    toast('Nome deve ter pelo menos 3 caracteres.', 'danger');
     return;
   }
-  
-  users.push({
-    id: 'u' + Date.now(),
-    nome,
-    email,
-    username: user,
-    password: pass,
-    role: 'Usuário',
-    status: 'ativo',
+  if (senha.length < 4) {
+    toast('Senha deve ter pelo menos 4 caracteres.', 'danger');
+    return;
+  }
+  if (senha !== senhaConfirm) {
+    toast('As senhas nao conferem.', 'danger');
+    return;
+  }
+  if (usuarios.find(u => u.nome.toLowerCase() === nome.toLowerCase())) {
+    toast('Usuario ja existe.', 'danger');
+    return;
+  }
+
+  usuarios.push({ nome, senha, cargo });
+  salvarUsuarios();
+
+  document.getElementById('registerModal').remove();
+  toast('Conta criada com sucesso! Faca login.', 'success');
+  document.getElementById('loginUser').value = nome;
+  document.getElementById('loginPass').value = '';
+  document.getElementById('loginPass').focus();
+}
+
+function fazerLogout() {
+  sessionStorage.removeItem('inframina_logado');
+  location.reload();
+}
+
+/* ========== NAVEGACAO ========== */
+function mudarAba(nome, el) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+  document.getElementById('tab-' + nome).classList.add('active');
+  if (el) el.classList.add('active');
+  document.getElementById('pageTitle').textContent = titulosAba[nome][0];
+  document.getElementById('pageSubtitle').textContent = titulosAba[nome][1];
+  if (nome === 'operacional') { atualizarKPIs(); renderizarFrota(); renderizarAbastecimentos(); }
+  if (nome === 'seguranca') { atualizarKPISeguranca(); renderizarDesvios(); }
+  if (nome === 'equipe') { renderizarEquipe(); popularSelectTreino(); }
+  if (nome === 'cincoS') { atualizarKPI5S(); renderizarHistorico5S(); popularSelectInspetor(); }
+}
+
+/* ========== RELOGIO ========== */
+function atualizarRelogio() {
+  const el = document.getElementById('headerClock');
+  if (el) el.textContent = dataHoraFormatada();
+}
+setInterval(atualizarRelogio, 1000);
+
+/* ========== POPULAR SELECTS ========== */
+function popularSelectsAbast() {
+  const selTag = document.getElementById('abastTag');
+  const selOp = document.getElementById('abastOperador');
+  selTag.innerHTML = '<option value="">Selecione...</option>';
+  selOp.innerHTML = '<option value="">Selecione...</option>';
+  equipamentos.forEach(eq => {
+    selTag.innerHTML += `<option value="${eq.tag}">${eq.tag} - ${eq.descricao}</option>`;
+  });
+  operadores.forEach(op => {
+    selOp.innerHTML += `<option value="${op.nome}">${op.nome} (Turno ${op.turno})</option>`;
+  });
+}
+
+/* ========== FROTA ========== */
+function renderizarFrota() {
+  const grid = document.getElementById('frotaGrid');
+  grid.innerHTML = '';
+  equipamentos.forEach(eq => {
+    const isManut = eq.status === 'manutencao';
+    const isParado = eq.status === 'parado';
+    const statusColor = isManut ? 'danger' : isParado ? 'warning' : 'success';
+    const statusLabel = isManut ? 'Manutencao' : isParado ? 'Parado' : 'Operacional';
+    const statusIcon = isManut ? 'fa-wrench' : isParado ? 'fa-pause' : 'fa-circle-play';
+    const cardClass = isManut ? 'equip-manutencao' : '';
+    grid.innerHTML += `
+      <div class="bg-card rounded-xl border border-border p-4 ${cardClass} hover:bg-card-hover transition">
+        <div class="flex items-center justify-between mb-2">
+          <span class="data-font text-sm font-semibold text-white">${eq.tag}</span>
+          <span class="status-badge bg-${statusColor}/10 text-${statusColor} border border-${statusColor}/30">
+            <i class="fa-solid ${statusIcon} mr-1"></i>${statusLabel}
+          </span>
+        </div>
+        <p class="text-muted text-xs mb-1">${eq.descricao}</p>
+        <p class="text-[10px] text-muted/60 uppercase tracking-wider">Categoria: ${eq.categoria}</p>
+      </div>`;
+  });
+  const manutCount = equipamentos.filter(e => e.status === 'manutencao').length;
+  document.getElementById('kpiManutencao').textContent = manutCount;
+}
+
+/* ========== VALIDACAO CRUZADA ========== */
+function validarOperadorEquipamento() {
+  const tag = document.getElementById('abastTag').value;
+  const operadorNome = document.getElementById('abastOperador').value;
+  const alerta = document.getElementById('alertaOperador');
+  const msg = document.getElementById('alertaOperadorMsg');
+
+  if (!tag || !operadorNome) { alerta.classList.add('hidden'); return; }
+
+  const equip = equipamentos.find(e => e.tag === tag);
+  const oper = operadores.find(o => o.nome === operadorNome);
+  if (!equip || !oper) { alerta.classList.add('hidden'); return; }
+
+  const categoria = equip.categoria;
+  if (!oper.treinos[categoria]) {
+    alerta.classList.remove('hidden');
+    const nomesCat = { sandvik: 'Sandvik', getman: 'Getman', l200: 'L200' };
+    msg.textContent = `Operador nao autorizado para este equipamento. ${operadorNome} nao possui treinamento para ${nomesCat[categoria] || categoria}.`;
+  } else {
+    alerta.classList.add('hidden');
+  }
+}
+
+/* ========== ABASTECIMENTO ========== */
+function registrarAbastecimento() {
+  const data = document.getElementById('abastData').value;
+  const tag = document.getElementById('abastTag').value;
+  const operador = document.getElementById('abastOperador').value;
+  const litros = parseFloat(document.getElementById('abastLitros').value);
+  const hodometro = parseInt(document.getElementById('abastHodometro').value) || 0;
+  const combustivel = document.getElementById('abastCombustivel').value;
+  const obs = document.getElementById('abastObs').value.trim();
+
+  if (!data || !tag || !operador || isNaN(litros) || litros <= 0) {
+    toast('Preencha todos os campos obrigatorios corretamente.', 'danger');
+    return;
+  }
+
+  const equip = equipamentos.find(e => e.tag === tag);
+  if (equip && equip.status === 'manutencao') {
+    toast(`${tag} esta em manutencao. Confirmar abastecimento?`, 'warning');
+  }
+
+  abastecimentos.unshift({
+    id: gerarId(), data, tag, operador, litros, hodometro, combustivel, obs, criadoEm: new Date().toISOString()
+  });
+
+  salvarEstado();
+  limparFormAbast();
+  atualizarKPIs();
+  renderizarAbastecimentos();
+  toast('Abastecimento registrado com sucesso.');
+}
+
+function limparFormAbast() {
+  document.getElementById('abastData').value = dataHoje();
+  document.getElementById('abastTag').value = '';
+  document.getElementById('abastOperador').value = '';
+  document.getElementById('abastLitros').value = '';
+  document.getElementById('abastHodometro').value = '';
+  document.getElementById('abastObs').value = '';
+  document.getElementById('alertaOperador').classList.add('hidden');
+}
+
+function excluirAbastecimento(id) {
+  abastecimentos = abastecimentos.filter(a => a.id !== id);
+  salvarEstado();
+  renderizarAbastecimentos();
+  atualizarKPIs();
+  toast('Registro excluido.', 'info');
+}
+
+function renderizarAbastecimentos() {
+  const tbody = document.getElementById('tabelaAbastecimentos');
+  const empty = document.getElementById('emptyStateAbast');
+  document.getElementById('totalRegistros').textContent = abastecimentos.length + ' registros';
+
+  if (abastecimentos.length === 0) {
+    tbody.innerHTML = '';
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+
+  tbody.innerHTML = abastecimentos.map(a => `
+    <tr class="border-b border-border/50 hover:bg-card-hover transition">
+      <td class="px-5 py-3 text-gray-300">${a.data}</td>
+      <td class="px-5 py-3 text-white font-medium">${a.tag}</td>
+      <td class="px-5 py-3 text-gray-300">${a.operador}</td>
+      <td class="px-5 py-3 text-right text-accent font-medium">${a.litros.toFixed(1)}</td>
+      <td class="px-5 py-3 text-right text-gray-400">${a.hodometro.toLocaleString()}</td>
+      <td class="px-5 py-3 text-gray-400">${a.combustivel}</td>
+      <td class="px-5 py-3 text-gray-500 max-w-[150px] truncate">${a.obs || '-'}</td>
+      <td class="px-5 py-3 text-center">
+        <button onclick="excluirAbastecimento('${a.id}')" class="text-muted hover:text-danger transition" title="Excluir">
+          <i class="fa-solid fa-trash-can text-xs"></i>
+        </button>
+      </td>
+    </tr>`).join('');
+}
+
+function atualizarKPIs() {
+  const hoje = dataHoje();
+  const mesAtual = hoje.slice(0, 7);
+  document.getElementById('kpiAbastHoje').textContent = abastecimentos.filter(a => a.data === hoje).length;
+  document.getElementById('kpiLitrosMes').textContent = abastecimentos.filter(a => a.data.startsWith(mesAtual)).reduce((s, a) => s + a.litros, 0).toFixed(0);
+
+  const abertos = desvios.filter(d => d.status === 'aberto').length;
+  document.getElementById('kpiSegAberto').textContent = abertos;
+
+  renderizarFrota();
+}
+
+/* ========== SEGURANCA EHS/QA ========== */
+function salvarDesvios() {
+  localStorage.setItem('inframina_desvios', JSON.stringify(desvios));
+}
+
+function registrarDesvio() {
+  const registro = document.getElementById('segRegistro').value.trim();
+  const localizacao = document.getElementById('segLocalizacao').value;
+  const descricao = document.getElementById('segDescricao').value.trim();
+  const status = document.getElementById('segStatus').value;
+
+  if (!registro || !localizacao || !descricao) {
+    toast('Preencha todos os campos obrigatorios.', 'danger');
+    return;
+  }
+
+  desvios.unshift({
+    id: gerarId(), registro, localizacao, descricao, status,
+    data: dataHoje(), criadoEm: new Date().toISOString()
+  });
+
+  salvarDesvios();
+  document.getElementById('segRegistro').value = '';
+  document.getElementById('segLocalizacao').value = '';
+  document.getElementById('segDescricao').value = '';
+  document.getElementById('segStatus').value = 'aberto';
+  atualizarKPISeguranca();
+  renderizarDesvios();
+  atualizarKPIs();
+  toast('Desvio registrado com sucesso.');
+}
+
+function filtrarDesvios(filtro) {
+  filtroDesviosAtual = filtro;
+  document.querySelectorAll('.seg-filter').forEach(btn => {
+    btn.classList.remove('active');
+    btn.className = btn.className.replace(/bg-accent\/10 text-accent border-accent\/30/g, 'bg-card text-muted border-border');
+  });
+  const activeBtn = document.querySelector(`.seg-filter[data-filter="${filtro}"]`);
+  if (activeBtn) {
+    activeBtn.classList.add('active');
+    activeBtn.className = activeBtn.className.replace(/bg-card text-muted border-border/g, 'bg-accent/10 text-accent border-accent/30');
+  }
+  renderizarDesvios();
+}
+
+function atualizarStatusDesvio(id, novoStatus) {
+  const dev = desvios.find(d => d.id === id);
+  if (dev) {
+    dev.status = novoStatus;
+    salvarDesvios();
+    atualizarKPISeguranca();
+    renderizarDesvios();
+    atualizarKPIs();
+    toast(`Status atualizado para: ${novoStatus === 'aberto' ? 'Aberto' : novoStatus === 'tratamento' ? 'Em Tratamento' : 'Resolvido'}.`, 'info');
+  }
+}
+
+function excluirDesvio(id) {
+  desvios = desvios.filter(d => d.id !== id);
+  salvarDesvios();
+  atualizarKPISeguranca();
+  renderizarDesvios();
+  atualizarKPIs();
+  toast('Desvio excluido.', 'info');
+}
+
+function atualizarKPISeguranca() {
+  document.getElementById('kpiSegAbertos').textContent = desvios.filter(d => d.status === 'aberto').length;
+  document.getElementById('kpiSegTratamento').textContent = desvios.filter(d => d.status === 'tratamento').length;
+  document.getElementById('kpiSegResolvidos').textContent = desvios.filter(d => d.status === 'resolvido').length;
+  document.getElementById('kpiSegTotal').textContent = desvios.length;
+}
+
+function renderizarDesvios() {
+  const tbody = document.getElementById('tabelaDesvios');
+  const empty = document.getElementById('emptyStateSeg');
+  let lista = filtroDesviosAtual === 'todos' ? desvios : desvios.filter(d => d.status === filtroDesviosAtual);
+
+  if (lista.length === 0) {
+    tbody.innerHTML = '';
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+
+  const statusConfig = {
+    aberto: { label: 'Aberto', color: 'danger', icon: 'fa-circle-exclamation' },
+    tratamento: { label: 'Em Tratamento', color: 'warning', icon: 'fa-clock' },
+    resolvido: { label: 'Resolvido', color: 'success', icon: 'fa-circle-check' },
+  };
+
+  tbody.innerHTML = lista.map(d => {
+    const sc = statusConfig[d.status];
+    return `
+    <tr class="border-b border-border/50 hover:bg-card-hover transition">
+      <td class="px-5 py-3 text-white font-medium">${d.registro}</td>
+      <td class="px-5 py-3 text-gray-400">${d.data}</td>
+      <td class="px-5 py-3 text-gray-300"><i class="fa-solid fa-location-dot text-accent mr-1"></i>${d.localizacao}</td>
+      <td class="px-5 py-3 text-gray-300 max-w-[280px] truncate">${d.descricao}</td>
+      <td class="px-5 py-3 text-center">
+        <span class="status-badge bg-${sc.color}/10 text-${sc.color} border border-${sc.color}/30">
+          <i class="fa-solid ${sc.icon} mr-1"></i>${sc.label}
+        </span>
+      </td>
+      <td class="px-5 py-3 text-center">
+        <div class="flex items-center justify-center gap-1">
+          ${d.status !== 'tratamento' ? `<button onclick="atualizarStatusDesvio('${d.id}','tratamento')" class="w-7 h-7 rounded-md bg-warning/10 text-warning hover:bg-warning/20 transition flex items-center justify-center" title="Em Tratamento"><i class="fa-solid fa-clock text-[10px]"></i></button>` : ''}
+          ${d.status !== 'resolvido' ? `<button onclick="atualizarStatusDesvio('${d.id}','resolvido')" class="w-7 h-7 rounded-md bg-success/10 text-success hover:bg-success/20 transition flex items-center justify-center" title="Resolver"><i class="fa-solid fa-check text-[10px]"></i></button>` : ''}
+          ${d.status !== 'aberto' ? `<button onclick="atualizarStatusDesvio('${d.id}','aberto')" class="w-7 h-7 rounded-md bg-info/10 text-info hover:bg-info/20 transition flex items-center justify-center" title="Reabrir"><i class="fa-solid fa-rotate-left text-[10px]"></i></button>` : ''}
+          <button onclick="excluirDesvio('${d.id}')" class="w-7 h-7 rounded-md bg-danger/10 text-danger hover:bg-danger/20 transition flex items-center justify-center" title="Excluir"><i class="fa-solid fa-trash-can text-[10px]"></i></button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+/* ========== EQUIPE & TREINOS ========== */
+function renderizarEquipe() {
+  const tbody = document.getElementById('tabelaEquipe');
+  const busca = (document.getElementById('buscaEquipe').value || '').toLowerCase();
+  const lista = operadores.filter(op => op.nome.toLowerCase().includes(busca));
+
+  function badgeTreino(apto) {
+    if (apto) return '<span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-success/10 text-success"><i class="fa-solid fa-check text-xs"></i></span>';
+    return '<span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-danger/10 text-danger"><i class="fa-solid fa-xmark text-xs"></i></span>';
+  }
+
+  function statusGeral(op) {
+    const total = Object.values(op.treinos).filter(Boolean).length;
+    if (total === 3) return '<span class="status-badge bg-success/10 text-success border border-success/30">Plenamente Apto</span>';
+    if (total >= 1) return '<span class="status-badge bg-warning/10 text-warning border border-warning/30">Apto Parcial</span>';
+    return '<span class="status-badge bg-danger/10 text-danger border border-danger/30">Restrito</span>';
+  }
+
+  tbody.innerHTML = lista.map(op => `
+    <tr class="border-b border-border/50 hover:bg-card-hover transition">
+      <td class="px-5 py-3 text-white font-medium">${op.nome}</td>
+      <td class="px-5 py-3 text-center"><span class="status-badge bg-accent/10 text-accent border border-accent/30">Turno ${op.turno}</span></td>
+      <td class="px-5 py-3 text-center">${badgeTreino(op.treinos.sandvik)}</td>
+      <td class="px-5 py-3 text-center">${badgeTreino(op.treinos.getman)}</td>
+      <td class="px-5 py-3 text-center">${badgeTreino(op.treinos.l200)}</td>
+      <td class="px-5 py-3 text-center">${statusGeral(op)}</td>
+    </tr>`).join('');
+}
+
+function popularSelectTreino() {
+  const sel = document.getElementById('treinoColaborador');
+  sel.innerHTML = '<option value="">Selecione...</option>';
+  operadores.forEach(op => {
+    sel.innerHTML += `<option value="${op.nome}">${op.nome}</option>`;
+  });
+}
+
+function popularSelectInspetor() {
+  const sel = document.getElementById('ssInspetor');
+  sel.innerHTML = '<option value="">Selecione...</option>';
+  operadores.forEach(op => {
+    sel.innerHTML += `<option value="${op.nome}">${op.nome}</option>`;
+  });
+  document.getElementById('ssData').value = dataHoje();
+}
+
+function atualizarTreinamento() {
+  const nome = document.getElementById('treinoColaborador').value;
+  const equip = document.getElementById('treinoEquipamento').value;
+  const acao = document.getElementById('treinoAcao').value;
+
+  if (!nome) { toast('Selecione um colaborador.', 'danger'); return; }
+
+  const op = operadores.find(o => o.nome === nome);
+  if (!op) return;
+
+  op.treinos[equip] = acao === 'aprovar';
+  localStorage.setItem('inframina_operadores', JSON.stringify(operadores));
+  renderizarEquipe();
+  popularSelectsAbast();
+
+  const nomesCat = { sandvik: 'Sandvik', getman: 'Getman', l200: 'L200' };
+  if (acao === 'aprovar') {
+    toast(`${nome} aprovado para ${nomesCat[equip]}.`, 'success');
+  } else {
+    toast(`Aptidao de ${nome} para ${nomesCat[equip]} removida.`, 'warning');
+  }
+}
+
+/* ========== GESTAO 5S ========== */
+function salvarChecklists5S() {
+  localStorage.setItem('inframina_checklists5s', JSON.stringify(checklists5S));
+}
+
+function salvarChecklist5S() {
+  const frente = document.getElementById('ssFrente').value;
+  const inspetor = document.getElementById('ssInspetor').value;
+  const data = document.getElementById('ssData').value;
+  const obs = document.getElementById('ssObs').value.trim();
+
+  if (!frente || !inspetor || !data) {
+    toast('Preencha frente, inspetor e data.', 'danger');
+    return;
+  }
+
+  const checkboxes = document.querySelectorAll('.checkbox-5s');
+  const itens = {};
+  let conformes = 0;
+  let total = checkboxes.length;
+
+  checkboxes.forEach(cb => {
+    const key = cb.dataset.item;
+    itens[key] = cb.checked;
+    if (cb.checked) conformes++;
+  });
+
+  const pontuacao = total > 0 ? Math.round((conformes / total) * 100) : 0;
+
+  checklists5S.unshift({
+    id: gerarId(), frente, inspetor, data, obs, itens, pontuacao, conformes, total,
     criadoEm: new Date().toISOString()
   });
-  
-  saveU(users);
-  closeModal();
-  toast('✓ Conta criada! Faça login', 'success');
-  document.getElementById('loginUser').value = user;
-  document.getElementById('loginPass').value = '';
+
+  salvarChecklists5S();
+
+  document.getElementById('ssFrente').value = '';
+  document.getElementById('ssInspetor').value = '';
+  document.getElementById('ssObs').value = '';
+  checkboxes.forEach(cb => cb.checked = false);
+
+  atualizarKPI5S();
+  renderizarHistorico5S();
+  toast(`Inspecao 5S salva. Conformidade: ${pontuacao}%.`, pontuacao >= 80 ? 'success' : 'warning');
 }
 
-function startClock() {
-  function update() {
-    document.getElementById('clock').textContent = new Date().toLocaleTimeString('pt-BR');
+function atualizarKPI5S() {
+  const hoje = dataHoje();
+  const hojeChecks = checklists5S.filter(c => c.data === hoje);
+  document.getElementById('kpi5sHoje').textContent = hojeChecks.length;
+
+  if (checklists5S.length > 0) {
+    const media = Math.round(checklists5S.reduce((s, c) => s + c.pontuacao, 0) / checklists5S.length);
+    document.getElementById('kpi5sConformidade').textContent = media + '%';
+  } else {
+    document.getElementById('kpi5sConformidade').textContent = '--%';
   }
-  update();
-  setInterval(update, 1000);
+
+  let ncTotal = 0;
+  checklists5S.forEach(c => { ncTotal += (c.total - c.conformes); });
+  document.getElementById('kpi5sNaoConforme').textContent = ncTotal;
 }
 
-// INIT
-document.getElementById('loginPass').addEventListener('keypress', e => {
-  if (e.key === 'Enter') doLogin();
-});
+function renderizarHistorico5S() {
+  const tbody = document.getElementById('tabela5sHistorico');
+  const empty = document.getElementById('emptyState5s');
 
-document.getElementById('loginUser').addEventListener('keypress', e => {
-  if (e.key === 'Enter') document.getElementById('loginPass').focus();
-});
+  if (checklists5S.length === 0) {
+    tbody.innerHTML = '';
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
 
-autoLogin();
+  tbody.innerHTML = checklists5S.map(c => {
+    const cor = c.pontuacao >= 80 ? 'success' : c.pontuacao >= 60 ? 'warning' : 'danger';
+    return `
+    <tr class="border-b border-border/50 hover:bg-card-hover transition">
+      <td class="px-5 py-3 text-gray-300">${c.data}</td>
+      <td class="px-5 py-3 text-white font-medium">${c.frente}</td>
+      <td class="px-5 py-3 text-gray-400">${c.inspetor}</td>
+      <td class="px-5 py-3 text-center text-white font-medium">${c.conformes}/${c.total}</td>
+      <td class="px-5 py-3 text-center">
+        <span class="status-badge bg-${cor}/10 text-${cor} border border-${cor}/30 font-bold">${c.pontuacao}%</span>
+      </td>
+      <td class="px-5 py-3 text-center">
+        <button onclick="detalhar5S('${c.id}')" class="w-7 h-7 rounded-md bg-accent/10 text-accent hover:bg-accent/20 transition flex items-center justify-center mx-auto" title="Ver Detalhes">
+          <i class="fa-solid fa-eye text-[10px]"></i>
+        </button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function detalhar5S(id) {
+  const c = checklists5S.find(x => x.id === id);
+  if (!c) return;
+
+  const sensos = {
+    seiri: 'Seiri - Utilizacao',
+    seiton: 'Seiton - Organizacao',
+    seiso: 'Seiso - Limpeza',
+    seiketsu: 'Seiketsu - Padronizacao',
+    shitsuke: 'Shitsuke - Disciplina'
+  };
+
+  const nomesItens = {
+    seiri1: 'Itens desnecessarios removidos da area',
+    seiri2: 'Ferramentas e materiais sao estritamente necessarios',
+    seiton1: 'Ferramentas organizadas e identificadas',
+    seiton2: 'Materiais armazenados nos locais designados',
+    seiso1: 'Piso limpo e livre de detritos',
+    seiso2: 'Equipamentos limpos e sem acumulo de poeira',
+    seiketsu1: 'Sinalizacao visivel e em boas condicoes',
+    seiketsu2: 'Procedimentos de 5S documentados e acessiveis',
+    shitsuke1: 'Equipe segue os procedimentos estabelecidos',
+    shitsuke2: 'Checklist de 5S executado conforme cronograma',
+  };
+
+  let html = `<div class="space-y-4">`;
+  for (const [senso, label] of Object.entries(sensos)) {
+    html += `<p class="text-[10px] font-semibold text-accent uppercase tracking-widest">${label}</p>`;
+    Object.keys(c.itens).filter(k => k.startsWith(senso)).forEach(key => {
+      const ok = c.itens[key];
+      html += `<div class="flex items-center gap-3 text-sm">
+        <span class="inline-flex items-center justify-center w-5 h-5 rounded ${ok ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'}">
+          <i class="fa-solid ${ok ? 'fa-check' : 'fa-xmark'} text-[10px]"></i>
+        </span>
+        <span class="${ok ? 'text-gray-300' : 'text-danger'}">${nomesItens[key] || key}</span>
+      </div>`;
+    });
+  }
+  if (c.obs) {
+    html += `<div class="mt-4 p-3 bg-bg rounded-lg border border-border text-xs text-gray-400"><strong class="text-muted">Obs:</strong> ${c.obs}</div>`;
+  }
+  html += `</div>`;
+
+  const overlay = document.createElement('div');
+  overlay.className = 'fixed inset-0 z-[150] modal-overlay flex items-center justify-center p-4';
+  overlay.onclick = e => { if (e.target === overlay) overlay.remove(); };
+  overlay.innerHTML = `
+    <div class="bg-card rounded-2xl border border-border w-full max-w-lg max-h-[80vh] overflow-y-auto">
+      <div class="p-5 border-b border-border flex items-center justify-between sticky top-0 bg-card z-10">
+        <div>
+          <h3 class="text-sm font-bold text-white">Inspecao 5S - ${c.frente}</h3>
+          <p class="text-xs text-muted mt-0.5">${c.data} - ${c.inspetor} - Pontuacao: ${c.pontuacao}%</p>
+        </div>
+        <button onclick="this.closest('.fixed').remove()" class="w-8 h-8 rounded-lg bg-bg border border-border flex items-center justify-center text-muted hover:text-white transition">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+      <div class="p-5">${html}</div>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+
+/* ========== EXPORTACAO PDF ========== */
+function exportarPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('landscape', 'mm', 'a4');
+
+  doc.setFontSize(18);
+  doc.setTextColor(249, 115, 22);
+  doc.text('InfraMINA - Relatorio de Abastecimento', 14, 18);
+  doc.setFontSize(9);
+  doc.setTextColor(120);
+  doc.text('Gerado em: ' + dataHoraFormatada(), 14, 25);
+
+  const dados = abastecimentos.map(a => [a.data, a.tag, a.operador, a.litros.toFixed(1), a.hodometro.toLocaleString(), a.combustivel, a.obs || '-']);
+  doc.autoTable({
+    startY: 32,
+    head: [['Data', 'TAG', 'Operador', 'Litros', 'Hodometro', 'Combustivel', 'Obs']],
+    body: dados,
+    theme: 'grid',
+    headStyles: { fillColor: [26, 30, 40], textColor: [249, 115, 22], fontSize: 8 },
+    bodyStyles: { textColor: [80, 80, 80], fontSize: 7 },
+    alternateRowStyles: { fillColor: [245, 245, 245] },
+  });
+
+  const abertos = desvios.filter(d => d.status === 'aberto');
+  if (abertos.length > 0) {
+    const finalY = doc.lastAutoTable.finalY + 12;
+    doc.setFontSize(12);
+    doc.setTextColor(239, 68, 68);
+    doc.text(`Pendencias de Seguranca: ${abertos.length} acao(oes) em aberto`, 14, finalY);
+  }
+
+  doc.save('inframina_abastecimento_' + dataHoje() + '.pdf');
+  toast('PDF exportado com sucesso.');
+}
+
+/* ========== ENVIAR WHATSAPP ========== */
+function enviarWhatsApp() {
+  const hoje = dataHoje();
+  const abastHoje = abastecimentos.filter(a => a.data === hoje);
+  const litrosHoje = abastHoje.reduce((s, a) => s + a.litros, 0).toFixed(1);
+  const desviosAbertos = desvios.filter(d => d.status === 'aberto').length;
+  const equipManut = equipamentos.filter(e => e.status === 'manutencao').map(e => e.tag).join(', ') || 'Nenhum';
+
+  const usuario = sessionStorage.getItem('inframina_usuario') || 'Supervisor';
+  const hora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+  let msg = `*INFRAMINA - Relatorio Operacional*\n`;
+  msg += `Data: ${hoje} | Hora: ${hora}\n`;
+  msg += `Enviado por: ${usuario}\n`;
+  msg += `------------------------\n`;
+  msg += `*Abastecimentos Hoje:* ${abastHoje.length}\n`;
+  msg += `*Litros Hoje:* ${litrosHoje}L\n`;
+  msg += `*Desvios em Aberto:* ${desviosAbertos}\n`;
+  msg += `*Equipamentos em Manutencao:* ${equipManut}\n`;
+  msg += `------------------------\n`;
+
+  if (abastHoje.length > 0) {
+    msg += `\n*Ultimos Abastecimentos:*\n`;
+    abastHoje.slice(0, 5).forEach(a => {
+      msg += `- ${a.tag}: ${a.litros}L (${a.operador})\n`;
+    });
+  }
+
+  const url = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+  toast('Abrindo WhatsApp...', 'success');
+}
+
+/* ========== EXPORTACAO EXCEL ========== */
+function exportarExcel() {
+  const wb = XLSX.utils.book_new();
+
+  const dadosAbast = abastecimentos.map(a => ({
+    Data: a.data, TAG: a.tag, Operador: a.operador, Litros: a.litros,
+    Hodometro: a.hodometro, Combustivel: a.combustivel, Observacoes: a.obs || ''
+  }));
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(dadosAbast), 'Abastecimentos');
+
+  const dadosEq = equipamentos.map(e => ({
+    TAG: e.tag, Descricao: e.descricao, Categoria: e.categoria, Status: e.status
+  }));
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(dadosEq), 'Equipamentos');
+
+  if (desvios.length > 0) {
+    const dadosDesv = desvios.map(d => ({
+      Registro: d.registro, Data: d.data, Localizacao: d.localizacao,
+      Descricao: d.descricao, Status: d.status
+    }));
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(dadosDesv), 'Seguranca EHS');
+  }
+
+  XLSX.writeFile(wb, 'inframina_relatorio_' + dataHoje() + '.xlsx');
+  toast('Excel exportado com sucesso.');
+}
+
+/* ========== INICIALIZACAO ========== */
+function inicializarApp() {
+  document.getElementById('abastData').value = dataHoje();
+  popularSelectsAbast();
+  atualizarKPIs();
+  renderizarAbastecimentos();
+  renderizarFrota();
+  atualizarRelogio();
+}
+
+if (sessionStorage.getItem('inframina_logado') === '1') {
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('mainApp').classList.remove('hidden');
+  inicializarApp();
+}
 </script>
 
 </body>
